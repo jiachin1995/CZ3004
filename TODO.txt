@@ -1,0 +1,3 @@
+Map.py:
+	add load from filepath 
+	check save() and load() works as intended
