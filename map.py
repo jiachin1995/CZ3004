@@ -20,7 +20,7 @@ class Map:
         expl = ''
         expl_contents = ''
     
-        for row in reversed(self.map):
+        for row in self.map:
             for val in row:
                 if val is None:
                     expl += '0'
@@ -44,14 +44,14 @@ class Map:
         #if true, return map format in hex
         if settings.mapformat_returntype_isHex:
             #padding for expl_contents, to keep leading zeroes
-            expl_contents = "11" + expl_contents      
+            expl_contents = "1111" + expl_contents      
         
             #convert to hex
             expl_hex = hex(int(expl, 2))
             expl_contents_hex = hex(int(expl_contents, 2))
             
             #remove padding for exploration contents
-            expl_contents_hex = "0x" + str(expl_contents_hex)[4:]
+            expl_contents_hex = "0x" + str(expl_contents_hex)[3:]
             
             if settings.logging:
                 print("=======Convert() in hex=======")
@@ -69,11 +69,24 @@ class Map:
             with open(loadobject, 'r') as file:
                 lines = file.readlines()
                 
-                expl = lines[1][4:-2]
-                expl_contents = lines[3][2:]
+                #input text file are expected to have required bits on line 2 and 4
+                expl = lines[1]
+                expl_contents = lines[3]
                 
+                #padding for expl_contents, to keep leading zeroes
+                if expl_contents[:2] == '0x':
+                    expl_contents = "0xf" + expl_contents[2:]
+                    #create bit string from exploration_contents, excluding leading '0b1111'
+                    expl_contents = bin(eval(expl_contents))[6:]
+                elif expl_contents[:2] == '0b':
+                    expl_contents = "0b1" + expl_contents[2:]
+                    #create bit string from exploration_contents, excluding leading '0b1'
+                    expl_contents = bin(eval(expl_contents))[3:]
+                else:
+                    raise Exception('exploration content string is not in bits or bytes')
+                    
                 bits_list = [
-                            expl,
+                            bin(eval(expl))[4:-2],  #return exploration as bit string, excluding leading '0b11' and tail '11'
                             expl_contents
                         ]
             
@@ -88,7 +101,7 @@ class Map:
                 
                 return
                 
-            #if loadobject is list with length 20, assume it is map
+            #if loadobject is list with length 20, assume it is a map
             if len(loadobject) == 20:
                 if len(loadobject[0]) == 15:
                     self.map = loadobject
@@ -105,9 +118,6 @@ class Map:
         exploration = list(loadbits_list[0])
         exploration_contents = list(loadbits_list[1])
         
-        print(exploration)
-        print(exploration_contents)
-        
         #create map filled with None
         self.map = [[None for _ in range(15)] for _ in range(20)]
         
@@ -116,11 +126,8 @@ class Map:
                 if exploration.pop(0) == '1':
                     #check if list is empty. if empty, continue filling explored areas
                     if exploration_contents:
-                        print([y,x,exploration_contents])
                         self.map[y][x] = exploration_contents.pop(0)
                     else:
-                        print([y,x,exploration_contents])
-                    
                         self.map[y][x] = '0'
                     
         if settings.logging:
