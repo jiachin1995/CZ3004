@@ -13,7 +13,7 @@ class Map:
             
         #if nothing to load, create empty 15x20 map
         else:
-            self.map = [[0] * 15] * 20
+            self.map = [[0 for _ in range(15)] for _ in range(20)]
         
         
     def convert(self):
@@ -35,8 +35,7 @@ class Map:
         if len(expl_contents) % 8 != 0:
             leftover_bits = len(expl_contents) % 8
             expl_contents += "0" * (8 - leftover_bits)
-
-             
+              
         if settings.logging:
             print("=======Convert() in bits=======")
             print(expl)
@@ -44,15 +43,22 @@ class Map:
             
         #if true, return map format in hex
         if settings.mapformat_returntype_isHex:
+            #padding for expl_contents, to keep leading zeroes
+            expl_contents = "11" + expl_contents      
+        
+            #convert to hex
             expl_hex = hex(int(expl, 2))
             expl_contents_hex = hex(int(expl_contents, 2))
+            
+            #remove padding for exploration contents
+            expl_contents_hex = "0x" + str(expl_contents_hex)[4:]
             
             if settings.logging:
                 print("=======Convert() in hex=======")
                 print(expl_hex)
                 print(expl_contents_hex)
                 
-            return [expl_hex, expl_contents_hex]
+            return [str(expl_hex), expl_contents_hex]
 
         return [expl, expl_contents]
         
@@ -60,12 +66,23 @@ class Map:
     def load(self, loadobject):
         #if loadobject is string, assume it is filepath
         if isinstance(loadobject, str):
-            # with open(filepath, 'r') as file:
-                # pass
+            with open(loadobject, 'r') as file:
+                lines = file.readlines()
+                
+                expl = lines[1][4:-2]
+                expl_contents = lines[3][2:]
+                
+                bits_list = [
+                            expl,
+                            expl_contents
+                        ]
+            
+            self.loadmap(bits_list)
+                
             return
             
         elif isinstance(loadobject, list):
-            #if loadobject is list with length 2, assume it is exploration bits & contents
+            #if loadobject is list with length 2, assume it is exploration & content bits, in string dtype
             if len(loadobject) == 2:
                 self.loadmap(loadobject)
                 
@@ -84,29 +101,27 @@ class Map:
         raise Exception('invalid loadobject argument')
     
     def loadmap(self, loadbits_list):
-        print(loadbits_list)
-    
-        exploration_bits = bin(loadbits_list[0])[4:-2]
-        exploration_contents_bits = bin(loadbits_list[1])[2:]
-        
-        print(exploration_bits)
-        print(None)
-        
         #convert string to list
-        exploration = list(exploration_bits)
-        exploration_contents = list(exploration_contents_bits)
+        exploration = list(loadbits_list[0])
+        exploration_contents = list(loadbits_list[1])
+        
+        print(exploration)
+        print(exploration_contents)
         
         #create map filled with None
-        self.map = [[None] * 15] * 20
+        self.map = [[None for _ in range(15)] for _ in range(20)]
         
         for y in range(20):
             for x in range(15):
-                if exploration.pop(0):
+                if exploration.pop(0) == '1':
                     #check if list is empty. if empty, continue filling explored areas
                     if exploration_contents:
+                        print([y,x,exploration_contents])
                         self.map[y][x] = exploration_contents.pop(0)
                     else:
-                        self.map[y][x] = 0
+                        print([y,x,exploration_contents])
+                    
+                        self.map[y][x] = '0'
                     
         if settings.logging:
                 self.printmap()
@@ -118,7 +133,10 @@ class Map:
         
         for row in reversed(self.map):
             for val in row:
-                print(" "+str(val), end ='')
+                if val is None:
+                    print(" ?", end ='')
+                else:
+                    print(" "+str(val), end ='')
             print("\n")
     
     
@@ -129,6 +147,7 @@ class Map:
             #write exploration bit strings
             file.write('explored/unexplored bit strings \n')
             file.write(exploration + "\n")
+            
             #write exploration contents bit strings
-            file.write(exploration_contents + '\n')
             file.write('map contents bit strings \n')
+            file.write(exploration_contents + '\n')
