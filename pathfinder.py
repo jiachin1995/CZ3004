@@ -63,11 +63,79 @@ class Pathfinder:
         2. Afterwards, from start to goal, find shortest path, taking into account turning
     """
     def findpath(self, start=start, goal=goal):
+        #update weightmap, the goal will have weight 0
         self.bfs(self.goal, self.start, 0)
         
-    
         if settings.logging:
             self.printweightmap()
+            
+        #find fastest pat with least turns. path contains route in coordinates form. directions contains route with {top,left,bottom,right}
+        path, directions = self.findLeastTurns()
+      
+        if settings.logging:  
+            print("===========Path & Directions============")
+            print(path)
+            print(directions)
+        
+        
+    """
+        Follow weights to find shortest path. minimises turning.
+        
+        Orientation refers to where the robot is facing:
+            0. Top
+            1. Right
+            2. Bottom
+            3. Left
+        
+    """
+    def findLeastTurns(self, pos=start, orientation=0, path=[], directions = []):
+        path.append(pos)
+        directions.append(orientation)
+                
+        x = pos[0]
+        y = pos[1]
+        currentweight = self.weightmap[y][x]
+        
+        #return if goal is reached
+        if currentweight == 0:
+            #remove extra direction. The first direction is extraneous
+            directions.pop(0)
+            return
+        
+        #order of tiles to search. For example, if facing right, search right, top then bottom.
+        if orientation == 0: turns = [0,1,3] 
+        if orientation == 1: turns = [1,0,2] 
+        if orientation == 2: turns = [2,1,3] 
+        if orientation == 3: turns = [3,0,2] 
+        
+        while turns:
+            orient = turns.pop(0)
+            nextpos = self.getnextTile(pos, orient)
+            if self.weightmap[nextpos[1]][nextpos[0]] == currentweight -1:
+                break
+                
+        self.findLeastTurns(nextpos, orient, path=path, directions=directions)
+        
+        return [
+            path,
+            directions
+        ]
+            
+            
+        
+        
+ 
+    def getnextTile(self, pos, orientation):
+        x = pos[0]
+        y = pos[1]
+    
+        if orientation == 0: nextTile = [x, y+1] 
+        if orientation == 1: nextTile = [x+1, y]
+        if orientation == 2: nextTile = [x, y-1] 
+        if orientation == 3: nextTile = [x-1, y] 
+        
+        return nextTile
+
         
     def mark_untraversible(self):
         for y in range(1,19):
