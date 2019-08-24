@@ -1,17 +1,9 @@
 from map import Map
-    
+from pathfinder import Pathfinder
     
 map = Map()
-#map.printmap()
-
-#map.save("test.txt")
 map.load("school_example.txt")
-map.save("test.txt")
-map.load("test.txt")
 
-#map.load([0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff, 0x0])
 
-# arr = [["a"]*15] *20
-# map.load(arr)
-
-#map.convert()
+pf = Pathfinder(map)
+pf.findpath()

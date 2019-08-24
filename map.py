@@ -62,6 +62,8 @@ class Map:
 
         return [expl, expl_contents]
         
+    def getTile(self, pos):             #expects [x,y] as arguments
+        return self.map[pos[1]][pos[0]]
             
     def load(self, loadobject):
         #if loadobject is string, assume it is filepath
@@ -73,22 +75,22 @@ class Map:
                 expl = lines[1]
                 expl_contents = lines[3]
                 
-                #padding for expl_contents, to keep leading zeroes
-                if expl_contents[:2] == '0x':
-                    expl_contents = "0xf" + expl_contents[2:]
-                    #create bit string from exploration_contents, excluding leading '0b1111'
-                    expl_contents = bin(eval(expl_contents))[6:]
-                elif expl_contents[:2] == '0b':
-                    expl_contents = "0b1" + expl_contents[2:]
-                    #create bit string from exploration_contents, excluding leading '0b1'
-                    expl_contents = bin(eval(expl_contents))[3:]
-                else:
-                    raise Exception('exploration content string is not in bits or bytes')
-                    
-                bits_list = [
-                            bin(eval(expl))[4:-2],  #return exploration as bit string, excluding leading '0b11' and tail '11'
-                            expl_contents
-                        ]
+            #padding for expl_contents, to keep leading zeroes
+            if expl_contents[:2] == '0x':
+                expl_contents = "0xf" + expl_contents[2:]
+                #create bit string from exploration_contents, excluding leading '0b1111'
+                expl_contents = bin(eval(expl_contents))[6:]
+            elif expl_contents[:2] == '0b':
+                expl_contents = "0b1" + expl_contents[2:]
+                #create bit string from exploration_contents, excluding leading '0b1'
+                expl_contents = bin(eval(expl_contents))[3:]
+            else:
+                raise Exception('exploration content string is not in bits or bytes')
+                
+            bits_list = [
+                        bin(eval(expl))[4:-2],  #return exploration as bit string, excluding leading '0b11' and tail '11'
+                        expl_contents
+                    ]
             
             self.loadmap(bits_list)
                 
