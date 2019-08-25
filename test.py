@@ -6,4 +6,5 @@ map.load("school_example.txt")
 
 
 pf = Pathfinder(map)
-pf.findpath()
+#pf.findpath()
+pf.findpath(waypoint = [1,17])

@@ -1,2 +1,7 @@
 Map.py:
-	check save() and load() works as intended
+	1.check save() and load() works as intended
+	2.check that waypoint is working as intended
+
+
+Explorer.py:
+	1.multithreading

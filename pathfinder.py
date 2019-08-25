@@ -13,7 +13,7 @@ class Pathfinder:
         self.resetweights()
 
     
-    def bfs(self,pos, end, weight, checklist=[]):
+    def bfs(self,pos, end, weight=0, checklist=[]):
         x = pos[0]
         y = pos[1]
     
@@ -21,6 +21,7 @@ class Pathfinder:
     
         #check if end is reached
         if pos == end:
+            checklist.clear()       #need to be cleared. apparently bfs() will keep checklist if not cleared
             return
         
         
@@ -46,26 +47,51 @@ class Pathfinder:
         
         if checklist:
             self.bfs(**checklist.pop(0), checklist=checklist)
+            
         
     """
         findpath() has 2 steps:
         1. Using breadth-first-search, find weights of all tiles until goal is reached, searching from goal to start (reversed)
         2. Afterwards, from start to goal, find shortest path, taking into account turning
     """
-    def findpath(self, start=start, goal=goal):
+    def findpath(self, start=start, goal=goal, waypoint=None):
         #update weightmap, the goal will have weight 0
-        self.bfs(self.goal, self.start, 0)
-        
+        if waypoint:
+            self.bfs(waypoint, start)    #search from start to waypoint
+        else:
+            self.bfs(goal, start)        #search from start to goal
+
         if settings.logging:
             self.printweightmap()
             
         #find fastest pat with least turns. path contains route in coordinates form. directions contains route with {top,left,bottom,right}
         path, directions = self.findLeastTurns()
+        
+        
+        #If there is waypoint, we must now search from waypoint to goal
+        if waypoint:
+            #reset weights before doing bfs again
+            self.resetweights()
+            
+            self.bfs(goal, waypoint)
+            if settings.logging:
+                print("====== Waypoint Weights ======= \n")
+                self.printweightmap()     
+            path2, directions2 = self.findLeastTurns(pos=path[-1], orientation=directions[-1])
+            path += path2
+            directions += directions2
+      
+      
+        #unimplemented. Method to optimse movement by adding in diagonal movement
+        if settings.optimise_diagonals:
+            directions = self.optimise_diagonals(directions)
       
         if settings.logging:  
-            print("===========Path & Directions============")
+            print("=========== Path & Directions ============")
             print(path)
             print(directions)
+            
+        return
         
         
     """
@@ -90,7 +116,19 @@ class Pathfinder:
         if currentweight == 0:
             #remove extra direction. The first direction is extraneous
             directions.pop(0)
-            return
+            
+            
+            import copy
+            results =  [
+                copy.deepcopy(path),
+                copy.deepcopy(directions)
+            ]
+                  
+            #need to be cleared. apparently method will keep lists if not cleared                  
+            path.clear()
+            directions.clear()
+            
+            return results
         
         #order of tiles to search. For example, if facing right, search right, top then bottom.
         if orientation == 0: turns = [0,1,3] 
@@ -104,16 +142,11 @@ class Pathfinder:
             if self.weightmap[nextpos[1]][nextpos[0]] == currentweight -1:
                 break
                 
-        self.findLeastTurns(nextpos, orient, path=path, directions=directions)
+        return self.findLeastTurns(nextpos, orient, path=path, directions=directions)
         
+
         
-        if settings.optimise_diagonals:
-            directions = self.optimise_diagonals(directions)
-        
-        return [
-            path,
-            directions
-        ]
+
             
  
     def getnextTile(self, pos, orientation):
