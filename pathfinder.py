@@ -10,18 +10,8 @@ class Pathfinder:
     def __init__(self, map):
         self.map = map
     
-        #Initialise weight map to store tile distances. Untraversible tiles are marked with -1/X.
-        self.weightmap = [[None for _ in range(15)] for _ in range(20)]
-        #mark edges are untraversible
-        self.weightmap[0] = [-1 for _ in range(15)]
-        self.weightmap[19] = [-1 for _ in range(15)]
-        for row in self.weightmap:
-            row[0] = -1
-            row[14] = -1
-            
-            
-        self.mark_untraversible()
-    
+        self.resetweights()
+
     
     def bfs(self,pos, end, weight, checklist=[]):
         x = pos[0]
@@ -116,14 +106,15 @@ class Pathfinder:
                 
         self.findLeastTurns(nextpos, orient, path=path, directions=directions)
         
+        
+        if settings.optimise_diagonals:
+            directions = self.optimise_diagonals(directions)
+        
         return [
             path,
             directions
         ]
             
-            
-        
-        
  
     def getnextTile(self, pos, orientation):
         x = pos[0]
@@ -148,6 +139,11 @@ class Pathfinder:
                         self.weightmap[y+1][x+i] = -1
                     
 
+    def optimise_diagonals(self, directions):
+        #consider that square diagonals are 1.4x the width
+        pass
+        
+        return directions
         
     def printweightmap(self):
         print("======== WeightMap ========")
@@ -162,3 +158,19 @@ class Pathfinder:
                     print(" %2s" % str(val), end ='')
             print("\n")
     
+    def resetweights(self):
+            
+        #Initialise weight map to store tile distances. Untraversible tiles are marked with -1/X.
+        self.weightmap = [[None for _ in range(15)] for _ in range(20)]
+        
+        #mark edges as untraversible
+        self.weightmap[0] = [-1 for _ in range(15)]
+        self.weightmap[19] = [-1 for _ in range(15)]
+        for row in self.weightmap:
+            row[0] = -1
+            row[14] = -1
+            
+        self.mark_untraversible()
+    
+            
+            
