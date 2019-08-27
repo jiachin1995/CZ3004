@@ -131,10 +131,13 @@ class Pathfinder:
             return results
         
         #order of tiles to search. For example, if facing right, search right, top then bottom.
-        if orientation == 0: turns = [0,1,3] 
-        if orientation == 1: turns = [1,0,2] 
-        if orientation == 2: turns = [2,1,3] 
-        if orientation == 3: turns = [3,0,2] 
+        turns_dict = {
+                0: [0,1,3], 
+                1: [1,0,2],
+                2: [2,1,3],
+                3: [3,0,2] 
+            }
+        turns = turns_dict[orientation]
         
         while turns:
             orient = turns.pop(0)
@@ -145,18 +148,18 @@ class Pathfinder:
         return self.findLeastTurns(nextpos, orient, path=path, directions=directions)
         
 
-        
-
-            
- 
     def getnextTile(self, pos, orientation):
         x = pos[0]
         y = pos[1]
-    
-        if orientation == 0: nextTile = [x, y+1] 
-        if orientation == 1: nextTile = [x+1, y]
-        if orientation == 2: nextTile = [x, y-1] 
-        if orientation == 3: nextTile = [x-1, y] 
+        
+        #dictionary of nextTile. For example, if facing right, return tile on right.
+        nextTile_dict = {
+            0: [x, y+1],
+            1: [x+1, y],
+            2: [x, y-1],
+            3: [x-1, y]         
+        }
+        nextTile = nextTile_dict[orientation]
         
         return nextTile
 

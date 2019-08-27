@@ -1,5 +1,17 @@
 import settings
 
+"""
+    Map class. Creates a 15x20 map. 
+    
+    Length(top-bottom) of map is 20, represented by y-coordinates. Width(left-right) is 15, represented by x-coordinates.
+    Bottom left corner tile of map is 0,0. Top right is 14,19.
+    Start coordinates is [1,1]. End is [13,18]
+    
+    Each tile has values:
+        1. None - unexplored
+        2. 0 - explored, no obstacle
+        3. 1 - explored, has obstacle
+"""
 class Map:
     map = []
     start = [1, 1]
@@ -13,7 +25,7 @@ class Map:
             
         #if nothing to load, create empty 15x20 map
         else:
-            self.map = [[0 for _ in range(15)] for _ in range(20)]
+            self.map = [[None for _ in range(15)] for _ in range(20)]
         
         
     def convert(self):
@@ -120,7 +132,7 @@ class Map:
         exploration = list(loadbits_list[0])
         exploration_contents = list(loadbits_list[1])
         
-        #create map filled with None
+        #create map filled with None/unexplored
         self.map = [[None for _ in range(15)] for _ in range(20)]
         
         for y in range(20):
@@ -160,3 +172,6 @@ class Map:
             #write exploration contents bit strings
             file.write('map contents bit strings \n')
             file.write(exploration_contents + '\n')
+
+    def setTile(self, pos, value):
+        self.map[pos[1]][pos[0]] = value
