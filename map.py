@@ -35,6 +35,8 @@ class Map:
         
         
     def convert(self):
+        """matched Code === generateMapDescriptor()"""
+    
         expl = ''
         expl_contents = ''
     
@@ -80,7 +82,9 @@ class Map:
 
         return [expl, expl_contents]
         
-    def getTile(self, pos):             #expects [x,y] as arguments
+    def getTile(self, pos):             
+        """expects [x,y] as arguments"""
+        """matched Code === getIsExplored"""
         return self.map[pos[1]][pos[0]]
             
     def load(self, loadobject):
@@ -96,6 +100,8 @@ class Map:
         Raises:
             Exception: invalid loadobject argument
         """
+        
+        """matched Code === loadingFromDisk()"""
     
         #if loadobject is string, assume it is filepath
         if isinstance(loadobject, str):
@@ -194,8 +200,103 @@ class Map:
             file.write(exploration_contents + '\n')
 
     def setTile(self, pos, value):
+        """expects [x,y] and value as arguments"""
+        """matched Code === setIsExplored"""
         self.map[pos[1]][pos[0]] = value
         
     def setTiles(self, poslist, valuelist):
+        """expects list of [x,y] and value as arguments"""
+        """matched Code === setIsExplored"""
         for pos, val in zip(poslist,valuelist):
             self.map[pos[1]][pos[0]] = val
+            
+  """          
+    def getObstacleCount() {
+		return this.obstaclesCount;
+	}
+	
+	public Cell[][] getCell() {
+        return cells;
+    }
+
+	 public static boolean isInStartingZone(int x, int y){
+		return (y < MAP_ROWS) && (y >= MAP_ROWS - ZONE_SIZE) && (x < ZONE_SIZE) && (x >= 0);
+	}
+	
+	public static boolean isInEndingZone(int x, int y){
+		return (y < ZONE_SIZE) && (y >= 0) && (x < MAP_COLUMNS) && (x >= MAP_COLUMNS - ZONE_SIZE);
+                
+	}
+	
+	public boolean isOutOfArena(int x, int y) {
+        return x < 0 || y < 0 || x >= MAP_COLUMNS || y >= MAP_ROWS;
+    }
+	
+	public boolean getIsObstacle(int x, int y){
+		return isOutOfArena(x, y) || cells[x][y].getIsObstacle();
+	}
+	
+	public void setIsObstacle(int x, int y, boolean isObstacle){
+		if(isOutOfArena(x, y))
+			return;
+		cells[x][y].setIsObstacle(isObstacle);
+		setChanged();
+		notifyObservers();
+	}
+	
+	public boolean getIsExplored(int x, int y){
+		return cells[x][y].getExplored() && !isOutOfArena(x, y);
+	}
+	
+	public void setIsExplored(int x, int y, boolean explored){
+		if(!isOutOfArena(x, y)){
+			cells[x][y].setExplored(explored);
+			setChanged();
+	        notifyObservers();
+		}
+		return;
+	}
+	
+	public void setProbabilityOfObstacle(int x, int y, int num){
+		if(!isOutOfArena(x, y)){
+			int addObstacleCount = cells[x][y].updateCount(num);
+			obstaclesCount += addObstacleCount;
+		}
+		return;
+	}
+	
+	public double checkPercentageExplored(){
+		double gridCells = 0.0;
+		double cellsExplored = 0.0;
+		
+		for (int x = 0; x < MAP_COLUMNS; x++) {
+            for (int y = 0; y < MAP_ROWS; y++) {
+                if (cells[x][y].getExplored()) {
+                    cellsExplored += 1;
+                }
+                gridCells += 1;
+            }
+        }
+		
+		return (cellsExplored/gridCells) * 100;
+	}
+	
+	public void reset(){
+		for (int x = 0; x < MAP_COLUMNS; x++) {
+            for (int y = 0; y < MAP_ROWS; y++) {
+                if (!isInStartingZone(x, y) && !isInEndingZone(x, y))
+                    setIsExplored(x, y, false);
+                else
+                    setIsExplored(x, y, true);
+            }
+        }
+	}
+	
+	public void clearAllObstacle(){
+		for(int x = 0; x < MAP_COLUMNS; x++){
+			for(int y  = 0; y < MAP_ROWS; y++){
+				setIsObstacle(x, y, false);
+			}
+		}
+	}
+	"""
