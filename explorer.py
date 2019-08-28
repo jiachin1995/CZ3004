@@ -19,7 +19,7 @@ class Explorer:
         if startpos == None:
             if self.hugleftprep():
                 startpos = self.robot.pos
-            else return             #prep failed. Cancel left wall hugging
+            else: return             #prep failed. Cancel left wall hugging
 
         left, middle, right = sensors.getFront()
         front, back = sensors.getLeft()
@@ -39,7 +39,7 @@ class Explorer:
         self.state = "LeftWallHugging"
         if settings.logging:  
               print("New State: " + self.state)   
-        if !(sensors.isFrontBlocked()) and !(sensors.isLeftBlocked()):
+        if not (sensors.isFrontBlocked()) and not (sensors.isLeftBlocked()):
             if settings.logging:  
                 print("Warning: Left Wall Hugging Cancelled. No adjacent walls found.")
             return False

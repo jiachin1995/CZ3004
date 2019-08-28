@@ -5,7 +5,13 @@ from robot import Robot
 robo = Robot()
 
 
-map = Map(load='school_example.txt')
-pf = Pathfinder(map)
+map = Map('sample_maze.txt')
 
-pf.findpath()
+poslist = [
+        [3,9],
+        [9,14],
+    ]
+valuelist = [1]*len(poslist)
+map.setTiles(poslist,valuelist)
+
+map.save("sample_maze.txt")

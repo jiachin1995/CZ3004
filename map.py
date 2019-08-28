@@ -195,3 +195,7 @@ class Map:
 
     def setTile(self, pos, value):
         self.map[pos[1]][pos[0]] = value
+        
+    def setTiles(self, poslist, valuelist):
+        for pos, val in zip(poslist,valuelist):
+            self.map[pos[1]][pos[0]] = val
