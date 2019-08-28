@@ -1,18 +1,24 @@
 import settings
 
-"""
-    Map class. Creates a 15x20 map. 
-    
-    Length(top-bottom) of map is 20, represented by y-coordinates. Width(left-right) is 15, represented by x-coordinates.
-    Bottom left corner tile of map is 0,0. Top right is 14,19.
-    Start coordinates is [1,1]. End is [13,18]
-    
-    Each tile has values:
-        1. None - unexplored
-        2. 0 - explored, no obstacle
-        3. 1 - explored, has obstacle
-"""
 class Map:
+    """
+        Map class. Creates a 15x20 map. 
+        
+        Length(top-bottom) of map is 20, represented by y-coordinates. Width(left-right) is 15, represented by x-coordinates.
+        Bottom left corner tile of map is 0,0. Top right is 14,19.
+        Start coordinates is [1,1]. End is [13,18]
+        
+        Each tile has values:
+            1. None - unexplored
+            2. 0 - explored, no obstacle
+            3. 1 - explored, has obstacle
+            
+            
+        Attributes:
+            map: a 15x20 array. Contains None, 0 or 1 as values.
+            start: Centre of 3x3 start area. Default = [1,1]
+            goal: Centre of 3x3 goal area. Default = [13,18]
+    """
     map = []
     start = [1, 1]
     goal = [13, 18]
@@ -78,6 +84,19 @@ class Map:
         return self.map[pos[1]][pos[0]]
             
     def load(self, loadobject):
+        """ Loads map. Accepts 3 types of inputs.
+            
+        Args:
+            loadobject: Accepts 3 types of inputs. String, List of length 2, 15x20 List
+            loadobject-String: Name of txt file to load. Example: "maze.txt".
+            loadobject-List_of_length_2: Assumes list contains 2 bit/byte strings. [exploration_bits, exploration_contents]. Accepts both bits & bytes.
+            loadobject-15x20_List: Assumes list to contain map. Sets map=loadobject. List should be of size [20][15].
+
+
+        Raises:
+            Exception: invalid loadobject argument
+        """
+    
         #if loadobject is string, assume it is filepath
         if isinstance(loadobject, str):
             with open(loadobject, 'r') as file:
@@ -104,14 +123,14 @@ class Map:
                         expl_contents
                     ]
             
-            self.loadmap(bits_list)
+            self._loadmap(bits_list)
                 
             return
             
         elif isinstance(loadobject, list):
             #if loadobject is list with length 2, assume it is exploration & content bits, in string dtype
             if len(loadobject) == 2:
-                self.loadmap(loadobject)
+                self._loadmap(loadobject)
                 
                 return
                 
@@ -127,7 +146,7 @@ class Map:
                 
         raise Exception('invalid loadobject argument')
     
-    def loadmap(self, loadbits_list):
+    def _loadmap(self, loadbits_list):
         #convert string to list
         exploration = list(loadbits_list[0])
         exploration_contents = list(loadbits_list[1])
@@ -150,6 +169,7 @@ class Map:
         return
     
     def printmap(self):
+        """Prints map. Bottom left corner is [0,0] & contains start corner. Top right is [14,19] & contains goal"""
         print("======== VirtualMap ========")
         
         for row in reversed(self.map):
