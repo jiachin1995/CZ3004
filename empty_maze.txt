@@ -1,4 +1,4 @@
 explored/unexplored bit strings 
 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 map contents bit strings 
-0x00000100001c80000000001c0000080000060001c00000080000
+0x0000000000000000000000000000000000000000000000000000000000000000000000000000
