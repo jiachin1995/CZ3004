@@ -1,2 +1,12 @@
 class Sensors:
-    pass
+    
+    
+    
+    
+    def isFrontBlocked():
+        
+        
+    def isLeftBlocked():
+        
+        
+        
