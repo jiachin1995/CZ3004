@@ -1,6 +1,17 @@
 class Sensors:
     
     
+    def getFront():
+        """
+        Returns front terrain in the form of a list, containing [left,middle,right].
+        Left,middle,right are integers.
+        if left == 0, it means there is a wall directly in front of robot, on the left side
+        if middle == 2, it means there is a wall 2 steps in front of robot, at the middle
+        
+        For example, if front obstacle is T-shaped, getFront() might return 1, 0, 1.
+        """
+    
+        pass
     
     
     def isFrontBlocked():

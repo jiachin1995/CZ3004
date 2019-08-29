@@ -20,33 +20,24 @@ class Explorer:
             if self.hugleftprep():
                 startpos = self.robot.pos
             else: return             #prep failed. Cancel left wall hugging
-
-
-        
-        
         
         #if left is free, turn left, move forward once
         if not sensors.isLeftBlocked():
-            robot.turnLeft()
-            robot.forward()
+            robot.turnLeft()                #no need to update map cause next step will update instead.
+            robot.forward(updatemap=True)   #in theory, there should be at least one row of free space. 
             turns += (turns + 3) % 4
             
         #elif if front is free, move forward (up to 3)
         elif not sensors.isFrontBlocked():
-            left, middle, right = sensors.getFront()
-            """
-                do something
-            """
-            robot.forward()
+            front_terrain = sensors.getFront()
+            steps = min(front_terrain)
+            if steps>3: steps = 3           #we do this as we have to check & hug left wall
+            
+            robot.forward(steps, updatemap=True)
+            
         #if both failed, turn right
         else:
-            left, middle, right = sensors.getFront()
-            """
-                do something
-            """
-            
-            robot.turnRight()
-            robot.forward()
+            robot.turnRight(updatemap=True)
             turns += (turns + 3) % 4
 
          

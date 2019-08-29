@@ -43,7 +43,7 @@ class Robot:
     def explore(self):        
         dora  = Explorer(self)
     
-    def forward(self, steps = 1):
+    def forward(self, steps = 1, updatemap=False):
         self.coordinator.forward(steps)
         newpos_dict = {
             0: [x, y+steps], 
@@ -51,7 +51,7 @@ class Robot:
             2: [x, y-steps],
             3: [x-steps,y]
         }
-        self.updatemap()
+        if updatemap: self.updatemap()
         
   
     def setAttributes(self, **kwargs):
@@ -60,16 +60,16 @@ class Robot:
             concat = "self."+key+" = " + value
             eval(concat)                    #Set attributes. Evaluate self.key = value  
             
-    def turnLeft(self):
+    def turnLeft(self, updatemap=False):
         self.coordinator.turnLeft()
         self.orientation = (self.orientation + 3) % 4
-        self.updatemap()
+        if updatemap: self.updatemap()
 
     
-    def turnRight(self):
+    def turnRight(self, updatemap=False):
         self.coordinator.turnRight()
         self.orientation = (self.orientation + 1) % 4
-        self.updatemap()
+        if updatemap: self.updatemap()
               
     def updatemap(self):
         #update robot's position as free space on map
