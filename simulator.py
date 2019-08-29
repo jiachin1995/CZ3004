@@ -5,8 +5,7 @@
 """
 import numpy as np
 import os
-
-map = Map 
+import Map
 
 NORTH = 1
 EAST = 2
@@ -27,7 +26,6 @@ BOTTOM_LEFT_CORNER = START
 BOTTOM_RIGHT_CORNER = np.asarray([18,13])
 TOP_RIGHT_CORNER = GOAL
 TOP_LEFT_CORNER = np.asarray([1,1])
-
 
 class Robot:
 
