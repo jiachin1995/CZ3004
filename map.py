@@ -91,7 +91,7 @@ class Map:
         """ Loads map. Accepts 3 types of inputs.
             
         Args:
-            loadobject: Accepts 3 types of inputs. String, List of length 2, 15x20 List
+            loadobject: Accepts 3 types of inputs. String, List of length 2, 15x20 List. <see below>
             loadobject-String: Name of txt file to load. Example: "maze.txt".
             loadobject-List_of_length_2: Assumes list contains 2 bit/byte strings. [exploration_bits, exploration_contents]. Accepts both bits & bytes.
             loadobject-15x20_List: Assumes list to contain map. Sets map=loadobject. List should be of size [20][15].
