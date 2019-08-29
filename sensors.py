@@ -4,10 +4,10 @@ class Sensors:
     
     
     def isFrontBlocked():
-
+        pass
         
     def isLeftBlocked():
-        
+        pass
         
         """
             public int checkFrontExplored(Grid grid, Robot robot) {

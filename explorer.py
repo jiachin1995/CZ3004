@@ -14,39 +14,75 @@ class Explorer:
 
         self.hugleftwall()
         
-    def hugleftwall(self, turns_count = 0, startpos = None):
+    def hugleftwall(self, turns = 0, startpos = None):
         #run once when first called
         if startpos == None:
             if self.hugleftprep():
                 startpos = self.robot.pos
             else: return             #prep failed. Cancel left wall hugging
 
-        left, middle, right = sensors.getFront()
-        front, back = sensors.getLeft()
+
         
-        x, y = self.robot.pos
-        #baseline refers to the left,middle & right (from the robot's perspective) tiles the robot is occupying. 
-        #baseline_dict contains the tiles to search. For example, if facing right, search top, middle & bottom tiles
-        baseline_dict = {
-            0: [[x-1,y],[x,y],[x+1,y]],
-            1: [[x,y+1],[x,y],[x,y-1]],
-            2: [[x+1,y],[x,y],[x-1,y]],
-            3: [[x,y-1],[x,y],[x,y+1]]
-        }
-        baseline = baseline_dict[robot.orientation]
+        
+        
+        #if left is free, turn left, move forward once
+        if not sensors.isLeftBlocked():
+            robot.turnLeft()
+            robot.forward()
+            turns += (turns + 3) % 4
+            
+        #elif if front is free, move forward (up to 3)
+        elif not sensors.isFrontBlocked():
+            left, middle, right = sensors.getFront()
+            """
+                do something
+            """
+            robot.forward()
+        #if both failed, turn right
+        else:
+            left, middle, right = sensors.getFront()
+            """
+                do something
+            """
+            
+            robot.turnRight()
+            robot.forward()
+            turns += (turns + 3) % 4
+
+         
+        
+        #check terminate or continue
+        #if turns == 0, it means robot is facing starting orientation.
+        #if turns == 0 and curPos = startpos: terminate 
+        #else: self.hugleftwall(self, turns = turns, startpos = startpos)
         
     def hugleftprep(self):
+        """ Prepares robot for left wall hugging algorithm. 
+            Expects an adjacent wall before starting.
+            
+        Args:
+            none: no arguments
+
+        Raises:
+            Warning: Left Wall Hugging Cancelled. No adjacent walls found.
+        """
+    
         self.state = "LeftWallHugging"
         if settings.logging:  
               print("New State: " + self.state)   
-        if not (sensors.isFrontBlocked()) and not (sensors.isLeftBlocked()):
+            
+        #if left wall exists, return true
+        if sensors.isLeftBlocked():
+            return True
+        #elif front wall exists, turn right and return true
+        elif sensors.isFrontBlocked():
+            self.robot.turnRight()
+            return True
+        else:
             if settings.logging:  
                 print("Warning: Left Wall Hugging Cancelled. No adjacent walls found.")
             return False
-                    
-        #check left wall, return true
-        #check no left wall & have front wall. turn right & return true
-
+           
     """
     To Kevin: 
         explorer.py should still call the below methods. 

@@ -24,6 +24,12 @@ class Map:
     goal = [13, 18]
 
     def __init__(self, load=None, ):
+        """
+        Constructor. Creates a 15x20 map. 
+        
+        Attributes:
+            load: Expects a load object. If left empty, create a 100% unexplored map. Otherwise, calls self.load() on load object. Refer to map.load()
+        """
         self.x = 'Hello'
         
         if load:
@@ -210,7 +216,7 @@ class Map:
         for pos, val in zip(poslist,valuelist):
             self.map[pos[1]][pos[0]] = val
             
-  """          
+    """          
     def getObstacleCount() {
 		return this.obstaclesCount;
 	}

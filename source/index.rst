@@ -12,6 +12,9 @@ Welcome to CZ3004 MDP's documentation!
    
    map
    pathfinder
+   robot
+
+
 
 Indices and tables
 ==================
