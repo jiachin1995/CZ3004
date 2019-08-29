@@ -19,11 +19,7 @@ class Explorer:
         if startpos == None:
             if self.hugleftprep():
                 startpos = self.robot.pos
-            else: return             #prep failed. Cancel left wall hugging
-
-
-        
-        
+            else: return             #prep failed. Cancel left wall hugging 
         
         #if left is free, turn left, move forward once
         if not sensors.isLeftBlocked():
@@ -35,9 +31,12 @@ class Explorer:
         elif not sensors.isFrontBlocked():
             left, middle, right = sensors.getFront()
             """
+	    
                 do something
             """
             robot.forward()
+	    Map.SetTileExplored()
+	    
         #if both failed, turn right
         else:
             left, middle, right = sensors.getFront()
@@ -96,16 +95,7 @@ class Explorer:
 		}
 	}
     ^Currently considering creating an Interface class to handle robot-android communications. Subject to change
-    
-    
-    checkFrontExplored() moved to sensors.py
-    checkLeftRangeExplored() moved to sensors.py
-    checkRightRangeExplored() moved to sensors.py
-    leftSideNotFullyExplored() moved to sensors.py
-    rightSideNotFullyExplored() moved to sensors.py
-
-    isOutOfArena() removed. deemed unnecessary
-    isInEndingZone() removed. deemed unnecessary
+ 
     
     ***handleMoveForward() should match explorer.hugleftwall(). 
     
