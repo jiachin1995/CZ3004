@@ -76,6 +76,12 @@ class Explorer:
         #elif front wall exists, turn right and return true
         elif sensors.isFrontBlocked():
             self.robot.turnRight()
+            
+            #Check for T-blocks
+            left, middle, right = sensors.getFront()
+            if middle==0 and left != 0 and right !=0:
+                self.robot.forward()
+            
             return True
         else:
             if settings.logging:  
