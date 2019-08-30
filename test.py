@@ -27,3 +27,8 @@ robot.turnRight()
 robot.forward(3)
 #robot.turnLeft()
 robot.map.printmap()
+
+
+"""code to check map exploration"""
+print(robot.map.explored_percent())
+print(robot.map.is_explored())

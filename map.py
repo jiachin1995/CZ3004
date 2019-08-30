@@ -88,6 +88,16 @@ class Map:
             return [str(expl_hex), expl_contents_hex]
 
         return [expl, expl_contents]
+
+    def explored_percent(self):
+        totalTiles = 300.0
+        expl_count = 0.0
+        
+        for row in self.map:
+            for val in row:
+                if val is not None: expl_count += 1.0
+
+        return expl_count/totalTiles
         
     def getTile(self, pos):             
         """expects [x,y] as arguments"""
@@ -98,7 +108,14 @@ class Map:
             return -1
         
         return self.map[pos[1]][pos[0]]
-            
+      
+    def is_explored(self):
+        for row in self.map:
+            for val in row:
+                if val is None: return False
+        return True
+      
+      
     def load(self, loadobject):
         """ Loads map. Accepts 3 types of inputs.
             
