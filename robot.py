@@ -51,6 +51,9 @@ class Robot:
             
     def explore(self):        
         dora  = Explorer(self)
+        dora.start()
+        
+        self.map.printmap()
     
     def forward(self, steps = 1, updatemap=False):
         self.coordinator.forward(steps)
@@ -209,12 +212,14 @@ class Robot:
         
         #TODO-update map with right sensors
         
+        
+        self.map.setTiles(freeTiles, valuelist)
+     
+        if self.map.is_explored(): self.explore = False
+            
         if settings.logging:
             print("=======Robot updatemap()=======")
             print(freeTiles)
             print(valuelist)
         
         
-        self.map.setTiles(freeTiles, valuelist)
-     
-    

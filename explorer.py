@@ -11,10 +11,19 @@ class Explorer:
             print("New State: " + self.state)
     
     def start(self):
-
-        self.hugleftwall()
+        if self.state == "Initial": 
+            self.hugleftwall()
+        
+        # while not self.robot.map.is_explored(): 
+            # self.spelunk()
+            
+        #TODO-return to start
         
     def hugleftwall(self, turns = 0, startpos = None):
+        print("debug")
+        print(self.robot.pos)
+        print(turns)
+    
         #run once when first called
         if startpos == None:
             if self.hugleftprep():
@@ -22,33 +31,34 @@ class Explorer:
             else: return             #prep failed. Cancel left wall hugging
         
         #if left is free, turn left, move forward once
-        if not sensors.isLeftBlocked():
-            robot.turnLeft()                #no need to update map cause next step will update instead.
-            robot.forward()   #in theory, there should be at least one row of free space. 
-            turns += (turns + 3) % 4
+        if not self.robot.sensors.isLeftBlocked():
+            self.robot.turnLeft()                #no need to update map cause next step will update instead.
+            self.robot.forward()   #in theory, there should be at least one row of free space. 
+            turns = (turns + 3) % 4
             
         #elif if front is free, move forward (up to 3)
-        elif not sensors.isFrontBlocked():
-            front_terrain = sensors.getFront()
-            steps = min(front_terrain)
-            if steps>3: steps = 3           #we do this as we have to check & hug left wall
+        elif not self.robot.sensors.isFrontBlocked():
+            front,back = self.robot.sensors.getLeft()
+            if front != 0: 
+                steps = 1        #we go 1 step at a time to find where left wall ends
+            else:
+                front_terrain = self.robot.sensors.getFront()
+                steps = min(front_terrain)      #go as far as possible
+                if steps>3: steps = 3           #we do this as we have to check & hug left wall
             
-            robot.forward(steps)
+            self.robot.forward(steps)
 
         #if both failed, turn right
         else:
-            robot.turnRight()
-            turns += (turns + 3) % 4
-
+            self.robot.turnRight()
+            turns = (turns + 3) % 4
          
-        
         #check terminate or continue
         #if turns == 0, it means robot is facing starting orientation.
-        #if turns == 0 and curPos = startpos: terminate 
-        #else: self.hugleftwall(self, turns = turns, startpos = startpos)
-        
-        
-        #remember to set self.robot.explore = False once exploration complete
+        if turns == 0 and self.robot.pos == startpos: 
+            return
+        else: 
+            self.hugleftwall(turns = turns, startpos = startpos)
         
     def hugleftprep(self):
         """ Prepares robot for left wall hugging algorithm. 
@@ -66,10 +76,10 @@ class Explorer:
               print("New State: " + self.state)   
             
         #if left wall exists, return true
-        if sensors.isLeftBlocked():
+        if self.robot.sensors.isLeftBlocked():
             return True
         #elif front wall exists, turn right and return true
-        elif sensors.isFrontBlocked():
+        elif self.robot.sensors.isFrontBlocked():
             self.robot.turnRight()
             
             #Check for T-blocks

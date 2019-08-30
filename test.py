@@ -21,12 +21,17 @@ map = Map('sample_maze.txt')
 
 """code to test simulator"""
 
+# robot = Robot(fakeRun=True, fakeMap = map)
+# robot.forward(5)
+# robot.turnRight()
+# robot.forward(3)
+# robot.turnLeft()
+# robot.map.printmap()
+
+"""code to check explorer.py"""
 robot = Robot(fakeRun=True, fakeMap = map)
-robot.forward(5)
-robot.turnRight()
-robot.forward(3)
-#robot.turnLeft()
-robot.map.printmap()
+robot.explore()
+map.printmap()
 
 
 """code to check map exploration"""

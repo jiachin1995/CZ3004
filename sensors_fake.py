@@ -80,14 +80,14 @@ class Sensors:
         
         return [front, back]
         
-    def isFrontBlocked():
+    def isFrontBlocked(self):
         for val in self.getFront():
             if val == 0:
                 return True
         return False
         
-    def isLeftBlocked():
-        for val in self.getFront():
+    def isLeftBlocked(self):
+        for val in self.getLeft():
             if val == 0:
                 return True
         return False

@@ -104,9 +104,9 @@ class Map:
         x,y = pos
         if x<0 or x>14:
             return -1
-        if y<0 or x>19:
+        if y<0 or y>19:
             return -1
-        
+            
         return self.map[pos[1]][pos[0]]
       
     def is_explored(self):
@@ -231,12 +231,23 @@ class Map:
     def setTile(self, pos, value):
         """expects [x,y] and value as arguments"""
         """matched Code === setIsExplored"""
-        self.map[pos[1]][pos[0]] = value
+        x,y = pos
+        if x<0 or x>14:
+            return
+        if y<0 or y>19:
+            return
+        
+        self.map[y][x] = value
         
     def setTiles(self, poslist, valuelist):
         """expects list of [x,y] and value as arguments"""
         """matched Code === setIsExplored"""
         for pos, val in zip(poslist,valuelist):
+            x,y = pos
+            if x<0 or x>14:
+                continue
+            if y<0 or y>19:
+                continue
             self.map[pos[1]][pos[0]] = val
 	
     """(starting zone and ending zone of the maps should be marked for the convenient movement of the robot
