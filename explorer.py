@@ -35,7 +35,6 @@ class Explorer:
                 do something
             """
             robot.forward()
-	    Map.SetTileExplored()
 	    
         #if both failed, turn right
         else:

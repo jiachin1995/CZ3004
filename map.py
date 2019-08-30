@@ -12,6 +12,7 @@ class Map:
             1. None - unexplored
             2. 0 - explored, no obstacle
             3. 1 - explored, has obstacle
+            4. -1 - Error. Out of range
             
             
         Attributes:
@@ -90,7 +91,12 @@ class Map:
         
     def getTile(self, pos):             
         """expects [x,y] as arguments"""
-        """matched Code === getIsExplored"""
+        x,y = pos
+        if x<0 or x>14:
+            return -1
+        if y<0 or x>19:
+            return -1
+        
         return self.map[pos[1]][pos[0]]
             
     def load(self, loadobject):
