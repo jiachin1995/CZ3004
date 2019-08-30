@@ -12,6 +12,7 @@ class Map:
             1. None - unexplored
             2. 0 - explored, no obstacle
             3. 1 - explored, has obstacle
+            4. -1 - Error. Out of range
             
             
         Attributes:
@@ -90,7 +91,12 @@ class Map:
         
     def getTile(self, pos):             
         """expects [x,y] as arguments"""
-        """matched Code === getIsExplored"""
+        x,y = pos
+        if x<0 or x>14:
+            return -1
+        if y<0 or x>19:
+            return -1
+        
         return self.map[pos[1]][pos[0]]
             
     def load(self, loadobject):
@@ -171,9 +177,9 @@ class Map:
                 if exploration.pop(0) == '1':
                     #check if list is empty. if empty, continue filling explored areas
                     if exploration_contents:
-                        self.map[y][x] = exploration_contents.pop(0)
+                        self.map[y][x] = int(exploration_contents.pop(0))
                     else:
-                        self.map[y][x] = '0'
+                        self.map[y][x] = 0
                     
         if settings.logging:
                 self.printmap()
@@ -215,6 +221,16 @@ class Map:
         """matched Code === setIsExplored"""
         for pos, val in zip(poslist,valuelist):
             self.map[pos[1]][pos[0]] = val
+	
+    """(starting zone and ending zone of the maps should be marked for the convenient movement of the robot
+   
+    def isInStartingZone(x, y):
+		return (y < MAP_ROWS) and (y >= MAP_ROWS - ZONE_SIZE) and (x < ZONE_SIZE) and (x >= 0)
+	
+    def isInEndingZone(x, y):
+		return (y < ZONE_SIZE) and (y >= 0) annd (x < MAP_COLUMNS) and (x >= MAP_COLUMNS - ZONE_SIZE)
+    
+    """
             
     """          
     def getObstacleCount() {
@@ -225,14 +241,6 @@ class Map:
         return cells;
     }
 
-	 public static boolean isInStartingZone(int x, int y){
-		return (y < MAP_ROWS) && (y >= MAP_ROWS - ZONE_SIZE) && (x < ZONE_SIZE) && (x >= 0);
-	}
-	
-	public static boolean isInEndingZone(int x, int y){
-		return (y < ZONE_SIZE) && (y >= 0) && (x < MAP_COLUMNS) && (x >= MAP_COLUMNS - ZONE_SIZE);
-                
-	}
 	
 	public boolean isOutOfArena(int x, int y) {
         return x < 0 || y < 0 || x >= MAP_COLUMNS || y >= MAP_ROWS;
@@ -248,19 +256,6 @@ class Map:
 		cells[x][y].setIsObstacle(isObstacle);
 		setChanged();
 		notifyObservers();
-	}
-	
-	public boolean getIsExplored(int x, int y){
-		return cells[x][y].getExplored() && !isOutOfArena(x, y);
-	}
-	
-	public void setIsExplored(int x, int y, boolean explored){
-		if(!isOutOfArena(x, y)){
-			cells[x][y].setExplored(explored);
-			setChanged();
-	        notifyObservers();
-		}
-		return;
 	}
 	
 	public void setProbabilityOfObstacle(int x, int y, int num){

@@ -1,7 +1,7 @@
 #purpose of this module is to ensure robot alignment, position & movement
 
 class Coordinator:
-    def forward(self):
+    def forward(self,steps):
         pass
     
     def turnLeft(self):

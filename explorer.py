@@ -24,7 +24,7 @@ class Explorer:
         #if left is free, turn left, move forward once
         if not sensors.isLeftBlocked():
             robot.turnLeft()                #no need to update map cause next step will update instead.
-            robot.forward(updatemap=True)   #in theory, there should be at least one row of free space. 
+            robot.forward()   #in theory, there should be at least one row of free space. 
             turns += (turns + 3) % 4
             
         #elif if front is free, move forward (up to 3)
@@ -33,11 +33,11 @@ class Explorer:
             steps = min(front_terrain)
             if steps>3: steps = 3           #we do this as we have to check & hug left wall
             
-            robot.forward(steps, updatemap=True)
-            
+            robot.forward(steps)
+
         #if both failed, turn right
         else:
-            robot.turnRight(updatemap=True)
+            robot.turnRight()
             turns += (turns + 3) % 4
 
          
@@ -46,6 +46,9 @@ class Explorer:
         #if turns == 0, it means robot is facing starting orientation.
         #if turns == 0 and curPos = startpos: terminate 
         #else: self.hugleftwall(self, turns = turns, startpos = startpos)
+        
+        
+        #remember to set self.robot.explore = False once exploration complete
         
     def hugleftprep(self):
         """ Prepares robot for left wall hugging algorithm. 
@@ -68,6 +71,12 @@ class Explorer:
         #elif front wall exists, turn right and return true
         elif sensors.isFrontBlocked():
             self.robot.turnRight()
+            
+            #Check for T-blocks
+            left, middle, right = sensors.getFront()
+            if middle==0 and left != 0 and right !=0:
+                self.robot.forward()
+            
             return True
         else:
             if settings.logging:  
@@ -87,16 +96,7 @@ class Explorer:
 		}
 	}
     ^Currently considering creating an Interface class to handle robot-android communications. Subject to change
-    
-    
-    checkFrontExplored() moved to sensors.py
-    checkLeftRangeExplored() moved to sensors.py
-    checkRightRangeExplored() moved to sensors.py
-    leftSideNotFullyExplored() moved to sensors.py
-    rightSideNotFullyExplored() moved to sensors.py
-
-    isOutOfArena() removed. deemed unnecessary
-    isInEndingZone() removed. deemed unnecessary
+ 
     
     ***handleMoveForward() should match explorer.hugleftwall(). 
     
