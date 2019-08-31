@@ -31,9 +31,12 @@ map = Map('sample_maze.txt')
 """code to check explorer.py"""
 robot = Robot(fakeRun=True, fakeMap = map)
 robot.explore()
-map.printmap()
 
+robot.map.printmap()
+print(robot.pos)
+print(robot.orientation)
 
 """code to check map exploration"""
-print(robot.map.explored_percent())
-print(robot.map.is_explored())
+#map.printmap()
+# print(robot.map.explored_percent())
+# print(robot.map.is_explored())

@@ -48,9 +48,6 @@ class Sensors:
                 right += 1
                 x,y = eval(tileRange)                
                 
-        if settings.logging:
-            print("=======Sensors getFront() Output=======")
-            print([left, middle, right])
                 
         return [left, middle, right]
             

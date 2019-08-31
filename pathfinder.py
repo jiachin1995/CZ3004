@@ -10,12 +10,9 @@ class Pathfinder:
     def __init__(self, map):
         self.map = map
     
-        self.resetweights()
-
     
     def bfs(self,pos, end, weight=0, checklist=[]):
-        x = pos[0]
-        y = pos[1]
+        x,y = pos
     
         self.weightmap[y][x] = weight
     
@@ -55,6 +52,9 @@ class Pathfinder:
         2. Afterwards, from start to goal, find shortest path, taking into account turning
     """
     def findpath(self, start=start, goal=goal, waypoint=None):
+        #ensure that weightmap is clean
+        self.resetweights()
+    
         #update weightmap, the goal will have weight 0
         if waypoint:
             self.bfs(waypoint, start)    #search from start to waypoint
@@ -63,9 +63,10 @@ class Pathfinder:
 
         if settings.logging:
             self.printweightmap()
+    
             
         #find fastest pat with least turns. path contains route in coordinates form. directions contains route with {top,left,bottom,right}
-        path, directions = self.findLeastTurns()
+        path, directions = self.findLeastTurns(pos=start)
         
         
         #If there is waypoint, we must now search from waypoint to goal
@@ -82,7 +83,7 @@ class Pathfinder:
             directions += directions2
       
       
-        #unimplemented. Method to optimse movement by adding in diagonal movement
+        """unimplemented. Method to optimse movement by adding in diagonal movement"""
         if settings.optimise_diagonals:
             directions = self.optimise_diagonals(directions)
       
@@ -91,25 +92,19 @@ class Pathfinder:
             print(path)
             print(directions)
             
-        return
+        return [path,directions]
         
         
-    """
-        Follow weights to find shortest path. minimises turning.
-        
-        Orientation refers to where the robot is facing:
-            0. Top
-            1. Right
-            2. Bottom
-            3. Left
-        
-    """
-    def findLeastTurns(self, pos=start, orientation=0, path=[], directions = []):
+
+    def findLeastTurns(self, pos, orientation=0, path=[], directions = []):
+        """
+            Follow weights to find shortest path. Minimises turning.
+          
+        """
         path.append(pos)
         directions.append(orientation)
                 
-        x = pos[0]
-        y = pos[1]
+        x,y = pos
         currentweight = self.weightmap[y][x]
         
         #return if goal is reached
@@ -132,16 +127,17 @@ class Pathfinder:
         
         #order of tiles to search. For example, if facing right, search right, top then bottom.
         turns_dict = {
-                0: [0,1,3], 
-                1: [1,0,2],
-                2: [2,1,3],
-                3: [3,0,2] 
+                0: [0,1,3,2], 
+                1: [1,0,2,3],
+                2: [2,1,3,0],
+                3: [3,0,2,1] 
             }
         turns = turns_dict[orientation]
         
         while turns:
             orient = turns.pop(0)
             nextpos = self.getnextTile(pos, orient)
+                         
             if self.weightmap[nextpos[1]][nextpos[0]] == currentweight -1:
                 break
                 
@@ -167,8 +163,8 @@ class Pathfinder:
     def mark_untraversible(self):
         for y in range(1,19):
             for x in range(1,14):
-                if self.map.getTile([x,y]) == '1': 
-                    #if obstacle is found, mark as untraversible in a 3x3 area around it
+                if self.map.getTile([x,y]) != 0: 
+                    #if obstacle/unexplored is found, mark as untraversible in a 3x3 area around it
                     for i in range(-1,2):
                         self.weightmap[y-1][x+i] = -1
                         self.weightmap[y][x+i] = -1

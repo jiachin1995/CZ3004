@@ -99,6 +99,35 @@ class Map:
 
         return expl_count/totalTiles
         
+    def getUnexploredTile(self):
+        for y in range(0, 20):
+            for x in range(0,15):
+                if self.getTile([x,y]) is None: 
+                    return [x,y]
+        
+    def findSpaceInRow(self, y, toRight=True):
+        """
+        Given horizontal row, find a space that robot can occupy in said row.
+        """
+        
+        if toRight:
+            searchlist = range(0,15)
+        else:
+            searchlist = reversed(range(0,15))
+        
+        #find 3 consecutive columns that are free
+        count = 0
+        for x in searchlist:
+            #if obstacle/unexplored is found, skip this col
+            if self.getTile([x, y+1]) != 0 or self.getTile([x, y]) != 0 or self.getTile([x, y-1]) != 0: 
+                count = 0
+                continue
+            
+            else: 
+                count += 1
+                if count == 3:          #free 3x3 space found. return centre of 3x3
+                    return [x-1, y]
+             
     def getTile(self, pos):             
         """expects [x,y] as arguments"""
         x,y = pos
@@ -113,6 +142,12 @@ class Map:
         for row in self.map:
             for val in row:
                 if val is None: return False
+        return True
+        
+    def is_rowexplored(self, y):
+        for val in self.map[y]:
+            if val is None: return False
+        
         return True
       
       
@@ -250,82 +285,3 @@ class Map:
                 continue
             self.map[pos[1]][pos[0]] = val
 	
-    """(starting zone and ending zone of the maps should be marked for the convenient movement of the robot
-   
-    def isInStartingZone(x, y):
-		return (y < MAP_ROWS) and (y >= MAP_ROWS - ZONE_SIZE) and (x < ZONE_SIZE) and (x >= 0)
-	
-    def isInEndingZone(x, y):
-		return (y < ZONE_SIZE) and (y >= 0) annd (x < MAP_COLUMNS) and (x >= MAP_COLUMNS - ZONE_SIZE)
-    
-    """
-            
-    """          
-    def getObstacleCount() {
-		return this.obstaclesCount;
-	}
-	
-	public Cell[][] getCell() {
-        return cells;
-    }
-
-	
-	public boolean isOutOfArena(int x, int y) {
-        return x < 0 || y < 0 || x >= MAP_COLUMNS || y >= MAP_ROWS;
-    }
-	
-	public boolean getIsObstacle(int x, int y){
-		return isOutOfArena(x, y) || cells[x][y].getIsObstacle();
-	}
-	
-	public void setIsObstacle(int x, int y, boolean isObstacle){
-		if(isOutOfArena(x, y))
-			return;
-		cells[x][y].setIsObstacle(isObstacle);
-		setChanged();
-		notifyObservers();
-	}
-	
-	public void setProbabilityOfObstacle(int x, int y, int num){
-		if(!isOutOfArena(x, y)){
-			int addObstacleCount = cells[x][y].updateCount(num);
-			obstaclesCount += addObstacleCount;
-		}
-		return;
-	}
-	
-	public double checkPercentageExplored(){
-		double gridCells = 0.0;
-		double cellsExplored = 0.0;
-		
-		for (int x = 0; x < MAP_COLUMNS; x++) {
-            for (int y = 0; y < MAP_ROWS; y++) {
-                if (cells[x][y].getExplored()) {
-                    cellsExplored += 1;
-                }
-                gridCells += 1;
-            }
-        }
-		
-		return (cellsExplored/gridCells) * 100;
-	}
-	
-	public void reset(){
-		for (int x = 0; x < MAP_COLUMNS; x++) {
-            for (int y = 0; y < MAP_ROWS; y++) {
-                if (!isInStartingZone(x, y) && !isInEndingZone(x, y))
-                    setIsExplored(x, y, false);
-                else
-                    setIsExplored(x, y, true);
-            }
-        }
-	}
-	
-	public void clearAllObstacle(){
-		for(int x = 0; x < MAP_COLUMNS; x++){
-			for(int y  = 0; y < MAP_ROWS; y++){
-				setIsObstacle(x, y, false);
-			}
-		}
-	}
-	"""

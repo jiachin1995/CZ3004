@@ -13,17 +13,20 @@ class Explorer:
     def start(self):
         if self.state == "Initial": 
             self.hugleftwall()
-        
-        # while not self.robot.map.is_explored(): 
-            # self.spelunk()
-            
-        #TODO-return to start
-        
-    def hugleftwall(self, turns = 0, startpos = None):
-        print("debug")
-        print(self.robot.pos)
-        print(turns)
     
+        while not self.robot.map.is_explored():  
+            self.spelunk()
+           
+        if settings.logging:
+            print("================EXPLORATION DONE=============")
+                
+            print(self.robot.pos)
+            print(self.robot.orientation)
+
+        self.robot.findpath(goal=[1,1])
+        self.robot.faceDirection(0)
+        
+    def hugleftwall(self, turns = 0, startpos = None, endCondition=None):
         #run once when first called
         if startpos == None:
             if self.hugleftprep():
@@ -44,7 +47,13 @@ class Explorer:
             else:
                 front_terrain = self.robot.sensors.getFront()
                 steps = min(front_terrain)      #go as far as possible
-                if steps>3: steps = 3           #we do this as we have to check & hug left wall
+                if steps>3: steps = 3           #we do this as we have to check & hug left wall every 3 steps
+            
+                #check next tiles whether terminate condition is in next few tiles
+                if steps>1:
+                    result = self.hugleftcheckstepstoterminate(turns, startpos, endCondition=endCondition)
+                    if result:
+                        steps = result
             
             self.robot.forward(steps)
 
@@ -52,13 +61,15 @@ class Explorer:
         else:
             self.robot.turnRight()
             turns = (turns + 3) % 4
-         
-        #check terminate or continue
-        #if turns == 0, it means robot is facing starting orientation.
-        if turns == 0 and self.robot.pos == startpos: 
+
+        #check terminate or continue. if turns == 0, it means robot is facing starting orientation.
+        x,y = self.robot.pos
+        if endCondition and eval(endCondition):
+            return
+        elif turns == 0 and [x,y] == startpos: 
             return
         else: 
-            self.hugleftwall(turns = turns, startpos = startpos)
+            self.hugleftwall(turns = turns, startpos = startpos, endCondition=endCondition)
         
     def hugleftprep(self):
         """ Prepares robot for left wall hugging algorithm. 
@@ -79,312 +90,75 @@ class Explorer:
         if self.robot.sensors.isLeftBlocked():
             return True
         #elif front wall exists, turn right and return true
-        elif self.robot.sensors.isFrontBlocked():
-            self.robot.turnRight()
-            
-            #Check for T-blocks
-            left, middle, right = sensors.getFront()
+        elif self.robot.sensors.isFrontBlocked():    
+            #Check for T-blocks, move forward by 1 so that left-back sensor can detect wall
+            left, middle, right = self.robot.sensors.getFront()
             if middle==0 and left != 0 and right !=0:
+                self.robot.turnRight()
                 self.robot.forward()
-            
+            else: self.robot.turnRight()
+        
             return True
         else:
             if settings.logging:  
                 print("Warning: Left Wall Hugging Cancelled. No adjacent walls found.")
             return False
-           
-    """
-    To Kevin: 
-        explorer.py should still call the below methods. 
-            Example: sensors.isFrontBlocked() is similar to checkFrontExplored().
+
+    def hugleftcheckstepstoterminate(self, turns, startpos, endCondition=None):
+        """check next tiles is in terminate condition"""
+        x,y = self.robot.pos
+        tileRange = self.robot.getTileRange()
         
         
-    public void sendAndroid(Grid grid, Robot robot, boolean realRun) {
-		if (realRun) {
-			SocketMgr.getInstance().sendMessage(CALL_ANDROID,
-                    MessageMgr.generateMapDescriptorMsg(grid.generateMapDescriptor1(), grid.generateMapDescriptor2(), robot.getCenterPositionX(), robot.getCenterPositionY(), robot.getDirection()));
-		}
-	}
-    ^Currently considering creating an Interface class to handle robot-android communications. Subject to change
- 
-    
-    ***handleMoveForward() should match explorer.hugleftwall(). 
-    
-    private void handleMoveForward(Grid grid, Robot robot, boolean realRun) {
-		if(trustExplored) {
-			/*// Checks if need to do U-Turn in front
-			if(checkUTurnAhead(grid, robot)) {
-				SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "U");
-				robot.turn(RIGHT);
-				robot.turn(RIGHT);
-				
-				int numberOfSteps = checkFrontExplored(grid, robot);
-				// numberOfSteps: 0
-				if(numberOfSteps == 0) {
-					justTurned = false;
-					System.out.println("Cannot move forward. Obstacles in front");
-				} 
-				// numberOfSteps: 1-9
-				else if(numberOfSteps < 10) {
-					SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "ZM0" + String.valueOf(numberOfSteps));
-					justTurned = false;
-				}
-				// numberOfSteps: 10-17
-				else {
-					SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "ZM" + String.valueOf(numberOfSteps));
-					justTurned = false;
-				}
-				
-				// Update the simulator
-				if(numberOfSteps != 0) {
-					for(int i=0; i<numberOfSteps; i++) {
-						robotMovementString+="M";
-						robot.move();
-					}
-				}
-				
-				// Sense the surrounding
-				robot.sense(realRun, true);
-				
-				// Update Android when there is a move forward
-				sendAndroid(grid, robot, realRun);
-//				handleMoveForward(grid, robot, realRun);
-				
-//				if(robot.isObstacleOnRightSide()) {
-//					SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "L");
-//					robot.turn(LEFT);
-//					robot.sense(realRun, true);
-//				} else if(robot.isObstacleOnLeftSide()) {
-//					SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "R");
-//					robot.turn(RIGHT);
-//					robot.sense(realRun, true);
-//				}
-			}*/ 
-			// No need to do U-Turn in front, go ahead and move forward
-			//else {
-//				if(justTurned) {
-					int numberOfSteps = checkFrontExplored(grid, robot);
-					// numberOfSteps: 0
-					if(numberOfSteps == 0) {
-						System.out.println("Cannot move forward. Obstacles in front");
-					} 
-					// numberOfSteps: 1-9
-					else if(numberOfSteps < 10) {
-						SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "ZM0" + String.valueOf(numberOfSteps));
-					}
-					// numberOfSteps: 10-17
-					else {
-						SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "ZM" + String.valueOf(numberOfSteps));
-					}
-					
-					// Update the simulator
-					if(numberOfSteps != 0) {
-						for(int i=0; i<numberOfSteps; i++) {
-							robotMovementString+="M";
-							robot.move();
-						}
-					}
-					
-					// Sense the surrounding
-					robot.sense(realRun, true);
-					
-					// Update Android when there is a move forward
-					sendAndroid(grid, robot, realRun);
-					
-					// Checks if need to do U-Turn in front
-					/*if(checkUTurnAhead(grid, robot)) {
-						SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "U");
-						robot.turn(RIGHT);
-						robot.turn(RIGHT);
-						robot.sense(realRun, true);
-						
-						numberOfSteps = 0;
-						numberOfSteps = checkFrontExplored(grid, robot);
-						// numberOfSteps: 0
-						if(numberOfSteps == 0) {
-							System.out.println("Cannot move forward. Obstacles in front");
-						} 
-						// numberOfSteps: 1-9
-						else if(numberOfSteps < 10) {
-							SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "ZM0" + String.valueOf(numberOfSteps));
-						}
-						// numberOfSteps: 10-17
-						else {
-							SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "ZM" + String.valueOf(numberOfSteps));
-						}
-						
-						// Update the simulator
-						if(numberOfSteps != 0) {
-							for(int i=0; i<numberOfSteps; i++) {
-								robotMovementString+="M";
-								robot.move();
-							}
-						}
-						
-						// Sense the surrounding
-						robot.sense(realRun, true);
-						
-						// Update Android when there is a move forward
-						sendAndroid(grid, robot, realRun);
-//						handleMoveForward(grid, robot, realRun);
-						
-//						if(robot.isObstacleOnRightSide()) {
-//							SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "L");
-//							robot.turn(LEFT);
-//							robot.sense(realRun, true);
-//						} else if(robot.isObstacleOnLeftSide()) {
-//							SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "R");
-//							robot.turn(RIGHT);
-//							robot.sense(realRun, true);
-//						}
-					}*/
+        """if [x,y] in terminate: return distance"""
+        for i in range(1,3):
+            x,y = eval(tileRange)
 
-					
-//					if(numberOfSteps > 1) {
-//						if(!isInEndingZone(robot.getPositionX(), robot.getPositionY())) {
-//							int zoneNumber = getExploringZone(robot.getPositionX(), robot.getPositionY());
-//							if(zoneNumber == 2 || zoneNumber == 3) {
-//								if(robot.getDirection() != EAST) {
-//									if(rightSideNotFullyExplored(grid, robot)) {
-//										SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "R");
-//										robot.turn(RIGHT);
-//										robot.sense(realRun);
-//										
-//										SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "L");
-//										robot.turn(LEFT);
-//										robot.sense(realRun, true);
-//										
-//									}
-//								}
-//							} else {
-//								if(rightSideNotFullyExplored(grid, robot)) {
-//									SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "R");
-//									robot.turn(RIGHT);
-//									robot.sense(realRun);
-//									
-//									SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "L");
-//									robot.turn(LEFT);
-//									robot.sense(realRun, true);
-//									
-//								}
-//							}
-//						}
-//					}
-				/*} else {
-					// Sensor readings show there is obstacles in front of robot; DO NOT MOVE FORWARD
-					if(robot.getFrontCenter() < 2 || robot.getFrontLeft() < 2 || robot.getFrontRight() < 2) {
-						// Simulator shows there is no obstacle in front
-						if(!robot.isObstacleInfront()) {
-							System.out.println("Sensor readings conflict with simulator. Robot is prevented from moving forward.");
-							System.out.println("Sensor readings: FL: " + robot.getFrontLeft() + ", FC: " + robot.getFrontCenter() + ", FR: " + robot.getFrontRight());
-							// Sense again
-							SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "R");
-							robot.turn(RIGHT);
-							robot.sense(realRun);
-							SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "L");
-							robot.turn(LEFT);
-							robot.sense(realRun, true);
-						}
-					}
-					// Sensor readings show there is NO obstacles in front of robot
-					else {
-						// Simulator shows there is obstacle(s) in front
-						if(robot.isObstacleInfront()) {
-							System.out.println("Sensor readings conflict with simulator. Robot is prevented from moving forward.");
-							System.out.println("Sensor readings: FL: " + robot.getFrontLeft() + ", FC: " + robot.getFrontCenter() + ", FR: " + robot.getFrontRight());
-							
-							// Sense again to correct the front using the left sensors
-							SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "R");
-							robot.turn(RIGHT);
-							robot.sense(realRun);
-							// Sense again to correct the front using the front sensors
-							SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "L");
-							robot.turn(LEFT);
-							robot.sense(realRun, true);
-						}
-						// No conflict move forward
-						else {
-							SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "M1");
-							//robot.setDetectNextMove(false);
-							robotMovementString+="M";
-							System.out.println("----------------------Moving Forward----------------------");
-							System.out.println(robotMovementString);
-							
-							// show the robot move forward on the simulator
-							robot.move();
-							
-							
+            if endCondition and eval(endCondition):
+                return i
+            if turns == 0 and [x,y] == startpos: 
+                return i
+            
+        return None
+       
+    def spelunk(self):
+        self.state = "Spelunking"
+        if settings.logging:  
+              print("New State: " + self.state) 
 
-							// Sense the surrounding
-							robot.sense(realRun, true);
-							
-							
-							// Update Android when there is a move forward
-							sendAndroid(grid, robot, realRun);
-							
-						}
-					}
-				}*/
-			//}
-		} 
-		// I do not trust the area I have already explored. Only move 1 step at a time
-		else {
-			if(uTurnFlagForNoTrustExplored) {
-				uTurnFlagForNoTrustExplored = false;
-			} else {
-				// Sensor readings show there is obstacles in front of robot; DO NOT MOVE FORWARD
-				if(robot.getFrontCenter() < 2 || robot.getFrontLeft() < 2 || robot.getFrontRight() < 2) {
-					// Simulator shows there is no obstacle in front
-					if(!robot.isObstacleInfront()) {
-						/*System.out.println("Sensor readings conflict with simulator. Robot is prevented from moving forward.");
-						System.out.println("Sensor readings: FL: " + robot.getFrontLeft() + ", FC: " + robot.getFrontCenter() + ", FR: " + robot.getFrontRight());*/
-						// Sense again
-						SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "R");
-						robot.turn(RIGHT);
-						robot.sense(realRun);
-						SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "L");
-						robot.turn(LEFT);
-						robot.sense(realRun, true);
-					}
-				}
-				// Sensor readings show there is NO obstacles in front of robot
-				else {
-					// Simulator shows there is obstacle(s) in front
-					if(robot.isObstacleInfront()) {
-						/*System.out.println("Sensor readings conflict with simulator. Robot is prevented from moving forward.");
-						System.out.println("Sensor readings: FL: " + robot.getFrontLeft() + ", FC: " + robot.getFrontCenter() + ", FR: " + robot.getFrontRight());*/
-						
-						// Sense again to correct the front using the left sensors
-						SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "R");
-						robot.turn(RIGHT);
-						robot.sense(realRun);
-						// Sense again to correct the front using the front sensors
-						SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "L");
-						robot.turn(LEFT);
-						robot.sense(realRun, true);
-					}
-					// No conflict move forward
-					else {
-						SocketMgr.getInstance().sendMessage(CALL_ARDUINO, "M1");
-						//robot.setDetectNextMove(false);
-						robotMovementString+="M";
-						/*System.out.println("----------------------Moving Forward----------------------");
-						System.out.println(robotMovementString);*/
-						
-						// show the robot move forward on the simulator
-						robot.move();
-						
-						// Sense the surrounding
-						robot.sense(realRun, true);
-						
-						// Update Android when there is a move forward
-						sendAndroid(grid, robot, realRun);
-						
-						
-					}
-				}
-			}
-		}		
-	}
-        """
+        self.spelunkprep()        
+        self._spelunking()
+    
+    def _spelunking(self):
+        if not self.robot.sensors.isFrontBlocked():
+            front_terrain = self.robot.sensors.getFront()
+            steps = min(front_terrain)      #go as far as possible
+            
+            self.robot.forward(steps)
+            
+        else:
+            endCondition = "y == " + str(self.robot.pos[1]) + " and not [x,y] == " + str(self.robot.pos)
+            self.hugleftwall(endCondition=endCondition) #terminate condition: same row & not startpos
+
+
+    def spelunkprep(self):
+        x,y = self.robot.map.getUnexploredTile()
+        
+        print("UNEXPLORED TILE")
+        print([x,y])
+        
+        if self.robot.pos[1] != y:
+            #move to unexplored Tile's y-axis
+            if self.robot.pos[0]  <8:
+                toRight=True
+            else:
+                toRight=False
+            goal = self.robot.map.findSpaceInRow(y+1,toRight=toRight)     
+            
+            self.robot.findpath(goal=goal, rowgoal = goal[1])
+        
+        if x > self.robot.pos[0]:
+            self.robot.faceDirection(1)
+        else:
+            self.robot.faceDirection(3)
             

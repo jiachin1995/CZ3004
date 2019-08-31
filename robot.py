@@ -2,12 +2,20 @@ from sensors import Sensors
 from map import Map
 from explorer import Explorer
 from coordinator import Coordinator
+from pathfinder import Pathfinder
 
 import settings
 
 class Robot:
     """
     Robot class. Represents the virtual robot.
+         
+    Orientation refers to where the robot is facing:
+        0. Top
+        1. Right
+        2. Bottom
+        3. Left
+ 
          
     Attributes:
         pos: a 15x20 array. Contains None, 0 or 1 as values.
@@ -23,6 +31,7 @@ class Robot:
     map = Map()
     sensors = Sensors()
     coordinator = Coordinator()
+
     
     def __init__(self, fakeRun= False, fakeMap=None, **kwargs):  
         """ Constructor. Accepts attributes as kwargs.
@@ -47,13 +56,15 @@ class Robot:
             
         #update map
         self.updatemap()
+        
+        #initialise pathfinder
+        self.pathfinder = Pathfinder(self.map)
     
             
     def explore(self):        
         dora  = Explorer(self)
         dora.start()
-        
-        self.map.printmap()
+
     
     def forward(self, steps = 1, updatemap=False):
         self.coordinator.forward(steps)
@@ -139,6 +150,81 @@ class Robot:
     
         return tileRange_vert
   
+    def faceDirection(self, orient):
+        if orient == self.orientation:
+            return
+        elif orient == (self.orientation + 1) % 4:
+            self.turnRight()
+        elif orient == (self.orientation + 3) % 4:
+            self.turnLeft()
+        else:
+            self.turnRight()
+            self.turnRight()
+  
+    def findpath(self, start=None, goal=[13,18], move=True, rowgoal=None):
+        if start is None:
+            start = self.pos
+        path,directions = self.pathfinder.findpath(start, goal)
+        
+        if move:
+            instructions = self.readDirections(directions)
+            
+            for i in instructions:
+                if rowgoal and self.pos[1] == rowgoal: break
+                exec(i)
+            
+        if settings.logging:
+            print("Movement: findpath() to " + str(goal)+ " with rowgoal " + str(rowgoal))
+            
+            
+        return [path, directions]
+  
+    def readDirections(self, directions):
+        prev = self.orientation
+        steps = 0
+        
+        instructions=[]
+        
+        for d in directions:
+            if d == prev:
+                steps += 1
+                prev = d
+            elif d == (prev+1) % 4:     #turn right
+                if steps >0:
+                    instructions.append("self.forward("+ str(steps) +")")
+                instructions.append("self.turnRight()")
+                instructions.append("self.forward()")
+                
+                steps=0
+                
+            elif d == (prev+2) % 4:     #U-turn
+                if steps >0:
+                    instructions.append("self.forward("+ str(steps) +")")
+                instructions.append("self.turnRight()")
+                instructions.append("self.turnRight()")
+                instructions.append("self.forward()")
+                
+                steps=0
+            else:                       #turn right
+                if steps >0:
+                    instructions.append("self.forward("+ str(steps) +")")
+                instructions.append("self.turnLeft()")
+                instructions.append("self.forward()")
+                
+                steps=0
+            prev = d
+            
+                
+        if steps >0:
+            instructions.append("self.forward("+ str(steps) +")")     
+        
+        if settings.logging:
+            print("=======Read Instructions Output========")
+            print(instructions)
+                     
+        return instructions
+        
+  
     def setAttributes(self, **kwargs):
         # kwargs is a dict of the keyword args passed to the function. Expected to contain robot attributes
         for key, value in kwargs:
@@ -217,9 +303,3 @@ class Robot:
      
         if self.map.is_explored(): self.explore = False
             
-        if settings.logging:
-            print("=======Robot updatemap()=======")
-            print(freeTiles)
-            print(valuelist)
-        
-        
