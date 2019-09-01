@@ -126,7 +126,12 @@ class Map:
             else: 
                 count += 1
                 if count == 3:          #free 3x3 space found. return centre of 3x3
-                    return [x-1, y]
+                    if toRight:
+                        x = x-1
+                    else:
+                        x = x+1
+                        
+                    return [x, y]
              
     def getTile(self, pos):             
         """expects [x,y] as arguments"""

@@ -29,7 +29,7 @@ map = Map('sample_maze.txt')
 # robot.map.printmap()
 
 """code to check explorer.py"""
-robot = Robot(fakeRun=True, fakeMap = map)
+robot = Robot(fakeRun=True)
 robot.explore()
 
 robot.map.printmap()

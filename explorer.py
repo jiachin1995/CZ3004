@@ -144,9 +144,11 @@ class Explorer:
     def spelunkprep(self):
         x,y = self.robot.map.getUnexploredTile()
         
-        print("UNEXPLORED TILE")
-        print([x,y])
-        
+        if settings.logging:
+            print("UNEXPLORED TILE")
+            print([x,y])
+            
+            
         if self.robot.pos[1] != y:
             #move to unexplored Tile's y-axis
             if self.robot.pos[0]  <8:

@@ -137,7 +137,7 @@ class Pathfinder:
         while turns:
             orient = turns.pop(0)
             nextpos = self.getnextTile(pos, orient)
-                         
+
             if self.weightmap[nextpos[1]][nextpos[0]] == currentweight -1:
                 break
                 
