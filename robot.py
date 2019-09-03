@@ -61,8 +61,8 @@ class Robot:
         self.pathfinder = Pathfinder(self.map)
     
             
-    def explore(self):        
-        dora  = Explorer(self)
+    def explore(self, timer = None):        
+        dora  = Explorer(self, timer)
         dora.start()
 
     

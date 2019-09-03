@@ -1,25 +1,45 @@
+import time
+
 import settings
 
 class Explorer:
     robot = None
     state = "Initial"
 
-    def __init__(self, robot):
+    
+    startTime = None
+    timer = 500
+    timeToReturn = 60       #buffer time to return to start, in seconds
+
+    def __init__(self, robot, timer=None):
         self.robot = robot
         if settings.logging:  
             print("====== Starting Explorer =======")
             print("New State: " + self.state)
     
+        if timer:
+            self.setTime(timer)
+    
     def start(self):
+        self.startTime = time.time()
+    
         if self.state == "Initial": 
             self.hugleftwall()
     
         while not self.robot.map.is_explored():  
+            if self.noTimeLeft():
+                break
             self.spelunk()
+        
+        
+        if self.noTimeLeft():
+            self.state = "Out of time. Returning to start"
+        else:
+            self.state = "Exploration done. Returning to start"
            
         if settings.logging:
-            print("================EXPLORATION DONE=============")
-                
+            print(self.state)
+            print("Remaining Time left: " + str(self.getRemainingTime()))
             print(self.robot.pos)
             print(self.robot.orientation)
 
@@ -27,6 +47,10 @@ class Explorer:
         self.robot.faceDirection(0)
         
     def hugleftwall(self, turns = 0, startpos = None, endCondition=None):
+        #return if out of time
+        if self.noTimeLeft():
+            return
+    
         #run once when first called
         if startpos == None:
             if self.hugleftprep():
@@ -120,6 +144,24 @@ class Explorer:
                 return i
             
         return None
+       
+    def getRemainingTime(self):
+        now = time.time()
+        return (self.startTime+ self.timer) - now
+       
+    def noTimeLeft(self):
+        now = time.time()
+        if now > (self.startTime + self.timer - self.timeToReturn):
+            return True
+        else:
+            return False
+       
+    def setTime(self, timer):
+        if timer < self.timeToReturn:
+            raise Exception("Time given less than return time. Give more time for exploration")
+        
+        self.timer = timer        
+
        
     def spelunk(self):
         self.state = "Spelunking"
