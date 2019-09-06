@@ -10,8 +10,9 @@ class Explorer:
     startTime = None
     timer = 500
     timeToReturn = 60       #buffer time to return to start, in seconds
+    exploreLimit = 1.0
 
-    def __init__(self, robot, timer=None):
+    def __init__(self, robot, timer=None, exploreLimit = None):
         self.robot = robot
         if settings.logging:  
             print("====== Starting Explorer =======")
@@ -19,6 +20,9 @@ class Explorer:
     
         if timer:
             self.setTime(timer)
+            
+        if exploreLimit:
+            self.setExploreLimit(exploreLimit)
     
     def start(self):
         self.startTime = time.time()
@@ -26,7 +30,7 @@ class Explorer:
         if self.state == "Initial": 
             self.hugleftwall()
     
-        while not self.robot.map.is_explored():  
+        while not self.exploreDone():  
             if self.noTimeLeft():
                 break
             self.spelunk()
@@ -49,6 +53,10 @@ class Explorer:
     def hugleftwall(self, turns = 0, startpos = None, endCondition=None):
         #return if out of time
         if self.noTimeLeft():
+            return
+            
+        #return if explore limit reached:
+        if self.exploreDone():
             return
     
         #run once when first called
@@ -162,6 +170,14 @@ class Explorer:
         
         self.timer = timer        
 
+    def exploreDone(self):
+        if self.robot.map.is_explored() >= self.exploreLimit:
+            return True
+        else:
+            return False
+       
+    def setExploreLimit(self, exploreLimit):
+        self.exploreLimit = exploreLimit
        
     def spelunk(self):
         self.state = "Spelunking"

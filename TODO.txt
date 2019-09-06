@@ -5,3 +5,8 @@ Map.py:
 
 Explorer.py:
 	1.multithreading
+
+
+COVERAGE LIMITED
+STEPS PER SECONDS
+Extension

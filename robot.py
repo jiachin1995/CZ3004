@@ -33,7 +33,7 @@ class Robot:
     coordinator = Coordinator()
 
     
-    def __init__(self, fakeRun= False, fakeMap=None, **kwargs):  
+    def __init__(self, fakeRun= False, fakeMap=None, stepsPerSec=1, **kwargs):  
         """ Constructor. Accepts attributes as kwargs.
             
         Args:
@@ -53,6 +53,9 @@ class Robot:
         if fakeRun:
             from sensors_fake import Sensors
             self.sensors = Sensors(self, fakeMap)    #fake sensors for simulation
+            self.coordinator.fakeRun = True
+            self.coordinator.stepsPerSec = stepsPerSec
+            
             
         #update map
         self.updatemap()
