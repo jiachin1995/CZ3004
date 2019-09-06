@@ -164,10 +164,10 @@ class Robot:
             self.turnRight()
             self.turnRight()
   
-    def findpath(self, start=None, goal=[13,18], move=True, rowgoal=None):
+    def findpath(self, start=None, goal=[13,18], waypoint=None, move=True, rowgoal=None):
         if start is None:
             start = self.pos
-        path,directions = self.pathfinder.findpath(start, goal)
+        path,directions = self.pathfinder.findpath(start, goal, waypoint)
         
         if move:
             instructions = self.readDirections(directions)

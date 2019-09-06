@@ -243,17 +243,54 @@ class Map:
         
         return
     
-    def printmap(self):
+    def printmap(self, robot = None):
         """Prints map. Bottom left corner is [0,0] & contains start corner. Top right is [14,19] & contains goal"""
         print("======== VirtualMap ========")
         
-        for row in reversed(self.map):
-            for val in row:
-                if val is None:
+        if robot:
+            self.printmapwithRobot(robot)
+        else:
+        
+            for row in reversed(self.map):
+                for val in row:
+                    if val is None:
+                        print(" ?", end ='')
+                    else:
+                        print(" "+str(val), end ='')
+                print("\n")
+    
+    def printmapwithRobot(self, robot):
+        orient_dict = {
+            0: '^',
+            1: '>',
+            2: 'V',
+            3: '<'
+        }
+        orient = orient_dict[robot.orientation]
+        
+        x,y = robot.pos
+        pos_list = [
+            [x-1,y-1],
+            [x-1,y],
+            [x-1,y+1],
+            [x,y-1],
+            [x,y],
+            [x,y+1],
+            [x+1,y-1],
+            [x+1,y],
+            [x+1,y+1],
+        ]
+    
+        for y in reversed(range(20)):
+            for x in range(15):
+                if [x,y] in pos_list:
+                    print(" "+orient, end ='')
+                elif self.getTile([x,y]) is None:
                     print(" ?", end ='')
                 else:
-                    print(" "+str(val), end ='')
+                    print(" "+str(self.getTile([x,y])), end ='')
             print("\n")
+
     
     
     def save(self, filepath):

@@ -1,0 +1,4 @@
+explored/unexplored bit strings 
+0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+map contents bit strings 
+0x0000000000200400080010000070000000000000007e00fc0000000100000100000020000000
