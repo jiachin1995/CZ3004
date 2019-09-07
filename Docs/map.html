@@ -46,6 +46,7 @@ Start coordinates is [1,1]. End is [13,18]</p>
 <li><p>None - unexplored</p></li>
 <li><p>0 - explored, no obstacle</p></li>
 <li><p>1 - explored, has obstacle</p></li>
+<li><p>-1 - Error. Out of range</p></li>
 </ol>
 </dd>
 </dl>
@@ -68,13 +69,31 @@ Start coordinates is [1,1]. End is [13,18]</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="map.Map.convert">
+<code class="sig-name descname">convert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>matched Code === generateMapDescriptor()</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="map.Map.findSpaceInRow">
+<code class="sig-name descname">findSpaceInRow</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">toRight=True</em><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.findSpaceInRow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given horizontal row, find a space that robot can occupy in said row.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="map.Map.getTile">
+<code class="sig-name descname">getTile</code><span class="sig-paren">(</span><em class="sig-param">pos</em><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.getTile" title="Permalink to this definition">¶</a></dt>
+<dd><p>expects [x,y] as arguments</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="map.Map.load">
 <code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param">loadobject</em><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads map. Accepts 3 types of inputs.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>loadobject</strong> – Accepts 3 types of inputs. String, List of length 2, 15x20 List</p></li>
+<li><p><strong>loadobject</strong> – Accepts 3 types of inputs. String, List of length 2, 15x20 List. &lt;see below&gt;</p></li>
 <li><p><strong>loadobject-String</strong> – Name of txt file to load. Example: “maze.txt”.</p></li>
 <li><p><strong>loadobject-List_of_length_2</strong> – Assumes list contains 2 bit/byte strings. [exploration_bits, exploration_contents]. Accepts both bits &amp; bytes.</p></li>
 <li><p><strong>loadobject-15x20_List</strong> – Assumes list to contain map. Sets map=loadobject. List should be of size [20][15].</p></li>
@@ -88,8 +107,20 @@ Start coordinates is [1,1]. End is [13,18]</p>
 
 <dl class="method">
 <dt id="map.Map.printmap">
-<code class="sig-name descname">printmap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.printmap" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">printmap</code><span class="sig-paren">(</span><em class="sig-param">robot=None</em><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.printmap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints map. Bottom left corner is [0,0] &amp; contains start corner. Top right is [14,19] &amp; contains goal</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="map.Map.setTile">
+<code class="sig-name descname">setTile</code><span class="sig-paren">(</span><em class="sig-param">pos</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.setTile" title="Permalink to this definition">¶</a></dt>
+<dd><p>expects [x,y] and value as arguments</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="map.Map.setTiles">
+<code class="sig-name descname">setTiles</code><span class="sig-paren">(</span><em class="sig-param">poslist</em>, <em class="sig-param">valuelist</em><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.setTiles" title="Permalink to this definition">¶</a></dt>
+<dd><p>expects list of [x,y] and value as arguments</p>
 </dd></dl>
 
 </dd></dl>
@@ -127,6 +158,8 @@ Start coordinates is [1,1]. End is [13,18]</p>
 <li class="toctree-l1"><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pathfinder.html">Pathfinder</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pathfinder.html#indices-and-tables">Indices and tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="robot.html">Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="robot.html#indices-and-tables">Indices and tables</a></li>
 </ul>
 
 <div class="relations">

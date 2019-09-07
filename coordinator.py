@@ -2,7 +2,7 @@
 
 class Coordinator:
     fakeRun = False
-    stepsPerSec = 1
+    stepsPerSec = 2
 
     def forward(self,steps):
         if self.fakeRun:

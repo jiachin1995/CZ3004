@@ -64,8 +64,8 @@ class Robot:
         self.pathfinder = Pathfinder(self.map)
     
             
-    def explore(self, timer = None):        
-        dora  = Explorer(self, timer)
+    def explore(self, timer = None, exploreLimit = None):        
+        dora  = Explorer(self, timer, exploreLimit)
         dora.start()
 
     
@@ -91,7 +91,8 @@ class Robot:
     def getBaseLine(self):
         """
         baseline refers to the left,middle & right (from the robot's perspective) tiles 
-            immediately in front of robot and the 3x3 space the robot is occupying. 
+        immediately in front of robot and the 3x3 space the robot is occupying. 
+        
         baseline_dict contains the tiles to search. For example, if facing right, search top, middle & bottom tiles
         """
         x,y =self.pos        

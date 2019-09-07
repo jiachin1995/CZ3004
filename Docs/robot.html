@@ -1,0 +1,196 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>Robot &#8212; CZ3004 MDP 1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Pathfinder" href="pathfinder.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="robot">
+<h1>Robot<a class="headerlink" href="#robot" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="robot.Robot">
+<em class="property">class </em><code class="sig-prename descclassname">robot.</code><code class="sig-name descname">Robot</code><span class="sig-paren">(</span><em class="sig-param">fakeRun=False</em>, <em class="sig-param">fakeMap=None</em>, <em class="sig-param">stepsPerSec=1</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Robot class. Represents the virtual robot.</p>
+<dl class="simple">
+<dt>Orientation refers to where the robot is facing:</dt><dd><ol class="arabic simple" start="0">
+<li><p>Top</p></li>
+<li><p>Right</p></li>
+<li><p>Bottom</p></li>
+<li><p>Left</p></li>
+</ol>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="robot.Robot.pos">
+<code class="sig-name descname">pos</code><a class="headerlink" href="#robot.Robot.pos" title="Permalink to this definition">¶</a></dt>
+<dd><p>a 15x20 array. Contains None, 0 or 1 as values.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="robot.Robot.orientation">
+<code class="sig-name descname">orientation</code><a class="headerlink" href="#robot.Robot.orientation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Centre of 3x3 start area. Default = [1,1]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="robot.Robot.explore">
+<code class="sig-name descname">explore</code><a class="headerlink" href="#robot.Robot.explore" title="Permalink to this definition">¶</a></dt>
+<dd><p>if True, update map after every movement</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="robot.Robot.map">
+<code class="sig-name descname">map</code><a class="headerlink" href="#robot.Robot.map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map object. Refer to Map.py</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="robot.Robot.sensors">
+<code class="sig-name descname">sensors</code><a class="headerlink" href="#robot.Robot.sensors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sensors object. Refer to sensors.py</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="robot.Robot.coordinator">
+<code class="sig-name descname">coordinator</code><a class="headerlink" href="#robot.Robot.coordinator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Coordinator object. Refer to coordinator.py</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.Robot.getBaseLine">
+<code class="sig-name descname">getBaseLine</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.getBaseLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>baseline refers to the left,middle &amp; right (from the robot’s perspective) tiles
+immediately in front of robot and the 3x3 space the robot is occupying.</p>
+<p>baseline_dict contains the tiles to search. For example, if facing right, search top, middle &amp; bottom tiles</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.Robot.getBaseLineVert">
+<code class="sig-name descname">getBaseLineVert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.getBaseLineVert" title="Permalink to this definition">¶</a></dt>
+<dd><p>baseline_vert refers to baseline, but vertical. Refer to getBaseLine() above</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.Robot.getTileRange">
+<code class="sig-name descname">getTileRange</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.getTileRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>direction of tiles to search. if facing right, search range of tiles right of robot.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.Robot.getTileRangeVert">
+<code class="sig-name descname">getTileRangeVert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.getTileRangeVert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as getTileRange() above, but search range of tiles to left of robot</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">CZ3004 MDP</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="map.html">Map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="map.html#indices-and-tables">Indices and tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pathfinder.html">Pathfinder</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pathfinder.html#indices-and-tables">Indices and tables</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="pathfinder.html" title="previous chapter">Pathfinder</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, CHING JIA CHIN.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/robot.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

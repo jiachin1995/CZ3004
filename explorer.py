@@ -6,7 +6,6 @@ class Explorer:
     robot = None
     state = "Initial"
 
-    
     startTime = None
     timer = 500
     timeToReturn = 60       #buffer time to return to start, in seconds
@@ -171,7 +170,7 @@ class Explorer:
         self.timer = timer        
 
     def exploreDone(self):
-        if self.robot.map.is_explored() >= self.exploreLimit:
+        if self.robot.map.explored_percent() >= self.exploreLimit:
             return True
         else:
             return False
