@@ -15,7 +15,7 @@ robot = Robot(fakeRun=True, fakeMap = map)
 
 def mapGUI(robot, termCondition):
     while not eval(termCondition):
-        time.sleep(1)
+        time.sleep(0.5)
         robot.map.printmap(robot)
         
 
