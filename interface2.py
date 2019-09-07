@@ -1,372 +1,290 @@
-import time
 from tkinter import *
-from tkinter.filedialog import askopenfilename
-from PIL import Image
-from PIL import ImageTk
-import numpy as np
-import tkinter.messagebox
-import tkinter.simpledialog
-import os
-import math
+from tkinter import ttk
+from tkinter import font 
 
-master = Tk()
-master.wm_title("My Grid World")
-
-result = tkinter.messagebox.askyesno("Welcome to Grid World","Do you want to create a new map?")
-
-grid = []
-path = os.getcwd() + "/images/"
-
-triangle_size = 0.3
-text_offset = 17
-cell_score_min = -0.2
-cell_score_max = 0.2
-Width = 25
-actions = ["up", "left", "down", "right"]
-
-if not result:
-    filename = askopenfilename(title = "Select map file")
-    print(filename)
-    if len(filename) == 0:
-        tkinter.messagebox.showwarning('Error', 'No map selected!')
-        quit()
-    ins = open(filename, "r")
-    for line in ins:
-        number_strings = line.split()
-        numbers = [int(n) for n in number_strings]
-        grid.append(numbers)
-    (x, y) = (len(grid[0]), len(grid))
-    board = Canvas(master, width=x*Width, height=y*Width)
-else:
-    x_str = tkinter.simpledialog.askstring('Size', 'Enter grid size')
-    if x_str == None:
-        tkinter.messagebox.showwarning('Error', 'No size found!')
-        quit()
-    x = int(x_str)
-    (x, y) = (15, 20)
-    path = os.getcwd() + "/images/"
-    wall_pic = ImageTk.PhotoImage(file=path+'wall.png')
-    diamond_pic = ImageTk.PhotoImage(file=path+'diamond.png')
-    fire_pic = ImageTk.PhotoImage(file=path+'fire.png')
-    robot_pic = ImageTk.PhotoImage(file=path+'robot.png')
-
-    board = Canvas(master, width = 500, height=500)
-    start_count = 0
-    goal_count = 0
-
-    for i in range(x):
-        for j in range(y):
-            board.create_rectangle(i*Width, j*Width, (i+1)*Width, (j+1)*Width, fill="white", width=0.5)
-
-            """i*Width, j*Width, (i+1)*Width, (j+1)*Width, fill="white", width=1"""
-                                   
-
-    board.pack(side=LEFT)
-    grid = [[0 for row in range(x)] for col in range(y)]
-    '''[0 for row in range(x)] for col in range(y)'''
-    item_grid = [[0 for row in grid[0]] for col in grid]
-
-    var = StringVar(master)
-    var.set("Select item")
-
-    option = OptionMenu(master, var, "start", "walls", "goal", "pit")
-    option.pack()
-
-    robot = 0
-    def create_item(event):
-        global robot, start_count, goal_count
-        x, y = event.x//75, event.y//75
-        if item_grid[y][x] == 0:
-            if var.get() == "walls":
-                item_grid[y][x] = board.create_image(x*Width+35, y*Width+35, image=wall_pic)
-                #x*Width+35, y*Width+35, image=wall_pic
-                grid[y][x] = 1
-            elif var.get() == "start":
-                item_grid[y][x] = board.create_image(x*Width+35, y*Width+35, image=robot_pic)
-                # item_grid[y][x] = board.create_rectangle(x*Width+Width*4/10, y*Width+Width*4/10, x*Width+Width*6/10, y*Width+Width*6/10, fill="blue", width=1, tag="me")
-                grid[y][x] = 2
-                start_count+=1
-            elif var.get() == "goal":
-                item_grid[y][x] = board.create_image(x*Width+35, y*Width+35, image=diamond_pic)
-                grid[y][x] = 3
-                goal_count+=1
-            elif var.get() == "pit":
-                item_grid[y][x] = board.create_image(x*Width+35, y*Width+35, image=fire_pic)
-                grid[y][x] = 4
-
-    board.bind('<Button-1>', create_item)
-
-    def delete_item(event):
-        global start_count, goal_count
-        x, y = event.x//75, event.y//75
-        if item_grid[y][x] != 0:
-            board.delete(item_grid[y][x])
-            item_grid[y][x] = 0
-            grid[y][x] = 0
-            if var.get == "start":
-                start_count-=1
-            elif var.get() == "goal":
-                goal_count-=1
-
-    board.bind('<Button-3>', delete_item)
-    Label(text="Note: Please close \nthis window after finished.",font = "Verdana 12").pack(side=BOTTOM)
-    master.mainloop()
-    master = Tk()
-    board = Canvas(master, width=x*Width, height=y*Width)
-
-    if start_count < 1:
-        tkinter.messagebox.showwarning('Error', 'No start found!')
-        quit()
-    elif goal_count <1:
-        tkinter.messagebox.showwarning('Error', 'No goal found!')
-        quit()
-
-print((x, y))
-walls = []
-start = ()
-specials = []
-pit = []
-
-for i in range(y):
-    for j in range(x):
-        if grid[i][j] == 1:
-            walls.append((j, i))
-        if grid[i][j] == 2:
-            start = (j, i)
-        if grid[i][j] == 3:
-            specials.append((j, i, "green", 1))
-            goal = (j, i)
-        if grid[i][j] == 4:
-            specials.append((j, i, "red", -1))
-            pit.append((j, i))
+from copy import deepcopy
+import time
+import handler
+import config
 
 
-player = start
-tri_objects = {}
-text_objects = {}
-flag = True
-restart = False
+class Simulator:
+    def __init__(self, title="Arena Simulator"):
 
-path = os.getcwd() + "/images/"
-wall_pic = ImageTk.PhotoImage(file=path+'wall.png')
-diamond_pic = ImageTk.PhotoImage(file=path+'diamond.png')
-fire_pic = ImageTk.PhotoImage(file=path+'fire.png')
-robot_pic = ImageTk.PhotoImage(file=path+'robot.png')
+        self.handler = handler.Handler(self)
+        self.algo    = self.handler.algo
+        self.map     = self.handler.map
+        
+        self.master  = Tk()
+        self.master.title(title)
+        t = Toplevel(self.master)
+
+        t.title("Control Panel")
+        t.geometry('450x600+1050+28')
+        widgetFont = font.Font(family='Times', size=12, weight='bold')
+        ttk.Style().configure("TButton", font= widgetFont, padding = 6, relief = "flat", background = "#ccc")
+        ttk.Style().configure("TLabel", font=widgetFont)
+
+        self.control_pane = ttk.Frame(t, padding=(24, 20))
+        self.control_pane.grid(column=1, row=0, sticky=(N, S, E, W))
+        
+        self.map_pane = ttk.Frame(self.master, borderwidth=0, relief="solid")
+        self.map_pane.grid(column=0, row=0, sticky=(N, S, E, W))
+        self.map_widget     = [[None]*self.map.length]*self.map.width
+
+        self.map_load_start                 = PhotoImage(file=config.icon_path['start'])
+        self.map_start                      = self.map_load_start.subsample(config.icon_path['size'])
+
+        self.map_load_goal                  = PhotoImage(file=config.icon_path['end'])
+        self.map_goal                       = self.map_load_goal.subsample(config.icon_path['size'])
+        
+        self.map_load_free                  = PhotoImage(file=config.icon_path['free'])
+        self.map_free                       = self.map_load_free.subsample(config.icon_path['size'])
+
+        self.map_load_free_explored         = PhotoImage(file=config.icon_path['explored_free'])
+        self.map_free_explored              = self.map_load_free_explored.subsample(config.icon_path['size'])
+
+        self.map_load_obstacle              = PhotoImage(file=config.icon_path['obstacle'])
+        self.map_obstacle                   = self.map_load_obstacle.subsample(config.icon_path['size'])
+
+        self.map_load_obstacle_explored     = PhotoImage(file=config.icon_path['explored_obstacle'])
+        self.map_obstacle_explored          = self.map_load_obstacle_explored.subsample(config.icon_path['size'])
+
+        self.robot_size     = config.robot_parameters['size']
+        self.robot_n = []
+        self.robot_s = []
+        self.robot_e = []
+        self.robot_w = []
+        for i in range(self.robot_size**2):
+            self.robot_n += [PhotoImage(file=config.icon_path['north'][i]).subsample(config.icon_path['size'])]
+            self.robot_s += [PhotoImage(file=config.icon_path['south'][i]).subsample(config.icon_path['size'])]
+            self.robot_w += [PhotoImage(file=config.icon_path['west'][i]).subsample(config.icon_path['size'])]
+            self.robot_e += [PhotoImage(file=config.icon_path['east'][i]).subsample(config.icon_path['size'])]
+        
+        self.current_map      = deepcopy(self.map.get_map())
+        self.robot_location  = self.map.get_robot_location()
+        self.robot_direction = self.map.get_robot_direction()
+        self.update_map(init=True)
+        
+        control_pane_window = ttk.Panedwindow(self.control_pane, orient=VERTICAL)
+        control_pane_window.grid(column=0, row=0, sticky=(N, S, E, W))
+
+        condition_pane = ttk.Labelframe(control_pane_window, text='Special Conditions')
+        control_pane_window.add(condition_pane, weight=4)
+        
+        action_pane = ttk.Labelframe(control_pane_window, text='Action')
+        control_pane_window.add(action_pane, weight=1)
+
+        #Control Panel Control Special Conditions
+        #Speed in Steps/Second
+        speed_label = ttk.Label(condition_pane, text = "Speed(in Steps Per Second):")
+        speed_label.grid(column=0, row=0, sticky=W)
+        self.speed_status = False
+        self.speed_value = IntVar()
+        self.speed = ttk.Combobox(condition_pane, textvariable = self.speed_value)
+        self.speed['values'] = (1,2,3,4,5)
+        self.speed.grid(column = 0, row = 1, pady =(0,10))
+        
+        
+        #Coverage Figure in %
+        coverage_label = ttk.Label(condition_pane, text="Coverage Figure(%):")
+        coverage_label.grid(column=0, row=2, sticky=W)
+        self.coverage_status = False
+        self.coverage_value = IntVar()
+        self.coverage = ttk.Combobox(condition_pane, textvariable = self.coverage_value)
+        self.coverage['values'] = (10,20,30,40,50,60,70,80,90,100)
+        self.coverage.grid(column=0, row=3, pady=(0, 10))
+        
+        #Time Limit in Second 
+        time_label = ttk.Label(condition_pane, text="Time Limit(s):")
+        time_label.grid(column=0, row=4, sticky=W)
+        self.time_status = False
+        self.time_value = StringVar()
+        self.time = ttk.Combobox(condition_pane, textvariable = self.time_value)
+        self.time['values'] = ("0:05","0:40","1:00","1:20","1:40","2:00","2:20","2:40","3:00")
+        self.time.grid(column=0, row=5, pady=(0, 10))
 
 
-def create_triangle(i, j, action):
-    if action == actions[0]:
-        return (board.create_polygon((i+0.5-triangle_size)*Width, (j+triangle_size)*Width,
-                                    (i+0.5+triangle_size)*Width, (j+triangle_size)*Width,
-                                    (i+0.5)*Width, j*Width,
-                                    fill="white", width=1),
-                board.create_text((i+0.5)*Width, j*Width+text_offset, text=str(Width), fill="white"))
-    elif action == actions[2]:
-        return (board.create_polygon((i+0.5-triangle_size)*Width, (j+1-triangle_size)*Width,
-                                    (i+0.5+triangle_size)*Width, (j+1-triangle_size)*Width,
-                                    (i+0.5)*Width, (j+1)*Width,
-                                    fill="white", width=1),
-                board.create_text((i+0.5)*Width, (j+1)*Width-text_offset, text=str(Width), fill="white"))
-    elif action == actions[1]:
-        return (board.create_polygon((i+triangle_size)*Width, (j+0.5-triangle_size)*Width,
-                                    (i+triangle_size)*Width, (j+0.5+triangle_size)*Width,
-                                    i*Width, (j+0.5)*Width,
-                                    fill="white", width=1),
-                board.create_text(i*Width+text_offset, (j+0.5)*Width, text=str(Width), fill="white"))
-    elif action == actions[3]:
-        return (board.create_polygon((i+1-triangle_size)*Width, (j+0.5-triangle_size)*Width,
-                                    (i+1-triangle_size)*Width, (j+0.5+triangle_size)*Width,
-                                    (i+1)*Width, (j+0.5)*Width,
-                                    fill="white", width=1),
-                board.create_text((i+1)*Width-text_offset, (j+0.5)*Width, text=str(Width), fill="white"))
+        #Control Panel Action Commands
+        explore_button = ttk.Button(action_pane, text='Explore', width=20, command=self.algo.explore)
+        explore_button.grid(column=1, row=0, sticky=(W, E))
+        
+        fastest_path_button = ttk.Button(action_pane, text='Fastest Path', command=self.algo.run)
+        fastest_path_button.grid(column=1, row=1, sticky=(W, E))
+        
+        move_button = ttk.Button(action_pane, text='Move', command=self.move)
+        move_button.grid(column=1, row=3, sticky=(W, E))
+        
+        left_button = ttk.Button(action_pane, text='Left', command=self.left)
+        left_button.grid(column=0, row=4, sticky=(W, E))
 
+        right_button = ttk.Button(action_pane, text='Right', command=self.right)
+        right_button.grid(column=2, row=4, sticky=(W, E))
+        
+        back_button = ttk.Button(action_pane, text='Back', command=self.back)
+        back_button.grid(column=1, row=5, sticky=(W, E))
 
-def visualize_grid():
-    global specials, walls, Width, x, y, player
-    for i in range(x):
-        for j in range(y):
-            board.create_rectangle(i*Width, j*Width, (i+1)*Width, (j+1)*Width, fill="white", width=1)
-            temp = {}
-            temp_val = {}
-            for action in actions:
-                (temp[action], temp_val[action]) = create_triangle(i, j, action)
-            tri_objects[(i,j)] = temp
-            text_objects[(i,j)] = temp_val
-    for (i, j, c, w) in specials:
-        # board.create_rectangle(i*Width, j*Width, (i+1)*Width, (j+1)*Width, fill=c, width=1)
-        if w == -1:
-            board.create_image(i*Width+35, j*Width+35, image=fire_pic)
+        actual_run_button = ttk.Button(action_pane, text='Actual Run', command=self.actual_run)
+        actual_run_button.grid(column=1, row=6, sticky=(W, E))
+
+        self.control_pane.columnconfigure(0, weight=1)
+        self.control_pane.rowconfigure(0, weight=1)
+
+        #Keybinding of Action Commands to allow keyboard control
+        self.master.bind("<Up>", lambda e: self.move())
+        self.master.bind("<Left>", lambda e: self.left())
+        self.master.bind("<Right>", lambda e: self.right())
+        self.master.bind("<Down>", lambda e: self.back())
+        self.master.mainloop()
+
+    def actual_run(self):
+        self.handler.loop()
+        self.master.after(100, self.actual_run)
+
+    # ----------------------------------------------------------------------
+    #   Actions received by robot
+    # ----------------------------------------------------------------------
+    def move(self):
+        self.handler.move()
+        self.update_map()
+
+    def left(self):
+        self.handler.left()
+        self.update_map()
+
+    def right(self):
+        self.handler.right()
+        self.update_map()
+
+    def back(self):
+        self.handler.back()
+        self.update_map()
+
+    # ----------------------------------------------------------------------
+    # Special Conditions (for situations where user selected a special condition)
+    # ----------------------------------------------------------------------
+    def specified_speed(self):
+        spd = int(self.speed.get())
+        if (spd != 0):
+            self.speed_status = True 
+            return 
+
+    def specified_coverage(self):
+        cov = int(self.coverage.get())
+        if (cov != 0):
+            self.coverage_status =True
+            return 
+            
+    def specified_time(self):
+        t = str(self.time.get())
+        if (t != ""):
+            time = self.convert_time(t)
+            self.time_status = True
+            return time
+        return 
+
+    def convert_time(self, time):
+        m, s = time.split(':')
+        return int(m) * 60 + int(s)
+
+    # ----------------------------------------------------------------------
+    # Updating the map dynamically
+    # ----------------------------------------------------------------------
+    # Replace the area that Robot is on with Robot 
+    def replace(self, x, y, direction):
+        if direction == 'N':
+            robot_image = self.robot_n
+        elif direction == 'E':
+            robot_image = self.robot_e
+        elif direction == 'S':
+            robot_image = self.robot_s
         else:
-            board.create_image(i*Width+35, j*Width+35, image=diamond_pic)
-    for (i, j) in walls:
-        # board.create_rectangle(i*Width, j*Width, (i+1)*Width, (j+1)*Width, fill="black", width=1)
-        board.create_image(i*Width+35, j*Width+35, image=wall_pic)
+            robot_image = self.robot_w
 
-visualize_grid()
+        for i in range(self.robot_size):
+            for j in range(self.robot_size):
+                cell = ttk.Label(self.map_pane, image=robot_image[i*self.robot_size+j], borderwidth=1)
+                try:
+                    self.map_pane[x+i-1][y+j-1].destroy()
+                except Exception:
+                    pass
+                cell.grid(column=y+j-1, row=x+i-1)
+                self.map_widget[x+i-1][y+j-1] = cell
 
+    # Replaces Map with updated one
+    def replace_map(self, x, y):
+        # Start & Goal areas
+        if   ((0 <= y < 3) and(0 <= x < 3)):
+                map_image = self.map_start
+        elif ((self.map.length -3 <= y < self.map.length) and
+              (self.map.width-3 <= x < self.map.width)):
+                map_image = self.map_goal
 
-def set_color(state, action, val):
-    global cell_score_min, cell_score_max
-    triangle = tri_objects[state][action]
-    text = text_objects[state][action]
-    green_dec = int(min(255, max(0, (val - cell_score_min) * 255.0 / (cell_score_max - cell_score_min))))
-    red = hex(255-green_dec)[2:]
-    green = hex(green_dec)[2:]
-    if len(green) == 1:
-        green += "0"
-    if len(red) == 1:
-        red += "0"
-    color = "#" + red + green + "00"
-    board.itemconfigure(triangle, fill=color)
-    board.itemconfigure(text, text = str(format(val, '.2f')), fill="black")
-
-
-def move_bot(new_x, new_y):
-    global player, x, y, score, walk_reward, robot, restart
-
-    if (new_x >= 0) and (new_x < x) and (new_y >= 0) and (new_y < y) and not ((new_x, new_y) in walls):
-        board.coords(robot, new_x*Width+35, new_y*Width+35)
-        player = (new_x, new_y)
-
-
-def restart_game():
-    global player, score, robot, restart
-    player = (0, y-1)
-    score = 1
-    restart = False
-    # board.coords(robot, start[0]*Width+Width*4/10, start[1]*Width+Width*4/10, start[0]*Width+Width*6/10, start[1]*Width+Width*6/10)
-    board.coords(robot, start[0]*Width+35, start[1]*Width+35)
-
-
-def showExpand(expanded_list, fgh_dict):
-    expanded_list = expanded_list[1:]
-    for e in expanded_list:
-        board.create_rectangle(e[0]*Width, e[1]*Width, (e[0]+1)*Width, (e[1]+1)*Width, fill="yellow")
-        board.create_text((e[0]+0.5)*Width, e[1]*Width+text_offset, text='f=' + str(format(fgh_dict[e]['f'], '.1f')), fill="black")
-        board.create_text((e[0]+0.5)*Width, e[1]*Width+text_offset+20, text='g=' + str(fgh_dict[e]['g']), fill="black")
-        board.create_text((e[0]+0.5)*Width, e[1]*Width+text_offset+40, text='h=' + str(format(fgh_dict[e]['h'], '.1f')), fill="black")
-        # board.coords(robot, start[0]*Width+35, start[1]*Width+35)
-        time.sleep((w1.get() + 0.1)/ 100)
-
-    for (i, j, c, w) in specials:
-        if w == -1:
-            board.create_image(i*Width+35, j*Width+35, image=fire_pic)
+        # Area Unexplored
+        elif not self.map.isExplored(x,y):
+            if self.map.isObstacle(x,y):
+                map_image = self.map_obstacle
+            else:
+                map_image = self.map_free
+        
+        # Area Explored
         else:
-            board.create_image(i*Width+35, j*Width+35, image=diamond_pic)
+            if self.map.isObstacle(x,y):
+                map_image = self.map_obstacle_explored
+            else:
+                map_image = self.map_free_explored
+            
+        # Change map
+        cell = ttk.Label(self.map_pane, image=map_image, borderwidth=1)
+        try:
+            self.map_pane[x][y].destroy()
+        except Exception:
+            pass
+        cell.grid(column=y, row=x)
+        self.map_widget[x][y] = cell
 
+    # Updating the map
+    def update_map(self, init=False):
+        print ("updating map")
+        start_time= time.time()
+        if init:
+            next_map = self.current_map
+        else:
+            next_map = self.map.get_map()
+        next_robot_location  = self.map.get_robot_location()
+        next_robot_direction = self.map.get_robot_direction()
 
-robot = board.create_image(start[0]*Width+35, start[1]*Width+35, image=robot_pic)
+        # if Robot position changed, change the space it was previously occupying back to map
+        if self.robot_location != next_robot_location:
+            for i in range(self.robot_location[0]-1, self.robot_location[0]+2):
+                for j in range(self.robot_location[1]-1, self.robot_location[1]+2):
+                    if not (next_robot_location[0]-1 <= i <= next_robot_location[0]+1 and
+                            next_robot_location[1]-1 <= j <= next_robot_location[1]+1):
+                        self.replace_map(i,j)
+                        self.current_map[i][j] = next_map[i][j]
 
-def move():
-    global robot
-    board.delete(robot)
-    robot = board.create_image(player[0]*Width+35, player[1]*Width+35, image=robot_pic)
+        # Map all changed grid and non-Robot area
+        for i in range(self.map.width):
+            for j in range(self.map.length):
+                if (not (next_robot_location[0]-1 <= i <= next_robot_location[0]+1 and
+                         next_robot_location[1]-1 <= j <= next_robot_location[1]+1) and
+                        (init or self.current_map[i][j] != next_map[i][j])):
+                    self.replace_map(i, j)
+                    self.current_map[i][j] = next_map[i][j]
 
-def noPath():
-    nopath = Label(master, text="Opps! NO PATH EXISTS", fg="red", bg="yellow", font = "Verdana 14 bold")
-    nopath.pack(side=BOTTOM)
+        # Place Robot on Map
+        if (init or
+            self.robot_location  != next_robot_location or
+            self.robot_direction != next_robot_direction):
+            self.replace(next_robot_location[0], next_robot_location[1], next_robot_direction)
+        
+        # Update change
+        self.robot_location  = next_robot_location
+        self.robot_direction = next_robot_direction
+        print("updating map in", time.time()- start_time)
+        
+sim = Simulator()
 
-board.pack(side=LEFT)
-################# Control widgets ##################
-panel = Frame(master)
-panel.pack(side=RIGHT)
-Label(text="Controls\n", font = "Verdana 12 bold").pack()
-
-q1frame = Frame(master)
-q1frame.pack()
-b1 = Button(text="Play / Pause")
-def printName(event):
-    global flag
-    flag = not flag
-
-b1.bind("<Button-1>", printName)
-b1.pack()
-
-
-#   Sliders for speed and Epsilon
-q3frame = Frame(master)
-q3frame.pack()
-w1 = Scale(q3frame, from_=0, to=50, orient=HORIZONTAL)
-w1.pack(side=LEFT)
-Label(text="Speed").pack()
-
-# Label(text='\n').pack()
-separator = Frame(height=2, bd=1, relief=SUNKEN)
-separator.pack(fill=X, padx=2, pady=2)
-
-Label(text="A Star\n",font = "Verdana 12 bold").pack()
-eu_or_mh = 'Manhattan'
-def toggle_h():
-    global eu_or_mh
-    if t_btn.config('text')[-1] == 'Euclidean Distance':
-        t_btn.config(text='Manhattan Distance')
-        eu_or_mh = 'Manhattan'
-        print(eu_or_mh)
-    else:
-        t_btn.config(text='Euclidean Distance')
-        eu_or_mh = 'Euclidean'
-        print(eu_or_mh)
-
-t_btn = Button(text="Manhattan Distance", width=15, command=toggle_h)
-t_btn.pack(pady=3)
-
-################# Q Learning widgets ##################
-# Label(text='\n').pack()
-separator = Frame(height=2, bd=1, relief=SUNKEN)
-separator.pack(fill=X, padx=2, pady=2)
-
-Label(text="Q Learning Parameters\n",font = "Verdana 12 bold").pack()
-
-#   Discount text entry and button
-qframe = Frame(master)
-qframe.pack()
-e = Entry(qframe, width=5)
-e.pack(side=LEFT)
-e.insert(0, "0.8")
-
-discount = 0.8
-def getDiscount(event):
-    global discount
-    discount = float(e.get())
-    print(discount)
-b3 = Button(qframe, text="Discount")
-b3.bind("<Button-1>", getDiscount)
-b3.pack(side=LEFT)
-
-#  Change start panel
-q2frame = Frame(master)
-q2frame.pack()
-def setStart(event):
-    global start
-    new_start = (int(x_entry.get()), int(y_entry.get()))
-    if new_start not in walls:
-        start = new_start
-b4 = Button(q2frame, text="Change Start")
-b4.bind("<Button-1>", setStart)
-
-x_entry = Entry(q2frame, width=4)
-x_entry.pack(side=LEFT)
-x_entry.insert(0, str(start[0]))
-y_entry = Entry(q2frame, width=4)
-y_entry.pack(side=LEFT)
-y_entry.insert(0, str(start[1]))
-
-b4.pack(side=LEFT)
-Label(text="").pack()
-
-q4frame = Frame(master)
-q4frame.pack()
-w2 = Scale(q4frame, from_=0.0, to=0.9, orient=HORIZONTAL, resolution=0.1)
-w2.pack()
-Label(text="Exploration (eps)").pack()
-
-
-
-def begin():
-    global flag
-    master.mainloop()
-    flag = None
-    time.sleep(0.1)    # hold time for linked program to read flag and close
 
 
 
