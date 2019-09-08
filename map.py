@@ -174,7 +174,10 @@ class Map:
     
         #if loadobject is string, assume it is filepath
         if isinstance(loadobject, str):
-            with open(loadobject, 'r') as file:
+            import os
+            filepath = os.path.join("mazes", loadobject)
+            
+            with open(filepath, 'r') as file:
                 lines = file.readlines()
                 
                 #input text file are expected to have required bits on line 2 and 4
@@ -294,6 +297,9 @@ class Map:
     
     
     def save(self, filepath):
+        import os
+        filepath = os.path.join("mazes", filepath)
+    
         exploration, exploration_contents  = self.convert()
         
         with open(filepath, 'w') as file:

@@ -59,12 +59,12 @@ map = Map('sample_maze.txt')
 
 
 """code to check explorer + exploration limit"""
-robot = Robot(fakeRun=True, fakeMap = map)
-robot.explore(exploreLimit = 0.2)
+# robot = Robot(fakeRun=True, fakeMap = map)
+# robot.explore(exploreLimit = 0.2)
 
-robot.map.printmap()
-print(robot.pos)
-print(robot.orientation)
+# robot.map.printmap()
+# print(robot.pos)
+# print(robot.orientation)
 
 """code to check explorer + steps per sec limit"""
 # robot = Robot(fakeRun=True, fakeMap = map, stepsPerSec = 1)
