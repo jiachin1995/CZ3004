@@ -3,6 +3,24 @@ import time
 import settings
 
 class Explorer:
+    """
+        Explorer class. Used during exploration
+        
+            
+        Attributes:
+            robot: An instance of the Robot Object. Expects a robot object during initialisation
+            state: String. Shows current exploration state. Possible states are:
+                "Initial" - initial state when explorer is just created.
+                "LeftWallHugging" - Robot is performing left wall hugging algorithm
+                "Spelunking" - Robot traverses to unexplored tiles in centre of map
+                "Out of time. Returning to start" - Out of time. Robot returns to starting position.
+                "Exploration done. Returning to start" - Exploration done. Robot returns to starting position.
+            startTime: Time object. Time when exploration started. If exploration has not started, returns None.
+            timer: Integer. Defaults 500. Total time allowed for exploration in seconds. Includes timeToReturn. Thus, timer must be more than timeToReturn.
+            timeToReturn: Integer. Defaults to 60. Time given to robot to return to start. Occupies timer. Thus, timer must be more than timeToReturn.
+            exploreLimit: Float. Defaults to 1.0. Percentage of map to explore. Cancels exploration if percentage reached.
+            
+    """
     robot = None
     state = "Initial"
 
@@ -12,6 +30,14 @@ class Explorer:
     exploreLimit = 1.0
 
     def __init__(self, robot, timer=None, exploreLimit = None):
+        """
+        Constructor. Expects a robot argument
+        
+        Args:
+            robot: Robot Object. 
+            timer: Integer. Total time in seconds for robot to complete exploration.
+            exploreLimit: Float. Percentage of map to explore before returning to start
+        """
         self.robot = robot
         if settings.logging:  
             print("====== Starting Explorer =======")
@@ -24,6 +50,9 @@ class Explorer:
             self.setExploreLimit(exploreLimit)
     
     def start(self):
+        """
+        Call this method to begin exploration
+        """
         self.startTime = time.time()
     
         if self.state == "Initial": 
@@ -50,6 +79,15 @@ class Explorer:
         self.robot.faceDirection(0)
         
     def hugleftwall(self, turns = 0, startpos = None, endCondition=None):
+        """
+        Recursive function. Ends when robot is back to initial starting position and orientation.
+        Also accepts a different end condition as argument.
+        
+        Args:
+            turns: Integer. Defaults to 0. Do not provide an argument. Used by function to count number of turns made since function was first called.
+            startpos: [x,y] coordinates. Do not provide an argument. Starting pos of robot when function was called. 
+            endCondition: String. Expects a boolean string. Calls eval() on string to determine True/False. If True, end function.
+        """
         #return if out of time
         if self.noTimeLeft():
             return
@@ -82,7 +120,7 @@ class Explorer:
             
                 #check next tiles whether terminate condition is in next few tiles
                 if steps>1:
-                    result = self.hugleftcheckstepstoterminate(turns, startpos, endCondition=endCondition)
+                    result = self._hugleftcheckstepstoterminate(turns, startpos, endCondition=endCondition)
                     if result:
                         steps = result
             
@@ -103,12 +141,10 @@ class Explorer:
             self.hugleftwall(turns = turns, startpos = startpos, endCondition=endCondition)
         
     def hugleftprep(self):
-        """ Prepares robot for left wall hugging algorithm. 
-            Expects an adjacent wall before starting.
+        """ 
+        Prepares robot for left wall hugging algorithm. 
+        Expects an adjacent wall before starting.
             
-        Args:
-            none: no arguments
-
         Raises:
             Warning: Left Wall Hugging Cancelled. No adjacent walls found.
         """
@@ -135,8 +171,16 @@ class Explorer:
                 print("Warning: Left Wall Hugging Cancelled. No adjacent walls found.")
             return False
 
-    def hugleftcheckstepstoterminate(self, turns, startpos, endCondition=None):
-        """check next tiles is in terminate condition"""
+    def _hugleftcheckstepstoterminate(self, turns, startpos, endCondition=None):
+        """
+        Before moving forward multiple tiles in hugleftwall(), check next few tiles are not in end condition.
+        If in end condition, return distance of tile to move.
+        
+        Args:
+            turns: Integer. Defaults to 0. Do not provide an argument. Used by function to count number of turns made since hugleftwall() was first called.
+            startpos: [x,y] coordinates. Do not provide an argument. Starting pos of robot when hugleftwall() was called. 
+            endCondition: String. Expects a boolean string. Calls eval() on string to determine True/False. 
+        """
         x,y = self.robot.pos
         tileRange = self.robot.getTileRange()
         
@@ -153,10 +197,16 @@ class Explorer:
         return None
        
     def getRemainingTime(self):
+        """
+        Returns time object showing remaining exploration time left.
+        """
         now = time.time()
         return (self.startTime+ self.timer) - now
        
     def noTimeLeft(self):
+        """
+        Returns True if out of time. Includes time to return in calculations.
+        """
         now = time.time()
         if now > (self.startTime + self.timer - self.timeToReturn):
             return True
@@ -164,21 +214,39 @@ class Explorer:
             return False
        
     def setTime(self, timer):
+        """
+        Sets self.timer
+        
+        Args:
+            timer: Integer. Time for exploration in seconds.
+        """
         if timer < self.timeToReturn:
             raise Exception("Time given less than return time. Give more time for exploration")
         
         self.timer = timer        
 
     def exploreDone(self):
+        """
+        Return True if exploration done or exploration > exploreLimit.
+        """
         if self.robot.map.explored_percent() >= self.exploreLimit:
             return True
         else:
             return False
        
     def setExploreLimit(self, exploreLimit):
+        """
+        sets self.exploreLimit
+        
+        Args:
+            exploreLimit: Float. Percentage of map to explore
+        """
         self.exploreLimit = exploreLimit
        
     def spelunk(self):
+        """
+        Algorithm for robot to explore unexplored tiles in centre of arena.
+        """
         self.state = "Spelunking"
         if settings.logging:  
               print("New State: " + self.state) 
@@ -187,6 +255,9 @@ class Explorer:
         self._spelunking()
     
     def _spelunking(self):
+        """
+        After calling spelunkprep, moves robot forward to explore y-axis. If obstacle is found, sets the robot to perform left wall hug.
+        """
         if not self.robot.sensors.isFrontBlocked():
             front_terrain = self.robot.sensors.getFront()
             steps = min(front_terrain)      #go as far as possible
@@ -199,6 +270,11 @@ class Explorer:
 
 
     def spelunkprep(self):
+        """
+        Part of spelunking algorithm. Prepares the robot for spelunking.
+        
+        Finds unexplore Tile and moves robot to the same y-axis as Tile. Sets the robot to face unexplored tile.
+        """
         x,y = self.robot.map.getUnexploredTile()
         
         if settings.logging:
