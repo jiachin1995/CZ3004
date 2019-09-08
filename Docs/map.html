@@ -71,19 +71,59 @@ Start coordinates is [1,1]. End is [13,18]</p>
 <dl class="method">
 <dt id="map.Map.convert">
 <code class="sig-name descname">convert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.convert" title="Permalink to this definition">¶</a></dt>
-<dd><p>matched Code === generateMapDescriptor()</p>
+<dd><p>Converts map object to bytes. Follows the MDF as specified by NTU MDP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="map.Map.explored_percent">
+<code class="sig-name descname">explored_percent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.explored_percent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the percentage of explored map. Returns float from 0.0 to 1.0</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="map.Map.findSpaceInRow">
 <code class="sig-name descname">findSpaceInRow</code><span class="sig-paren">(</span><em class="sig-param">y</em>, <em class="sig-param">toRight=True</em><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.findSpaceInRow" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given horizontal row, find a space that robot can occupy in said row.</p>
+<dd><p>Given horizontal row, find a space that robot can occupy in said row.
+Looks for a 3x3 unobstructed area from left to right.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>toRight</strong> – Default is True. If false, searches for 3x3 unobstructed area from right to left.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="map.Map.getTile">
 <code class="sig-name descname">getTile</code><span class="sig-paren">(</span><em class="sig-param">pos</em><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.getTile" title="Permalink to this definition">¶</a></dt>
-<dd><p>expects [x,y] as arguments</p>
+<dd><p>Given x,y coordinates, return value at that tile</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pos</strong> – Expects [x,y] as arguments</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="map.Map.getUnexploredTile">
+<code class="sig-name descname">getUnexploredTile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.getUnexploredTile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterates through the map to find the first unexplored tile. Starts from [0,0],[1,0],[2,0]… to [13,19],[14,19]</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="map.Map.is_explored">
+<code class="sig-name descname">is_explored</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.is_explored" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if map is entirely explored</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="map.Map.is_rowexplored">
+<code class="sig-name descname">is_rowexplored</code><span class="sig-paren">(</span><em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.is_rowexplored" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given y axis, return True if entire row is explored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>y</strong> – y-axis. Expects an integer</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -109,30 +149,66 @@ Start coordinates is [1,1]. End is [13,18]</p>
 <dt id="map.Map.printmap">
 <code class="sig-name descname">printmap</code><span class="sig-paren">(</span><em class="sig-param">robot=None</em><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.printmap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints map. Bottom left corner is [0,0] &amp; contains start corner. Top right is [14,19] &amp; contains goal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>robot</strong> – Defaults to None. If robot is given, prints map with robot position and orientation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="map.Map.printmapwithRobot">
+<code class="sig-name descname">printmapwithRobot</code><span class="sig-paren">(</span><em class="sig-param">robot</em><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.printmapwithRobot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints map with robot. Bottom left corner is [0,0] &amp; contains start corner. Top right is [14,19] &amp; contains goal.
+Called from printmap if robot argument is supplied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>robot</strong> – Robot object. Prints map with robot position and orientation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="map.Map.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">filepath</em><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves map to file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filepath</strong> – String. Expects name of file to be written to.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="map.Map.setTile">
 <code class="sig-name descname">setTile</code><span class="sig-paren">(</span><em class="sig-param">pos</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.setTile" title="Permalink to this definition">¶</a></dt>
-<dd><p>expects [x,y] and value as arguments</p>
+<dd><p>Sets selected Tile to given value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos</strong> – Expects [x,y] list object. Coordinates of tile to change.</p></li>
+<li><p><strong>value</strong> – New value of tile.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="map.Map.setTiles">
 <code class="sig-name descname">setTiles</code><span class="sig-paren">(</span><em class="sig-param">poslist</em>, <em class="sig-param">valuelist</em><span class="sig-paren">)</span><a class="headerlink" href="#map.Map.setTiles" title="Permalink to this definition">¶</a></dt>
-<dd><p>expects list of [x,y] and value as arguments</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+<dd><p>Sets selected list of Tiles to given values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>poslist</strong> – Expects list of [x,y] coordinates. List of tile coordinates to change.</p></li>
+<li><p><strong>valuelist</strong> – List of values of tiles</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -155,11 +231,12 @@ Start coordinates is [1,1]. End is [13,18]</p>
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Map</a></li>
-<li class="toctree-l1"><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pathfinder.html">Pathfinder</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pathfinder.html#indices-and-tables">Indices and tables</a></li>
 <li class="toctree-l1"><a class="reference internal" href="robot.html">Robot</a></li>
-<li class="toctree-l1"><a class="reference internal" href="robot.html#indices-and-tables">Indices and tables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="coordinator.html">Coordinator</a></li>
+<li class="toctree-l1"><a class="reference internal" href="explorer.html">Explorer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensors.html">Sensors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sensors_fake.html">Sensors_fake</a></li>
 </ul>
 
 <div class="relations">

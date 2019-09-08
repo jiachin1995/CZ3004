@@ -13,7 +13,10 @@ Welcome to CZ3004 MDP's documentation!
    map
    pathfinder
    robot
-
+   coordinator
+   explorer
+   sensors
+   sensors_fake
 
 
 Indices and tables

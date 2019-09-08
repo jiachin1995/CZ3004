@@ -1,5 +1,0 @@
-
-autofunction:: io.open
-autoclass:: map.Map
-
-

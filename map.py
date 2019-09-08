@@ -28,7 +28,7 @@ class Map:
         """
         Constructor. Creates a 15x20 map. 
         
-        Attributes:
+        Args:
             load: Expects a load object. If left empty, create a 100% unexplored map. Otherwise, calls self.load() on load object. Refer to map.load()
         """
         self.x = 'Hello'
@@ -42,7 +42,9 @@ class Map:
         
         
     def convert(self):
-        """matched Code === generateMapDescriptor()"""
+        """
+        Converts map object to bytes. Follows the MDF as specified by NTU MDP.
+        """
     
         expl = ''
         expl_contents = ''
@@ -90,6 +92,9 @@ class Map:
         return [expl, expl_contents]
 
     def explored_percent(self):
+        """
+        Returns the percentage of explored map. Returns float from 0.0 to 1.0
+        """
         totalTiles = 300.0
         expl_count = 0.0
         
@@ -100,6 +105,9 @@ class Map:
         return expl_count/totalTiles
         
     def getUnexploredTile(self):
+        """
+        Iterates through the map to find the first unexplored tile. Starts from [0,0],[1,0],[2,0]... to [13,19],[14,19]
+        """
         for y in range(0, 20):
             for x in range(0,15):
                 if self.getTile([x,y]) is None: 
@@ -107,7 +115,11 @@ class Map:
         
     def findSpaceInRow(self, y, toRight=True):
         """
-        Given horizontal row, find a space that robot can occupy in said row.
+        Given horizontal row, find a space that robot can occupy in said row. 
+        Looks for a 3x3 unobstructed area from left to right.
+        
+        Args:
+            toRight: Default is True. If false, searches for 3x3 unobstructed area from right to left.
         """
         
         if toRight:
@@ -134,7 +146,12 @@ class Map:
                     return [x, y]
              
     def getTile(self, pos):             
-        """expects [x,y] as arguments"""
+        """
+        Given x,y coordinates, return value at that tile
+        
+        Args:
+            pos: Expects [x,y] as arguments
+        """
         x,y = pos
         if x<0 or x>14:
             return -1
@@ -144,12 +161,21 @@ class Map:
         return self.map[pos[1]][pos[0]]
       
     def is_explored(self):
+        """
+        Returns True if map is entirely explored
+        """
         for row in self.map:
             for val in row:
                 if val is None: return False
         return True
         
     def is_rowexplored(self, y):
+        """
+        Given y axis, return True if entire row is explored.
+        
+        Args:
+            y: y-axis. Expects an integer 
+        """
         for val in self.map[y]:
             if val is None: return False
         
@@ -247,7 +273,12 @@ class Map:
         return
     
     def printmap(self, robot = None):
-        """Prints map. Bottom left corner is [0,0] & contains start corner. Top right is [14,19] & contains goal"""
+        """
+        Prints map. Bottom left corner is [0,0] & contains start corner. Top right is [14,19] & contains goal
+        
+        Args:
+            robot: Defaults to None. If robot is given, prints map with robot position and orientation
+        """
         print("======== VirtualMap ========")
         
         if robot:
@@ -263,6 +294,13 @@ class Map:
                 print("\n")
     
     def printmapwithRobot(self, robot):
+        """
+        Prints map with robot. Bottom left corner is [0,0] & contains start corner. Top right is [14,19] & contains goal.
+        Called from printmap if robot argument is supplied.
+        
+        Args:
+            robot: Robot object. Prints map with robot position and orientation
+        """
         orient_dict = {
             0: '^',
             1: '>',
@@ -297,6 +335,12 @@ class Map:
     
     
     def save(self, filepath):
+        """
+        Saves map to file. 
+        
+        Args:
+            filepath: String. Expects name of file to be written to.
+        """
         import os
         filepath = os.path.join("mazes", filepath)
     
@@ -312,8 +356,13 @@ class Map:
             file.write(exploration_contents + '\n')
 
     def setTile(self, pos, value):
-        """expects [x,y] and value as arguments"""
-        """matched Code === setIsExplored"""
+        """
+        Sets selected Tile to given value. 
+        
+        Args:
+            pos: Expects [x,y] list object. Coordinates of tile to change.
+            value: New value of tile.
+        """
         x,y = pos
         if x<0 or x>14:
             return
@@ -323,8 +372,14 @@ class Map:
         self.map[y][x] = value
         
     def setTiles(self, poslist, valuelist):
-        """expects list of [x,y] and value as arguments"""
-        """matched Code === setIsExplored"""
+        """
+        Sets selected list of Tiles to given values. 
+        
+        Args:
+            poslist: Expects list of [x,y] coordinates. List of tile coordinates to change.
+            valuelist: List of values of tiles
+        """
+            
         for pos, val in zip(poslist,valuelist):
             x,y = pos
             if x<0 or x>14:
