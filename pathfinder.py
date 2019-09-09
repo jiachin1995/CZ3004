@@ -1,17 +1,42 @@
 import settings
 
 class Pathfinder:
+    """
+    Pathfinder class. Used to find shortest path.
+         
+    Attributes:
+        start: Start coordinates of arena. [1,1]
+        goal: Goal coordinates of arena. [13,18]
+        map: Map object
+        weightmap: Weights of paths from goal. The further the tile from goal, the heavier the weights
+    """
     start = [1, 1]
     goal = [13, 18]
     
-    map = []
+    map = None
     weightmap = []
     
     def __init__(self, map):
+        """ 
+        Constructor. 
+            
+        Args:
+            map: Map object.
+        """  
         self.map = map
     
     
     def bfs(self,pos, end, weight=0, checklist=[]):
+        """ 
+        Gives weight of tiles from goal. Starts from goal and performs breadth first search on adjacent tiles.
+        The further the tile from goal, the heavier the weight of the tiles.
+            
+        Args:
+            pos: [x,y] coordinates. Starting coordinates. bfs() ends when this tile is searched.
+            end: [x,y] coordinates. Goal of shortest path search. Weight = 0
+            weight: Weight of current tile
+            checklist: Do not provide an argument. List of tiles to check
+        """ 
         x,y = pos
     
         self.weightmap[y][x] = weight
@@ -44,14 +69,22 @@ class Pathfinder:
         
         if checklist:
             self.bfs(**checklist.pop(0), checklist=checklist)
-            
+           
+    def findpath(self, start=start, goal=goal, waypoint=None, orientation=0):
+        """
+        Call this method to begin shortest path exploration.
         
-    """
         findpath() has 2 steps:
         1. Using breadth-first-search, find weights of all tiles until goal is reached, searching from goal to start (reversed)
         2. Afterwards, from start to goal, find shortest path, taking into account turning
-    """
-    def findpath(self, start=start, goal=goal, waypoint=None):
+        
+        Args:
+            start: [x,y] coordinates. Defaults to [1,1]. Start position of shortest path search.
+            goal: [x,y] coordinates. Defaults to [13,18]. Goal of shortest path search.
+            waypoint: [x,y] coordinates. Waypoint for shortest path search to bypass.
+            orientation: Integer. Defaults to 0. Direction where the robot is currently facing.
+        
+        """
         #ensure that weightmap is clean
         self.resetweights()
     
@@ -66,7 +99,7 @@ class Pathfinder:
     
             
         #find fastest pat with least turns. path contains route in coordinates form. directions contains route with {top,left,bottom,right}
-        path, directions = self.findLeastTurns(pos=start)
+        path, directions = self.findLeastTurns(pos=start, orientation=orientation)
         
         
         #If there is waypoint, we must now search from waypoint to goal
@@ -98,8 +131,15 @@ class Pathfinder:
 
     def findLeastTurns(self, pos, orientation=0, path=[], directions = []):
         """
-            Follow weights to find shortest path. Minimises turning.
+        Reads weights map to find straightest & shortest path. Minimises turning.
+        
+        Recursive function. Ends when goal is reached.
           
+        Args:
+            pos: [x,y] coordinates. Initial argument should be initial position of robot.
+            orientation: Integer. Initial argument should be initial direction where robot is facing.
+            path: List. Do not provide an argument. Shortest path, in coordinates form.
+            directions: List. Do not provide an argument. Shortest path, in movement form.  
         """
         path.append(pos)
         directions.append(orientation)
@@ -145,6 +185,13 @@ class Pathfinder:
         
 
     def getnextTile(self, pos, orientation):
+        """
+        Returns the coordinates of next Tile by reading current position and orientation.
+        
+        Args:
+            pos: [x,y] coordinates. 
+            orientation: Integer. 
+        """
         x = pos[0]
         y = pos[1]
         
@@ -161,6 +208,11 @@ class Pathfinder:
 
         
     def mark_untraversible(self):
+        """
+        Updates weight map by marking all obstacles and a 3x3 area around obstacle as untraversible.
+
+        """
+    
         for y in range(1,19):
             for x in range(1,14):
                 if self.map.getTile([x,y]) != 0: 
@@ -172,12 +224,21 @@ class Pathfinder:
                     
 
     def optimise_diagonals(self, directions):
+        """unimplemented. Method to optimse movement by adding in diagonal movement"""
         #consider that square diagonals are 1.4x the width
         pass
         
         return directions
         
     def printweightmap(self):
+        """
+        Prints weight map.
+        
+        Values are:
+            ? - Tile is has unknown weight
+            X - Tile is untraversible
+            Integer - Weight of Tile. Goal has 0 weight. The further the tile from goal, the heavier the weight.
+        """
         print("======== WeightMap ========")
         
         for row in reversed(self.weightmap):
@@ -191,7 +252,9 @@ class Pathfinder:
             print("\n")
     
     def resetweights(self):
-            
+        """
+        Resets weight map. Removes all weight so that new shortest path can be found.
+        """
         #Initialise weight map to store tile distances. Untraversible tiles are marked with -1/X.
         self.weightmap = [[None for _ in range(15)] for _ in range(20)]
         

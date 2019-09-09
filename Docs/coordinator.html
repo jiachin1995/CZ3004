@@ -37,7 +37,49 @@
 <dl class="class">
 <dt id="coordinator.Coordinator">
 <em class="property">class </em><code class="sig-prename descclassname">coordinator.</code><code class="sig-name descname">Coordinator</code><a class="headerlink" href="#coordinator.Coordinator" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Coordinator class. Controls the movement of the robot.</p>
+<dl class="attribute">
+<dt id="coordinator.Coordinator.fakeRun">
+<code class="sig-name descname">fakeRun</code><a class="headerlink" href="#coordinator.Coordinator.fakeRun" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defaults to False. Set to True if running in simulation</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="coordinator.Coordinator.stepsPerSec">
+<code class="sig-name descname">stepsPerSec</code><a class="headerlink" href="#coordinator.Coordinator.stepsPerSec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of steps to take per second, if running in simulation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="coordinator.Coordinator.fakeRunWait">
+<code class="sig-name descname">fakeRunWait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#coordinator.Coordinator.fakeRunWait" title="Permalink to this definition">¶</a></dt>
+<dd><p>If running in simulation, pause the algorithm for (1/stepsPerSec) seconds.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="coordinator.Coordinator.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">steps</em><span class="sig-paren">)</span><a class="headerlink" href="#coordinator.Coordinator.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves the robot forward</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>steps</strong> – Integer. Number of steps to take.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="coordinator.Coordinator.turnLeft">
+<code class="sig-name descname">turnLeft</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#coordinator.Coordinator.turnLeft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns the robot left</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="coordinator.Coordinator.turnRight">
+<code class="sig-name descname">turnRight</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#coordinator.Coordinator.turnRight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns the robot right</p>
+</dd></dl>
+
+</dd></dl>
 
 </div>
 

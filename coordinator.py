@@ -22,7 +22,8 @@ class Coordinator:
             steps: Integer. Number of steps to take.
         """   
         if self.fakeRun:
-            self.fakeRunWait()
+            for i in range(0,steps):
+                self.fakeRunWait()
             return
         pass
     

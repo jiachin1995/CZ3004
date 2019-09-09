@@ -37,10 +37,126 @@
 <dl class="class">
 <dt id="pathfinder.Pathfinder">
 <em class="property">class </em><code class="sig-prename descclassname">pathfinder.</code><code class="sig-name descname">Pathfinder</code><span class="sig-paren">(</span><em class="sig-param">map</em><span class="sig-paren">)</span><a class="headerlink" href="#pathfinder.Pathfinder" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Pathfinder class. Used to find shortest path.</p>
+<dl class="attribute">
+<dt id="pathfinder.Pathfinder.start">
+<code class="sig-name descname">start</code><a class="headerlink" href="#pathfinder.Pathfinder.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start coordinates of arena. [1,1]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pathfinder.Pathfinder.goal">
+<code class="sig-name descname">goal</code><a class="headerlink" href="#pathfinder.Pathfinder.goal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Goal coordinates of arena. [13,18]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pathfinder.Pathfinder.map">
+<code class="sig-name descname">map</code><a class="headerlink" href="#pathfinder.Pathfinder.map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map object</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pathfinder.Pathfinder.weightmap">
+<code class="sig-name descname">weightmap</code><a class="headerlink" href="#pathfinder.Pathfinder.weightmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Weights of paths from goal. The further the tile from goal, the heavier the weights</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pathfinder.Pathfinder.bfs">
+<code class="sig-name descname">bfs</code><span class="sig-paren">(</span><em class="sig-param">pos</em>, <em class="sig-param">end</em>, <em class="sig-param">weight=0</em>, <em class="sig-param">checklist=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#pathfinder.Pathfinder.bfs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives weight of tiles from goal. Starts from goal and performs breadth first search on adjacent tiles.
+The further the tile from goal, the heavier the weight of the tiles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos</strong> – [x,y] coordinates. Starting coordinates. bfs() ends when this tile is searched.</p></li>
+<li><p><strong>end</strong> – [x,y] coordinates. Goal of shortest path search. Weight = 0</p></li>
+<li><p><strong>weight</strong> – Weight of current tile</p></li>
+<li><p><strong>checklist</strong> – Do not provide an argument. List of tiles to check</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="pathfinder.Pathfinder.findLeastTurns">
 <code class="sig-name descname">findLeastTurns</code><span class="sig-paren">(</span><em class="sig-param">pos</em>, <em class="sig-param">orientation=0</em>, <em class="sig-param">path=[]</em>, <em class="sig-param">directions=[]</em><span class="sig-paren">)</span><a class="headerlink" href="#pathfinder.Pathfinder.findLeastTurns" title="Permalink to this definition">¶</a></dt>
-<dd><p>Follow weights to find shortest path. Minimises turning.</p>
+<dd><p>Reads weights map to find straightest &amp; shortest path. Minimises turning.</p>
+<p>Recursive function. Ends when goal is reached.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos</strong> – [x,y] coordinates. Initial argument should be initial position of robot.</p></li>
+<li><p><strong>orientation</strong> – Integer. Initial argument should be initial direction where robot is facing.</p></li>
+<li><p><strong>path</strong> – List. Do not provide an argument. Shortest path, in coordinates form.</p></li>
+<li><p><strong>directions</strong> – List. Do not provide an argument. Shortest path, in movement form.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pathfinder.Pathfinder.findpath">
+<code class="sig-name descname">findpath</code><span class="sig-paren">(</span><em class="sig-param">start=[1, 1], goal=[13, 18], waypoint=None, orientation=0</em><span class="sig-paren">)</span><a class="headerlink" href="#pathfinder.Pathfinder.findpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call this method to begin shortest path exploration.</p>
+<p>findpath() has 2 steps:
+1. Using breadth-first-search, find weights of all tiles until goal is reached, searching from goal to start (reversed)
+2. Afterwards, from start to goal, find shortest path, taking into account turning</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – [x,y] coordinates. Defaults to [1,1]. Start position of shortest path search.</p></li>
+<li><p><strong>goal</strong> – [x,y] coordinates. Defaults to [13,18]. Goal of shortest path search.</p></li>
+<li><p><strong>waypoint</strong> – [x,y] coordinates. Waypoint for shortest path search to bypass.</p></li>
+<li><p><strong>orientation</strong> – Integer. Defaults to 0. Direction where the robot is currently facing.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pathfinder.Pathfinder.getnextTile">
+<code class="sig-name descname">getnextTile</code><span class="sig-paren">(</span><em class="sig-param">pos</em>, <em class="sig-param">orientation</em><span class="sig-paren">)</span><a class="headerlink" href="#pathfinder.Pathfinder.getnextTile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the coordinates of next Tile by reading current position and orientation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pos</strong> – [x,y] coordinates.</p></li>
+<li><p><strong>orientation</strong> – Integer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pathfinder.Pathfinder.mark_untraversible">
+<code class="sig-name descname">mark_untraversible</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pathfinder.Pathfinder.mark_untraversible" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates weight map by marking all obstacles and a 3x3 area around obstacle as untraversible.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pathfinder.Pathfinder.optimise_diagonals">
+<code class="sig-name descname">optimise_diagonals</code><span class="sig-paren">(</span><em class="sig-param">directions</em><span class="sig-paren">)</span><a class="headerlink" href="#pathfinder.Pathfinder.optimise_diagonals" title="Permalink to this definition">¶</a></dt>
+<dd><p>unimplemented. Method to optimse movement by adding in diagonal movement</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pathfinder.Pathfinder.printweightmap">
+<code class="sig-name descname">printweightmap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pathfinder.Pathfinder.printweightmap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints weight map.</p>
+<dl class="simple">
+<dt>Values are:</dt><dd><p>? - Tile is has unknown weight
+X - Tile is untraversible
+Integer - Weight of Tile. Goal has 0 weight. The further the tile from goal, the heavier the weight.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pathfinder.Pathfinder.resetweights">
+<code class="sig-name descname">resetweights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pathfinder.Pathfinder.resetweights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets weight map. Removes all weight so that new shortest path can be found.</p>
 </dd></dl>
 
 </dd></dl>

@@ -36,7 +36,66 @@
 <dl class="class">
 <dt id="sensors_fake.Sensors">
 <em class="property">class </em><code class="sig-prename descclassname">sensors_fake.</code><code class="sig-name descname">Sensors</code><span class="sig-paren">(</span><em class="sig-param">robot</em>, <em class="sig-param">fakemap</em><span class="sig-paren">)</span><a class="headerlink" href="#sensors_fake.Sensors" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Fake Sensors class. Returns fake sensor input by reading a fakemap. Fake map should be 100% explored.</p>
+<dl class="attribute">
+<dt id="sensors_fake.Sensors.front_sensors_range">
+<code class="sig-name descname">front_sensors_range</code><a class="headerlink" href="#sensors_fake.Sensors.front_sensors_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integer. Defaults to 4. Maximum range that sensor can read</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sensors_fake.Sensors.left_sensors_range">
+<code class="sig-name descname">left_sensors_range</code><a class="headerlink" href="#sensors_fake.Sensors.left_sensors_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integer. Defaults to 4. Maximum range that sensor can read</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sensors_fake.Sensors.map">
+<code class="sig-name descname">map</code><a class="headerlink" href="#sensors_fake.Sensors.map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map object. Fake map used to output fake sensor inputs.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="sensors_fake.Sensors.robot">
+<code class="sig-name descname">robot</code><a class="headerlink" href="#sensors_fake.Sensors.robot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Robot object. Required to read current pos and orientation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sensors_fake.Sensors.getFront">
+<code class="sig-name descname">getFront</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensors_fake.Sensors.getFront" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns front terrain in the form of a list, containing [left,middle,right].
+Left,middle,right are integers.
+if left == 0, it means there is a wall directly in front of robot, on the left side
+if middle == 2, it means there is a wall 2 steps in front of robot, at the middle</p>
+<p>For example, if front obstacle is T-shaped, getFront() might return 1, 0, 1.</p>
+<p>Fake sensors does this by reading robot’s position and orientation and compares it with fake map.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sensors_fake.Sensors.getLeft">
+<code class="sig-name descname">getLeft</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensors_fake.Sensors.getLeft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns left terrain in the form of a list, containing [front, back].
+front,back are integers.</p>
+<p>Similar to getFront(). Refer to getFront() above.</p>
+<p>Fake sensors does this by reading robot’s position and orientation and compares it with fake map.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sensors_fake.Sensors.isFrontBlocked">
+<code class="sig-name descname">isFrontBlocked</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensors_fake.Sensors.isFrontBlocked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if any tiles immediately in front of robot is occupied.</p>
+<p>If any terrain in getFront() is 0, return False.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sensors_fake.Sensors.isLeftBlocked">
+<code class="sig-name descname">isLeftBlocked</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensors_fake.Sensors.isLeftBlocked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if any tiles immediately left of robot is occupied.</p>
+<p>If any terrain in getLeft() is 0, return False.</p>
+</dd></dl>
+
+</dd></dl>
 
 </div>
 

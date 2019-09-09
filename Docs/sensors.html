@@ -37,7 +37,8 @@
 <dl class="class">
 <dt id="sensors.Sensors">
 <em class="property">class </em><code class="sig-prename descclassname">sensors.</code><code class="sig-name descname">Sensors</code><a class="headerlink" href="#sensors.Sensors" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Sensors class. Reads sensors input.</p>
+<dl class="method">
 <dt id="sensors.Sensors.getFront">
 <code class="sig-name descname">getFront</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensors.Sensors.getFront" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns front terrain in the form of a list, containing [left,middle,right].
@@ -45,6 +46,28 @@ Left,middle,right are integers.
 if left == 0, it means there is a wall directly in front of robot, on the left side
 if middle == 2, it means there is a wall 2 steps in front of robot, at the middle</p>
 <p>For example, if front obstacle is T-shaped, getFront() might return 1, 0, 1.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sensors.Sensors.getLeft">
+<code class="sig-name descname">getLeft</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensors.Sensors.getLeft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns left terrain in the form of a list, containing [front, back].
+front,back are integers.</p>
+<p>Similar to getFront(). Refer to getFront() above</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sensors.Sensors.isFrontBlocked">
+<code class="sig-name descname">isFrontBlocked</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensors.Sensors.isFrontBlocked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if any tiles immediately in front of robot is occupied.</p>
+<p>If any terrain in getFront() is 0, return False.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="sensors.Sensors.isLeftBlocked">
+<code class="sig-name descname">isLeftBlocked</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sensors.Sensors.isLeftBlocked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if any tiles immediately left of robot is occupied.</p>
+<p>If any terrain in getLeft() is 0, return False.</p>
 </dd></dl>
 
 </dd></dl>

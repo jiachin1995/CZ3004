@@ -62,7 +62,7 @@
 <dl class="attribute">
 <dt id="robot.Robot.explore">
 <code class="sig-name descname">explore</code><a class="headerlink" href="#robot.Robot.explore" title="Permalink to this definition">¶</a></dt>
-<dd><p>if True, update map after every movement</p>
+<dd><p>if True, update map after every movement. Explorer sets this to False after finishing exploration.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -84,29 +84,133 @@
 </dd></dl>
 
 <dl class="method">
+<dt>
+<code class="sig-name descname">explore</code><span class="sig-paren">(</span><em class="sig-param">timer=None</em>, <em class="sig-param">exploreLimit=None</em><span class="sig-paren">)</span></dt>
+<dd><p>Starts exploration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timer</strong> – Integer. Time in seconds. Total time for robot to explore. Includes time to return</p></li>
+<li><p><strong>exploreLimit</strong> – Float. Between 0.0 to 1.0. Percentage of map to explore before exploration is declared done.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.Robot.faceDirection">
+<code class="sig-name descname">faceDirection</code><span class="sig-paren">(</span><em class="sig-param">orient</em><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.faceDirection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns the robot to face the given direction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>orient</strong> – Integer. Direction for robot to face.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.Robot.findpath">
+<code class="sig-name descname">findpath</code><span class="sig-paren">(</span><em class="sig-param">start=None, goal=[13, 18], waypoint=None, move=True, rowgoal=None</em><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.findpath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method for robot to find shortest path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> – [x,y] coordinates. Defaults to current robot position.</p></li>
+<li><p><strong>goal</strong> – [x,y] coordinates. Defaults to [13,18].</p></li>
+<li><p><strong>waypoint</strong> – [x,y] coordinates. Defaults to None.</p></li>
+<li><p><strong>move</strong> – Boolean. Defaults True. If True, moves robot after finding shortest path.</p></li>
+<li><p><strong>rowgoal</strong> – Integer. y-axis. Defaults None. Ends findpath() early if y-axis is reached.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.Robot.forward">
+<code class="sig-name descname">forward</code><span class="sig-paren">(</span><em class="sig-param">steps=1</em><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Moves the robot forward.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>steps</strong> – Integer. Defaults to 1. Number of steps forward to take</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="robot.Robot.getBaseLine">
 <code class="sig-name descname">getBaseLine</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.getBaseLine" title="Permalink to this definition">¶</a></dt>
-<dd><p>baseline refers to the left,middle &amp; right (from the robot’s perspective) tiles
+<dd><p>Baseline refers to the left,middle &amp; right (from the robot’s perspective) tiles
 immediately in front of robot and the 3x3 space the robot is occupying.</p>
-<p>baseline_dict contains the tiles to search. For example, if facing right, search top, middle &amp; bottom tiles</p>
+<p>Returns a string compatible for eval(). Expects [x,y] to be declared beforehand.</p>
+<p>Example string:
+“[[x-1,y+2],[x,y+2],[x+1,y+2]]”</p>
+<p>Example usage:
+x,y = self.pos
+baseline = getBaseLine()
+tilelist = eval(baseline)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="robot.Robot.getBaseLineVert">
 <code class="sig-name descname">getBaseLineVert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.getBaseLineVert" title="Permalink to this definition">¶</a></dt>
-<dd><p>baseline_vert refers to baseline, but vertical. Refer to getBaseLine() above</p>
+<dd><p>baseline_vert refers to baseline, but vertical. Refer to getBaseLine() above.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="robot.Robot.getTileRange">
 <code class="sig-name descname">getTileRange</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.getTileRange" title="Permalink to this definition">¶</a></dt>
-<dd><p>direction of tiles to search. if facing right, search range of tiles right of robot.</p>
+<dd><p>Range of tiles to search. If facing right, search range of tiles right of robot.</p>
+<p>Returns a string compatible for eval(). Expects [x,y] to be declared beforehand.</p>
+<p>Example string:
+“[x,y+1]”</p>
+<p>Example usage:
+x,y = self.pos
+tilerange=getTileRange</p>
+<dl class="simple">
+<dt>for i in range(0,5):</dt><dd><p>nextTile = eval(tilerange)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="robot.Robot.getTileRangeVert">
 <code class="sig-name descname">getTileRangeVert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.getTileRangeVert" title="Permalink to this definition">¶</a></dt>
-<dd><p>Same as getTileRange() above, but search range of tiles to left of robot</p>
+<dd><p>Search range of tiles to left of robot. Refer to getTileRange() above.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.Robot.readDirections">
+<code class="sig-name descname">readDirections</code><span class="sig-paren">(</span><em class="sig-param">directions</em><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.readDirections" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads a list of directions and converts it into instructions like forward, turn left, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>directions</strong> – list of directions/integers.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.Robot.setAttributes">
+<code class="sig-name descname">setAttributes</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.setAttributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set class attributes. Accepts kwargs of robot attributes.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.Robot.turnLeft">
+<code class="sig-name descname">turnLeft</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.turnLeft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns the robot left.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.Robot.turnRight">
+<code class="sig-name descname">turnRight</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.turnRight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Turns the robot right.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="robot.Robot.updatemap">
+<code class="sig-name descname">updatemap</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#robot.Robot.updatemap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates map by reading sensors.</p>
 </dd></dl>
 
 </dd></dl>

@@ -37,27 +37,133 @@
 <dl class="class">
 <dt id="explorer.Explorer">
 <em class="property">class </em><code class="sig-prename descclassname">explorer.</code><code class="sig-name descname">Explorer</code><span class="sig-paren">(</span><em class="sig-param">robot</em>, <em class="sig-param">timer=None</em>, <em class="sig-param">exploreLimit=None</em><span class="sig-paren">)</span><a class="headerlink" href="#explorer.Explorer" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="explorer.Explorer.hugleftcheckstepstoterminate">
-<code class="sig-name descname">hugleftcheckstepstoterminate</code><span class="sig-paren">(</span><em class="sig-param">turns</em>, <em class="sig-param">startpos</em>, <em class="sig-param">endCondition=None</em><span class="sig-paren">)</span><a class="headerlink" href="#explorer.Explorer.hugleftcheckstepstoterminate" title="Permalink to this definition">¶</a></dt>
-<dd><p>check next tiles is in terminate condition</p>
+<dd><p>Explorer class. Used during exploration</p>
+<dl class="attribute">
+<dt id="explorer.Explorer.robot">
+<code class="sig-name descname">robot</code><a class="headerlink" href="#explorer.Explorer.robot" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instance of the Robot Object. Expects a robot object during initialisation</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explorer.Explorer.state">
+<code class="sig-name descname">state</code><a class="headerlink" href="#explorer.Explorer.state" title="Permalink to this definition">¶</a></dt>
+<dd><p>String. Shows current exploration state. Possible states are:
+“Initial” - initial state when explorer is just created.
+“LeftWallHugging” - Robot is performing left wall hugging algorithm
+“Spelunking” - Robot traverses to unexplored tiles in centre of map
+“Out of time. Returning to start” - Out of time. Robot returns to starting position.
+“Exploration done. Returning to start” - Exploration done. Robot returns to starting position.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explorer.Explorer.startTime">
+<code class="sig-name descname">startTime</code><a class="headerlink" href="#explorer.Explorer.startTime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time object. Time when exploration started. If exploration has not started, returns None.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explorer.Explorer.timer">
+<code class="sig-name descname">timer</code><a class="headerlink" href="#explorer.Explorer.timer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integer. Defaults 500. Total time allowed for exploration in seconds. Includes timeToReturn. Thus, timer must be more than timeToReturn.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explorer.Explorer.timeToReturn">
+<code class="sig-name descname">timeToReturn</code><a class="headerlink" href="#explorer.Explorer.timeToReturn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Integer. Defaults to 60. Time given to robot to return to start. Occupies timer. Thus, timer must be more than timeToReturn.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explorer.Explorer.exploreLimit">
+<code class="sig-name descname">exploreLimit</code><a class="headerlink" href="#explorer.Explorer.exploreLimit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Float. Defaults to 1.0. Percentage of map to explore. Cancels exploration if percentage reached.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="explorer.Explorer.exploreDone">
+<code class="sig-name descname">exploreDone</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#explorer.Explorer.exploreDone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return True if exploration done or exploration &gt; exploreLimit.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="explorer.Explorer.getRemainingTime">
+<code class="sig-name descname">getRemainingTime</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#explorer.Explorer.getRemainingTime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns time object showing remaining exploration time left.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="explorer.Explorer.hugleftprep">
 <code class="sig-name descname">hugleftprep</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#explorer.Explorer.hugleftprep" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="simple">
-<dt>Prepares robot for left wall hugging algorithm.</dt><dd><p>Expects an adjacent wall before starting.</p>
+<dd><p>Prepares robot for left wall hugging algorithm.
+Expects an adjacent wall before starting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>Warning</strong> – Left Wall Hugging Cancelled. No adjacent walls found.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="explorer.Explorer.hugleftwall">
+<code class="sig-name descname">hugleftwall</code><span class="sig-paren">(</span><em class="sig-param">turns=0</em>, <em class="sig-param">startpos=None</em>, <em class="sig-param">endCondition=None</em><span class="sig-paren">)</span><a class="headerlink" href="#explorer.Explorer.hugleftwall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursive function. Ends when robot is back to initial starting position and orientation.
+Also accepts a different end condition as argument.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>none</strong> – no arguments</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>Warning</strong> – Left Wall Hugging Cancelled. No adjacent walls found.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>turns</strong> – Integer. Defaults to 0. Do not provide an argument. Used by function to count number of turns made since function was first called.</p></li>
+<li><p><strong>startpos</strong> – [x,y] coordinates. Do not provide an argument. Starting pos of robot when function was called.</p></li>
+<li><p><strong>endCondition</strong> – String. Expects a boolean string. Calls eval() on string to determine True/False. If True, end function.</p></li>
+</ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="explorer.Explorer.noTimeLeft">
+<code class="sig-name descname">noTimeLeft</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#explorer.Explorer.noTimeLeft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns True if out of time. Includes time to return in calculations.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="explorer.Explorer.setExploreLimit">
+<code class="sig-name descname">setExploreLimit</code><span class="sig-paren">(</span><em class="sig-param">exploreLimit</em><span class="sig-paren">)</span><a class="headerlink" href="#explorer.Explorer.setExploreLimit" title="Permalink to this definition">¶</a></dt>
+<dd><p>sets self.exploreLimit</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exploreLimit</strong> – Float. Percentage of map to explore</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="explorer.Explorer.setTime">
+<code class="sig-name descname">setTime</code><span class="sig-paren">(</span><em class="sig-param">timer</em><span class="sig-paren">)</span><a class="headerlink" href="#explorer.Explorer.setTime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets self.timer</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>timer</strong> – Integer. Time for exploration in seconds.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="explorer.Explorer.spelunk">
+<code class="sig-name descname">spelunk</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#explorer.Explorer.spelunk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Algorithm for robot to explore unexplored tiles in centre of arena.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="explorer.Explorer.spelunkprep">
+<code class="sig-name descname">spelunkprep</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#explorer.Explorer.spelunkprep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Part of spelunking algorithm. Prepares the robot for spelunking.</p>
+<p>Finds unexplore Tile and moves robot to the same y-axis as Tile. Sets the robot to face unexplored tile.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="explorer.Explorer.start">
+<code class="sig-name descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#explorer.Explorer.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call this method to begin exploration</p>
 </dd></dl>
 
 </dd></dl>

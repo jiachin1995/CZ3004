@@ -20,7 +20,7 @@ class Robot:
     Attributes:
         pos: a 15x20 array. Contains None, 0 or 1 as values.
         orientation: Centre of 3x3 start area. Default = [1,1]
-        explore: if True, update map after every movement
+        explore: if True, update map after every movement. Explorer sets this to False after finishing exploration.
         map: Map object. Refer to Map.py
         sensors: Sensors object. Refer to sensors.py
         coordinator: Coordinator object. Refer to coordinator.py
@@ -34,7 +34,8 @@ class Robot:
 
     
     def __init__(self, fakeRun= False, fakeMap=None, stepsPerSec=1, **kwargs):  
-        """ Constructor. Accepts attributes as kwargs.
+        """ 
+        Constructor. Accepts attributes as kwargs.
             
         Args:
             fakeRun: set True if running simulation. Remember to give fake map as input. I.e: fakeMap = fakemap
@@ -64,12 +65,70 @@ class Robot:
         self.pathfinder = Pathfinder(self.map)
     
             
-    def explore(self, timer = None, exploreLimit = None):        
+    def explore(self, timer = None, exploreLimit = None): 
+        """ 
+        Starts exploration.
+        
+        Args:
+            timer: Integer. Time in seconds. Total time for robot to explore. Includes time to return
+            exploreLimit: Float. Between 0.0 to 1.0. Percentage of map to explore before exploration is declared done.
+        """      
         dora  = Explorer(self, timer, exploreLimit)
         dora.start()
 
+    def faceDirection(self, orient):
+        """
+        Turns the robot to face the given direction.
+        
+        Args:
+            orient: Integer. Direction for robot to face.
+        """
+        if orient == self.orientation:
+            return
+        elif orient == (self.orientation + 1) % 4:
+            self.turnRight()
+        elif orient == (self.orientation + 3) % 4:
+            self.turnLeft()
+        else:
+            self.turnRight()
+            self.turnRight()
+  
+    def findpath(self, start=None, goal=[13,18], waypoint=None, move=True, rowgoal=None):
+        """
+        Method for robot to find shortest path.
+        
+        Args:
+            start: [x,y] coordinates. Defaults to current robot position.
+            goal:  [x,y] coordinates. Defaults to [13,18].
+            waypoint:  [x,y] coordinates. Defaults to None.
+            move: Boolean. Defaults True. If True, moves robot after finding shortest path.
+            rowgoal: Integer. y-axis. Defaults None. Ends findpath() early if y-axis is reached.
+        """
+        if start is None:
+            start = self.pos
+            orientation = self.orientation
+        path,directions = self.pathfinder.findpath(start, goal, waypoint, orientation)
+        
+        if move:
+            instructions = self.readDirections(directions)
+            
+            for i in instructions:
+                if rowgoal and self.pos[1] == rowgoal: break
+                exec(i)
+            
+        if settings.logging:
+            print("Movement: findpath() to " + str(goal)+ " with rowgoal " + str(rowgoal))
+            
+            
+        return [path, directions]
     
-    def forward(self, steps = 1, updatemap=False):
+    def forward(self, steps = 1):
+        """ 
+        Moves the robot forward.
+        
+        Args:
+            steps: Integer. Defaults to 1. Number of steps forward to take
+        """  
         self.coordinator.forward(steps)
         
         x,y = self.pos
@@ -90,11 +149,21 @@ class Robot:
         
     def getBaseLine(self):
         """
-        baseline refers to the left,middle & right (from the robot's perspective) tiles 
+        Baseline refers to the left,middle & right (from the robot's perspective) tiles 
         immediately in front of robot and the 3x3 space the robot is occupying. 
         
-        baseline_dict contains the tiles to search. For example, if facing right, search top, middle & bottom tiles
+        Returns a string compatible for eval(). Expects [x,y] to be declared beforehand.
+        
+        Example string:
+        "[[x-1,y+2],[x,y+2],[x+1,y+2]]"
+        
+        Example usage:
+        x,y = self.pos
+        baseline = getBaseLine()
+        tilelist = eval(baseline)
+        
         """
+        #baseline_dict contains the tiles to search. For example, if facing right, search top, middle & bottom tiles
         x,y =self.pos        
         baseline_dict = {
             0: "[[x-1,y+2],[x,y+2],[x+1,y+2]]",
@@ -110,7 +179,7 @@ class Robot:
   
     def getBaseLineVert(self):
         """
-        baseline_vert refers to baseline, but vertical. Refer to getBaseLine() above
+        baseline_vert refers to baseline, but vertical. Refer to getBaseLine() above.
         """
         x,y =self.pos    
         baseline_vert_dict = {
@@ -127,7 +196,19 @@ class Robot:
         
     def getTileRange(self):
         """
-        direction of tiles to search. if facing right, search range of tiles right of robot.
+        Range of tiles to search. If facing right, search range of tiles right of robot.
+        
+        Returns a string compatible for eval(). Expects [x,y] to be declared beforehand.
+        
+        Example string:
+        "[x,y+1]"
+        
+        Example usage:
+        x,y = self.pos
+        tilerange=getTileRange
+        
+        for i in range(0,5):
+            nextTile = eval(tilerange)
         """
     
         tileRange_dict = {
@@ -142,7 +223,7 @@ class Robot:
         
     def getTileRangeVert(self):
         """
-            Same as getTileRange() above, but search range of tiles to left of robot
+        Search range of tiles to left of robot. Refer to getTileRange() above.
         """
         tileRange_vert_dict = {
             0: "[x-1,y]",
@@ -154,36 +235,13 @@ class Robot:
     
         return tileRange_vert
   
-    def faceDirection(self, orient):
-        if orient == self.orientation:
-            return
-        elif orient == (self.orientation + 1) % 4:
-            self.turnRight()
-        elif orient == (self.orientation + 3) % 4:
-            self.turnLeft()
-        else:
-            self.turnRight()
-            self.turnRight()
-  
-    def findpath(self, start=None, goal=[13,18], waypoint=None, move=True, rowgoal=None):
-        if start is None:
-            start = self.pos
-        path,directions = self.pathfinder.findpath(start, goal, waypoint)
-        
-        if move:
-            instructions = self.readDirections(directions)
-            
-            for i in instructions:
-                if rowgoal and self.pos[1] == rowgoal: break
-                exec(i)
-            
-        if settings.logging:
-            print("Movement: findpath() to " + str(goal)+ " with rowgoal " + str(rowgoal))
-            
-            
-        return [path, directions]
-  
     def readDirections(self, directions):
+        """
+        Reads a list of directions and converts it into instructions like forward, turn left, etc.
+        
+        Args:
+            directions: list of directions/integers. 
+        """
         prev = self.orientation
         steps = 0
         
@@ -230,12 +288,17 @@ class Robot:
         
   
     def setAttributes(self, **kwargs):
-        # kwargs is a dict of the keyword args passed to the function. Expected to contain robot attributes
+        """
+        Set class attributes. Accepts kwargs of robot attributes.
+        """
         for key, value in kwargs:
             concat = "self."+key+" = " + value
             eval(concat)                    #Set attributes. Evaluate self.key = value  
             
-    def turnLeft(self, updatemap=False):
+    def turnLeft(self):
+        """
+        Turns the robot left.
+        """
         self.coordinator.turnLeft()
         self.orientation = (self.orientation + 3) % 4
 
@@ -244,7 +307,10 @@ class Robot:
         if settings.logging:
             print("Movement: Robot Turns Left")
     
-    def turnRight(self, updatemap=False):
+    def turnRight(self):
+        """
+        Turns the robot right.
+        """
         self.coordinator.turnRight()
         self.orientation = (self.orientation + 1) % 4
 
@@ -254,6 +320,9 @@ class Robot:
             print("Movement: Robot Turns Right")
  
     def updatemap(self):
+        """
+        Updates map by reading sensors.
+        """
         #update robot's position as free space on map
         x,y = self.pos        
         freeTiles = [
