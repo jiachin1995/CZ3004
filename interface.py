@@ -52,7 +52,7 @@ def explorelimit_test():
        print("That's not a float!")
        return
 
-    termCondition = "robot.map.explored_percent()>"+ str(val)+" and robot.pos == [1,1]"
+    termCondition = "robot.explorer.state == 'Exploration done' and robot.pos == [1,1]"
 
     t1 = Thread(target=robot.explore, kwargs={'exploreLimit': val })
     t2 = Thread(target=mapGUI, args=(robot,termCondition,))
@@ -110,6 +110,29 @@ def loadmap():
 def printmap():
     map.printmap()
 
+def timer_test():
+    userinput = input("Enter timer in seconds (Integer):  \n")  
+    
+    try:
+       val = int(userinput)
+    except ValueError:
+       print("That's not an int!")
+       return
+    
+    termCondition = "robot.explorer.state == 'Out of time' and robot.pos == [1,1]"
+
+    t1 = Thread(target=robot.explore, kwargs={'timer': val })
+    t2 = Thread(target=mapGUI, args=(robot,termCondition,))
+
+    #start thread
+    t1.start()
+    t2.start()
+
+    # Waiting for threads to finish execution...
+    t1.join()
+    t2.join()
+
+
 robot.map.printmap()
 print("The Map above is the virtual arena.")
 print(robot.pos)
@@ -121,10 +144,11 @@ prompt = "Choose an option:   \n  \
            0: break             \n  \
            1: simulate explore with steps per second  \n  \
            2: simulate explore with coverage limit    \n  \
-           3: after running explore (option 1), show fastest path   \n  \
-           4: show virtual arena    \n  \
-           5: show explored map     \n  \
-           6: load map from file    \n  \
+           3: simulate explore with timer \n  \
+           4: after running explore (option 1), show fastest path   \n  \
+           5: show virtual arena    \n  \
+           6: show explored map     \n  \
+           7: load map from file    \n  \
 "
 
 
@@ -132,10 +156,11 @@ switch= {
     0: "break",
     1: stepsPerSec_test,
     2: explorelimit_test,
-    3: fastestpath_test,
-    4: printmap,
-    5: robot.map.printmap,
-    6: loadmap,
+    3: timer_test,
+    4: fastestpath_test,
+    5: printmap,
+    6: robot.map.printmap,
+    7: loadmap,
 }
 while True:
     userinput = input(prompt)      

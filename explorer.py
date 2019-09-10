@@ -13,8 +13,8 @@ class Explorer:
                 "Initial" - initial state when explorer is just created.
                 "LeftWallHugging" - Robot is performing left wall hugging algorithm
                 "Spelunking" - Robot traverses to unexplored tiles in centre of map
-                "Out of time. Returning to start" - Out of time. Robot returns to starting position.
-                "Exploration done. Returning to start" - Exploration done. Robot returns to starting position.
+                "Out of time" - Out of time. Robot returns to starting position.
+                "Exploration done" - Exploration done. Robot returns to starting position.
             startTime: Time object. Time when exploration started. If exploration has not started, returns None.
             timer: Integer. Defaults 500. Total time allowed for exploration in seconds. Includes timeToReturn. Thus, timer must be more than timeToReturn.
             timeToReturn: Integer. Defaults to 60. Time given to robot to return to start. Occupies timer. Thus, timer must be more than timeToReturn.
@@ -29,7 +29,7 @@ class Explorer:
     timeToReturn = 60       #buffer time to return to start, in seconds
     exploreLimit = 1.0
 
-    def __init__(self, robot, timer=None, exploreLimit = None):
+    def __init__(self, robot):
         """
         Constructor. Expects a robot argument
         
@@ -43,11 +43,6 @@ class Explorer:
             print("====== Starting Explorer =======")
             print("New State: " + self.state)
     
-        if timer:
-            self.setTime(timer)
-            
-        if exploreLimit:
-            self.setExploreLimit(exploreLimit)
     
     def start(self):
         """
@@ -65,12 +60,13 @@ class Explorer:
         
         
         if self.noTimeLeft():
-            self.state = "Out of time. Returning to start"
+            self.state = "Out of time"
         else:
-            self.state = "Exploration done. Returning to start"
+            self.state = "Exploration done"
            
         if settings.logging:
             print(self.state)
+            print("Returning to start")
             print("Remaining Time left: " + str(self.getRemainingTime()))
             print(self.robot.pos)
             print(self.robot.orientation)
@@ -220,6 +216,9 @@ class Explorer:
         Args:
             timer: Integer. Time for exploration in seconds.
         """
+        if timer is None:
+            return
+        
         if timer < self.timeToReturn:
             raise Exception("Time given less than return time. Give more time for exploration")
         
@@ -241,6 +240,12 @@ class Explorer:
         Args:
             exploreLimit: Float. Percentage of map to explore
         """
+        if exploreLimit is None:
+            return
+            
+        if exploreLimit < 0.0 or exploreLimit > 1.0:
+            raise Exception("Explore Limit out of range. Please input between 0.0 and 1.0")
+        
         self.exploreLimit = exploreLimit
        
     def spelunk(self):

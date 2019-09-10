@@ -24,6 +24,8 @@ class Robot:
         map: Map object. Refer to Map.py
         sensors: Sensors object. Refer to sensors.py
         coordinator: Coordinator object. Refer to coordinator.py
+        pathfinder: Pathfinder object. Refer to pathfinder.py
+        explorer: Explorer Object. Refer to explorer.py
     """
     pos = [1,1]
     orientation = 0
@@ -31,6 +33,8 @@ class Robot:
     map = Map()
     sensors = Sensors()
     coordinator = Coordinator()
+    pathfinder = None
+    explorer = None
 
     
     def __init__(self, fakeRun= False, fakeMap=None, stepsPerSec=1, **kwargs):  
@@ -64,6 +68,9 @@ class Robot:
         #initialise pathfinder
         self.pathfinder = Pathfinder(self.map)
     
+        #initialise explorer
+        self.explorer = Explorer(self)
+
             
     def explore(self, timer = None, exploreLimit = None): 
         """ 
@@ -73,8 +80,10 @@ class Robot:
             timer: Integer. Time in seconds. Total time for robot to explore. Includes time to return
             exploreLimit: Float. Between 0.0 to 1.0. Percentage of map to explore before exploration is declared done.
         """      
-        dora  = Explorer(self, timer, exploreLimit)
-        dora.start()
+        self.explorer.setTime(timer)
+        self.explorer.setExploreLimit(exploreLimit)
+        
+        self.explorer.start()
 
     def faceDirection(self, orient):
         """
