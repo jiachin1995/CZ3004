@@ -5,11 +5,11 @@ from robot import Robot
 from threading import Thread
 import time
 
-
 map = Map("sample_maze.txt")
 robot = Robot(fakeRun=True, fakeMap = map)
+UPDATE_RATE = 10000
 
-class Maze:
+class Maze(tkinter.Frame):
         def __init__(self, parent):
                 self.margin = 30
                 self.pixel_width = 500
@@ -63,6 +63,7 @@ class Maze:
                         answer = str(floatme.get())
                         wow = int(answer)
                         robot.explore(timer = wow, exploreLimit = None)
+                        self.update_map(self)
                 work = Button(root, text ="submit", width=10, height=1,command = do_it)
                 work.place(x=40, y=85)
 
@@ -77,13 +78,14 @@ class Maze:
                         wow = int(answer)
                         robot.coordinator.stepsPerSec = wow
                         robot.explore()
+                        self.update_map(self)
                 work = Button(root, text ="submit", width=10, height=1,command = do_it)
                 work.place(x=40, y=85)
 
         def actual_loading(self,event):
                 root.title('Select the text file')
                 heading = Label(root, text = "enter the text file").place(x=30,y=40)
-                floatme = StringVar(value='sample_maze.txt')
+                floatme = StringVar(value="sample_maze.txt")
                 floatentry = Entry(root, textvariable = floatme, width=25)
                 floatentry.place(x=10,y =60)
                 def do_it():
@@ -211,9 +213,6 @@ class Maze:
 
                 
         def draw_cell(self, i, j, cellsize, color = ''):
-                j = 19-j
-                
-                
                 x1 = self.margin + i * cellsize
                 y1 = self.margin + j * cellsize
                 x2 = x1 + cellsize
@@ -227,7 +226,7 @@ class Maze:
                 cellsize = self.pixel_width/ncell
                 self.maze = [[0] * ncell for x in range(ncell)]
                 for i in range(15):
-                        for j in reversed(range(0,20)):
+                        for j in range(0,20):
                                 self.draw_cell(i, j, cellsize)
                                 
         def create_robot(self, event, i = robot.pos[0], j = robot.pos[1], cellsize = 25, color = 'purple'):
@@ -264,6 +263,7 @@ class Maze:
                 
         def robot_movement(self, event):
                 robot.explore()
+                self.update_map(event)
 
 
         def update_robotpos(self,event):
@@ -271,8 +271,6 @@ class Maze:
 
                 
         def update_map(self,event):
-                next_map = []
-                next_map = robot.updatemap()
                 self.loadmap()
                 self.update_robotpos(event)
 
@@ -290,22 +288,31 @@ class Maze:
                         answer = str(floatme.get())
                         wow = float(answer)
                         robot.explore(timer=None, exploreLimit = wow)
+                        self.update_map(self)
                 work = Button(root, text ="submit", width=10, height=1,command = do_it)
                 work.place(x=40, y=60)
                 
         def mapGUI(self,robot):
-                root.after(1000, self.update_map)
+                time.sleep(120)
+                self.update_map(self)
                 
         def realexplore(self, event):
                 
-                t1 = Thread(target = self.robot.explore, args = (None))
-                t2 = Thread(target = self.mapGUI(self), args = (robot, event))
+                t1 = Thread(target = self.robot_movement(event), args = (None))
+                t2 = Thread(target = self.updater(), args = (robot, event))
 
-                t1.start()
                 t2.start()
+                print(t2)
+                t1.start()
+                print(t1)
 
-                t1.join()
                 t2.join()
+                t1.join()
+
+                
+        def updater(self):
+                self.mapGUI(self)
+                self.after(UPDATE_RATE, self.updater)
 
 if __name__ == '__main__':
         root = Tk()
@@ -314,6 +321,8 @@ if __name__ == '__main__':
         myCanvas.pack()
         maze.draw_maze(20)
         root.mainloop()
+
+
 
 
 
