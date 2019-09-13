@@ -93,6 +93,7 @@ class Sensors:
         x, y = self.robot.pos
 
         baseline_vert = self.robot.getBaseLineVert()
+        baseline_vert.pop(1)
         tileRange_vert = self.robot.getTileRangeVert()
         
         x,y = baseline_vert.pop(0)

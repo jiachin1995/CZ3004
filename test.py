@@ -41,12 +41,12 @@ map = Map('sample_maze.txt')
 # robot.map.printmap()
 
 """code to check explorer.py"""
-# robot = Robot(fakeRun=True, fakeMap = map)
-# robot.explore()
+robot = Robot(fakeRun=True, fakeMap = map)
+robot.explore()
 
-# robot.map.printmap()
-# print(robot.pos)
-# print(robot.orientation)
+robot.map.printmap()
+print(robot.pos)
+print(robot.orientation)
 
 
 """code to check explorer + timer"""

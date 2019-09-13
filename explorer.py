@@ -99,7 +99,7 @@ class Explorer:
             else: return             #prep failed. Cancel left wall hugging
         
         #if left is free, turn left, move forward once
-        if not self.robot.sensors.isLeftBlocked():
+        if not self.robot.sensors.isLeftBlocked() and not self.robot.isLeftBlocked():
             self.robot.turnLeft()                #no need to update map cause next step will update instead.
             self.robot.forward()   #in theory, there should be at least one row of free space. 
             turns = (turns + 3) % 4

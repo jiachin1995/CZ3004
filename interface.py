@@ -110,6 +110,12 @@ def loadmap():
 def printmap():
     map.printmap()
 
+
+def printMDF():
+    print("Explored map string is:")
+    for item in robot.map.convert():
+        print(item)
+
 def timer_test():
     userinput = input("Enter timer in seconds (Integer):  \n")  
     
@@ -149,6 +155,7 @@ prompt = "Choose an option:   \n  \
            5: show virtual arena    \n  \
            6: show explored map     \n  \
            7: load map from file    \n  \
+           8: print MDF           \n  \
 "
 
 
@@ -161,6 +168,7 @@ switch= {
     5: printmap,
     6: robot.map.printmap,
     7: loadmap,
+    8: printMDF,
 }
 while True:
     userinput = input(prompt)      

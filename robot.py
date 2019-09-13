@@ -192,10 +192,10 @@ class Robot:
         """
         x,y =self.pos    
         baseline_vert_dict = {
-            0: "[[x-2,y+1],[x-2,y-1]]",
-            1: "[[x+1,y+2],[x-1,y+2]]",
-            2: "[[x+2,y-1],[x+2,y+1]]",
-            3: "[[x-1,y-2],[x+1,y-2]]"
+            0: "[[x-2,y+1], [x-2,y], [x-2,y-1]]",
+            1: "[[x+1,y+2], [x,y+2], [x-1,y+2]]",
+            2: "[[x+2,y-1], [x+2,y], [x+2,y+1]]",
+            3: "[[x-1,y-2], [x,y-2], [x+1,y-2]]"
         }
         baseline_vert = eval(
                 baseline_vert_dict[self.orientation]
@@ -243,6 +243,20 @@ class Robot:
         tileRange_vert = tileRange_vert_dict[self.orientation]    
     
         return tileRange_vert
+  
+    def isLeftBlocked(self):
+        """
+        Checks whether left side is blocked by reading map.
+        """
+        x,y = self.pos
+        
+        tiles = self.getBaseLineVert()
+        
+        for pos in tiles:
+            if self.map.getTile(pos) == 1:
+                return True
+        
+        return False
   
     def readDirections(self, directions):
         """
@@ -364,6 +378,7 @@ class Robot:
         left_terrain = self.sensors.getLeft()
         
         baseline_vert = self.getBaseLineVert()
+        baseline_vert.pop(1)
         tileRange_vert = self.getTileRangeVert()
         
         for terr in left_terrain:              #for every column in left_terrain
