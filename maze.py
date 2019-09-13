@@ -7,10 +7,12 @@ import time
 
 map = Map("sample_maze.txt")
 robot = Robot(fakeRun=True, fakeMap = map)
-UPDATE_RATE = 10000
+UPDATE_RATE = 1000
 
 class Maze(tkinter.Frame):
         def __init__(self, parent):
+                super(Maze, self).__init__()
+        
                 self.margin = 30
                 self.pixel_width = 500
                 self.canvas = Canvas(parent, width = self.pixel_width + 2 * self.margin,
@@ -63,7 +65,7 @@ class Maze(tkinter.Frame):
                         answer = str(floatme.get())
                         wow = int(answer)
                         robot.explore(timer = wow, exploreLimit = None)
-                        self.update_map(self)
+                        
                 work = Button(root, text ="submit", width=10, height=1,command = do_it)
                 work.place(x=40, y=85)
 
@@ -78,7 +80,7 @@ class Maze(tkinter.Frame):
                         wow = int(answer)
                         robot.coordinator.stepsPerSec = wow
                         robot.explore()
-                        self.update_map(self)
+                        
                 work = Button(root, text ="submit", width=10, height=1,command = do_it)
                 work.place(x=40, y=85)
 
@@ -263,7 +265,6 @@ class Maze(tkinter.Frame):
                 
         def robot_movement(self, event):
                 robot.explore()
-                self.update_map(event)
 
 
         def update_robotpos(self,event):
@@ -288,26 +289,21 @@ class Maze(tkinter.Frame):
                         answer = str(floatme.get())
                         wow = float(answer)
                         robot.explore(timer=None, exploreLimit = wow)
-                        self.update_map(self)
+
                 work = Button(root, text ="submit", width=10, height=1,command = do_it)
                 work.place(x=40, y=60)
                 
         def mapGUI(self,robot):
-                time.sleep(120)
                 self.update_map(self)
                 
         def realexplore(self, event):
+                self.updater()
                 
-                t1 = Thread(target = self.robot_movement(event), args = (None))
-                t2 = Thread(target = self.updater(), args = (robot, event))
-
-                t2.start()
-                print(t2)
+                t1 = Thread(target=robot.explore, args=(None,))
+                
                 t1.start()
-                print(t1)
 
-                t2.join()
-                t1.join()
+
 
                 
         def updater(self):
