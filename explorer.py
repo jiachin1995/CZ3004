@@ -106,27 +106,30 @@ class Explorer:
             
         #elif if front is free, move forward (up to 3)
         elif not self.robot.sensors.isFrontBlocked():
-            front,back = self.robot.sensors.getLeft()
-            if front != 0: 
-                steps = 1        #we go 1 step at a time to find where left wall ends
-            else:
-                front_terrain = self.robot.sensors.getFront()
-                steps = min(front_terrain)      #go as far as possible
-                if steps>3: steps = 3           #we do this as we have to check & hug left wall every 3 steps
+            self.robot.forward()
+        
+            """Unused as it causes exploration to occasionally skip detection of certain walls on left."""
+            # front,back = self.robot.sensors.getLeft()
+            # if front != 0: 
+                # steps = 1        #we go 1 step at a time to find where left wall ends
+            # else:
+                # front_terrain = self.robot.sensors.getFront()
+                # steps = min(front_terrain)      #go as far as possible
+                # if steps>3: steps = 3           #we do this as we have to check & hug left wall every 3 steps
             
-                #check next tiles whether terminate condition is in next few tiles
-                if steps>1:
-                    result = self._hugleftcheckstepstoterminate(turns, startpos, endCondition=endCondition)
-                    if result:
-                        steps = result
+                # #check next tiles whether terminate condition is in next few tiles
+                # if steps>1:
+                    # result = self._hugleftcheckstepstoterminate(turns, startpos, endCondition=endCondition)
+                    # if result:
+                        # steps = result
             
-            self.robot.forward(steps)
+            # self.robot.forward(steps)
 
         #if both failed, turn right
         else:
             self.robot.turnRight()
-            turns = (turns + 3) % 4
-
+            turns = (turns + 1) % 4
+ 
         #check terminate or continue. if turns == 0, it means robot is facing starting orientation.
         x,y = self.robot.pos
         if endCondition and eval(endCondition):
