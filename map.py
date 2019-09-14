@@ -24,6 +24,8 @@ class Map:
     start = [1, 1]
     goal = [13, 18]
 
+    islands = None
+
     def __init__(self, load=None, ):
         """
         Constructor. Creates a 15x20 map. 
@@ -144,7 +146,56 @@ class Map:
                         x = x+1
                         
                     return [x, y]
-             
+       
+    def getObstacles(self):
+        """Return all obstacles in a list"""
+        obs_list = []
+        for y in range(0, 20):
+            for x in range(0,15):
+                if self.getTile([x,y]) == 1: 
+                    obs_list.append([x,y])
+       
+        return obs_list
+        
+    def getIslands(self):
+        """Return all obstacles as islands(groups of adjacent obstacles)"""
+        if self.islands:
+            return self.islands
+        
+        isle_list = []
+
+        obs_list = self.getObstacles()
+        for obs in obs_list:
+            self.addIsland(obs, obs_list, isle_list)
+        
+        return isle_list
+        
+    def addIsland(self, obs, obs_list, isle_list, isle=[]):
+        isle = [obs]
+        obs_list.remove(obs)
+        
+        bool = True
+        while bool:
+            bool = False
+            x,y = obs
+            
+            neighbours = [
+                [x,y+1],
+                [x,y-1],
+                [x+1,y],
+                [x-1,y],
+            ]
+            
+            for n in neighbours:
+                if n in obs_list:
+                    obs = n
+                    obs_list.remove(obs)
+                    isle.append(obs)
+                    
+                    bool=True
+
+        isle_list.append(isle)
+        
     def getTile(self, pos):             
         """
         Given x,y coordinates, return value at that tile

@@ -5,25 +5,28 @@ from robot import Robot
 
 map = Map('sample_maze.txt')
 
+map.printmap()
+print(map.getIslands())
+
 """ code to create mazes"""
 # map = [[0 for _ in range(15)] for _ in range(20)]
 # map = Map(map)
 # poslist = [
-        # [12,2],
-        # [8,3],
-        # [8,4],
-        # [8,5],
-        # [0,7], [1,7], [2,7],
-        # [4,11], [5,11], [6,11], [7,11], [8,11], [9,11],
-        # [4,12], [5,12], [6,12], [7,12], [8,12], [9,12],
-        # [13,14],
-        # [7,16],
-        # [4,18]
+        # [5,0],
+        # [13,1],
+        # [9,3],
+        # [3,4],[4,4],[5,4],
+        # [11,5], [11,6], [11,7],[11,8],[11,9],[11,10],
+        # [3,9], [3,10], [3,11], [3,12], [3,13], [3,14],
+        # [9,15], [10,15], [11,15], 
+        # [5,16],
+        # [1,18], 
+        # [9,19], 
     # ]
 # valuelist = [1]*len(poslist)
 # map.setTiles(poslist,valuelist)
 # map.printmap()
-# map.save("testmaze3.txt")
+# map.save("testmaze5.txt")
 
 # map.save("sample_maze.txt")
 """code to test pathfinder"""
@@ -41,12 +44,12 @@ map = Map('sample_maze.txt')
 # robot.map.printmap()
 
 """code to check explorer.py"""
-robot = Robot(fakeRun=True, fakeMap = map)
-robot.explore()
+# robot = Robot(fakeRun=True, fakeMap = map)
+# robot.explore()
 
-robot.map.printmap()
-print(robot.pos)
-print(robot.orientation)
+# robot.map.printmap()
+# print(robot.pos)
+# print(robot.orientation)
 
 
 """code to check explorer + timer"""
