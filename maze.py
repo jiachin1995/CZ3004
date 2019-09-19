@@ -30,10 +30,6 @@ class Maze(tkinter.Frame):
                 self.button_solve = Button(parent, text = 'Create robot', pady = 3)
                 self.button_solve.pack(side = RIGHT)
                 self.button_solve.bind("<Button-1>", self.create_robot)
-                
-                self.button_solve = Button(parent, text = 'Exploration Algorithm', pady = 3)
-                self.button_solve.pack(side = RIGHT)
-                self.button_solve.bind("<Button-1>", self.robot_movement)
 
                 self.button_random = Button(parent, text = 'Load Map', pady = 3)
                 self.button_random.pack(side = RIGHT)
@@ -47,7 +43,7 @@ class Maze(tkinter.Frame):
                 self.button_random.pack(side = RIGHT)
                 self.button_random.bind("<Button-1>", self.robotspeed)
 
-                self.button_random = Button(parent, text = 'Real explore', pady = 3)
+                self.button_random = Button(parent, text = 'Explore the arena', pady = 3)
                 self.button_random.pack(side = RIGHT)
                 self.button_random.bind("<Button-1>", self.realexplore)
 
@@ -64,37 +60,24 @@ class Maze(tkinter.Frame):
                 def do_it():
                         answer = str(floatme.get())
                         wow = int(answer)
-                        robot.explore(timer = wow, exploreLimit = None)
+                        self.realexplore2(event,wow)
                         
                 work = Button(root, text ="submit", width=10, height=1,command = do_it)
                 work.place(x=40, y=85)
 
-        def robotspeed(self,event):
-                root.title('Set the robot speed')
-                heading = Label(root, text = "Enter the robot speed").place(x=30,y=40)
-                floatme = IntVar()
-                floatentry = Entry(root, textvariable = floatme, width=25)
-                floatentry.place(x=10,y =60)
-                def do_it():
-                        answer = str(floatme.get())
-                        wow = int(answer)
-                        robot.coordinator.stepsPerSec = wow
-                        robot.explore()
-                        
-                work = Button(root, text ="submit", width=10, height=1,command = do_it)
-                work.place(x=40, y=85)
+
 
         def actual_loading(self,event):
                 root.title('Select the text file')
                 heading = Label(root, text = "enter the text file").place(x=30,y=40)
-                floatme = StringVar(value="sample_maze.txt")
+                floatme = StringVar(value="")
                 floatentry = Entry(root, textvariable = floatme, width=25)
                 floatentry.place(x=10,y =60)
                 def do_it():
                         answer = str(floatme.get())
                         map = Map(answer)
                         try:
-                                map= Map()
+                                map = Map()
                                 ncell=20
                                 self.canvas.focus_set()
                                 cellsize = self.pixel_width/ncell
@@ -215,6 +198,7 @@ class Maze(tkinter.Frame):
 
                 
         def draw_cell(self, i, j, cellsize, color = ''):
+                j = 19 - j
                 x1 = self.margin + i * cellsize
                 y1 = self.margin + j * cellsize
                 x2 = x1 + cellsize
@@ -228,10 +212,11 @@ class Maze(tkinter.Frame):
                 cellsize = self.pixel_width/ncell
                 self.maze = [[0] * ncell for x in range(ncell)]
                 for i in range(15):
-                        for j in range(0,20):
+                        for j in reversed (range(0,20)):
                                 self.draw_cell(i, j, cellsize)
                                 
         def create_robot(self, event, i = robot.pos[0], j = robot.pos[1], cellsize = 25, color = 'purple'):
+                j = 19 - j
                 x1 = self.margin + i * cellsize
                 y1 = self.margin + j * cellsize
                 x2 = x1 + cellsize
@@ -239,33 +224,29 @@ class Maze(tkinter.Frame):
                 index = self.canvas.create_oval(x1, y1, x2, y2, fill = color)
 
                 if robot.orientation ==0:
-                        bottom1 = self.canvas.create_rectangle(x1,y1, x2, y2-50, fill = 'black')
+                        bottom1 = self.canvas.create_rectangle(x1,y1, x2, y2-50, fill = 'bisque2')
                         top1 = self.canvas.create_rectangle(x1,y1 +25, x2, y2+25, fill ='green')
                         left1 = self.canvas.create_rectangle(x1,y1, x2-50, y2, fill ='indigo')
-                        right1 = self.canvas.create_rectangle(x1 + 25,y1, x2 + 25, y2, fill ='deep pink')
+                        right1 = self.canvas.create_rectangle(x1 + 25,y1, x2 + 25, y2, fill ='deep pink') #the orientation is tilted
 
                 elif robot.orientation ==1:
                         top1 = self.canvas.create_rectangle(x1,y1, x2-50, y2, fill ='green') #left1
-                        bottom1 = self.canvas.create_rectangle(x1 + 25,y1, x2 + 25, y2, fill = 'black') #right1
+                        bottom1 = self.canvas.create_rectangle(x1 + 25,y1, x2 + 25, y2, fill = 'bisque2') #right1
                         right1 = self.canvas.create_rectangle(x1,y1 +25, x2, y2+25, fill ='deep pink')#top1
                         left1 = self.canvas.create_rectangle(x1,y1, x2, y2-50, fill ='indigo') #bottom1
                                              
                 elif robot.orientation ==2:
                         top1 = self.canvas.create_rectangle(x1,y1, x2, y2-50, fill ='green') #bottom1
-                        bottom1 = self.canvas.create_rectangle(x1,y1 +25, x2, y2+25, fill = 'black') #top1
+                        bottom1 = self.canvas.create_rectangle(x1,y1 +25, x2, y2+25, fill = 'bisque2') #top1
                         right1 = self.canvas.create_rectangle(x1,y1, x2-50, y2, fill ='deep pink') #left1
                         left1 = self.canvas.create_rectangle(x1 + 25,y1, x2 + 25, y2, fill ='indigo') #right1
                 elif robot.orientation ==3:
                         top1 = self.canvas.create_rectangle(x1 + 25,y1, x2 + 25, y2, fill ='green') #right1
-                        bottom1 = self.canvas.create_rectangle(x1,y1, x2-50, y2, fill = 'black') #left1
+                        bottom1 = self.canvas.create_rectangle(x1,y1, x2-50, y2, fill = 'bisque2') #left1
                         right1 = self.canvas.create_rectangle(x1,y1, x2, y2-50, fill ='deep pink') #bottom1
                         left1 = self.canvas.create_rectangle(x1,y1 +25, x2, y2+25, fill ='indigo')#top1
                         
                         
-                
-        def robot_movement(self, event):
-                robot.explore()
-
 
         def update_robotpos(self,event):
                 self.create_robot(event, i = robot.pos[0], j = robot.pos[1], cellsize = 25, color = 'purple')
@@ -276,8 +257,7 @@ class Maze(tkinter.Frame):
                 self.update_robotpos(event)
 
 
-        def fastest_expl(self,event):
-                robot.findpath()
+
                 
         def coverage_limited_expl(self,event):
                 root.title('Popup Question!')
@@ -288,13 +268,42 @@ class Maze(tkinter.Frame):
                 def do_it():
                         answer = str(floatme.get())
                         wow = float(answer)
-                        robot.explore(timer=None, exploreLimit = wow)
+                        self.realexplore1(event,wow)
 
                 work = Button(root, text ="submit", width=10, height=1,command = do_it)
                 work.place(x=40, y=60)
+
+        def robotspeed(self,event):
+                root.title('Set the robot speed')
+                heading = Label(root, text = "Enter the robot speed").place(x=30,y=40)
+                floatme = IntVar()
+                floatentry = Entry(root, textvariable = floatme, width=25)
+                floatentry.place(x=10,y =60)
+                def do_it():
+                        answer = str(floatme.get())
+                        wow = int(answer)
+                        robot.coordinator.stepsPerSec = wow
+                        self.realexplore(event)
+                        
+                work = Button(root, text ="submit", width=10, height=1,command = do_it)
+                work.place(x=40, y=85)
                 
         def mapGUI(self,robot):
                 self.update_map(self)
+
+        def realexplore1(self, event, wow):
+                self.updater()
+                
+                t1 = Thread(target=robot.explore, args=(None, wow))
+                
+                t1.start()
+
+        def realexplore2(self, event, wow):
+                self.updater()
+                
+                t1 = Thread(target=robot.explore, args=(wow,))
+                
+                t1.start()
                 
         def realexplore(self, event):
                 self.updater()
@@ -303,8 +312,10 @@ class Maze(tkinter.Frame):
                 
                 t1.start()
 
-
-
+        def fastest_expl(self,event):
+                self.updater()
+                t1 = Thread(target=robot.findpath, args=(None,))
+                t1.start()
                 
         def updater(self):
                 self.mapGUI(self)
@@ -317,15 +328,3 @@ if __name__ == '__main__':
         myCanvas.pack()
         maze.draw_maze(20)
         root.mainloop()
-
-
-
-
-
-
-
-
-
-   
-  
-           
