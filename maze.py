@@ -4,8 +4,10 @@ from map import Map
 from robot import Robot
 from threading import Thread
 import time
+import PIL
+from PIL import Image, ImageTk
 
-map = Map("sample_maze.txt")
+map = Map("sweet3.txt")
 robot = Robot(fakeRun=True, fakeMap = map)
 UPDATE_RATE = 1000
 
@@ -188,7 +190,7 @@ class Maze(tkinter.Frame):
                                         elif map.getTile(pos) == None:
                                                 self.draw_cell(i,j,cellsize, color = 'purple')
                                         elif map.getTile(pos) == 0:
-                                                self.draw_cell(i,j,cellsize, color = 'blue')
+                                                self.draw_cell(i,j,cellsize, color = 'white')
                                         elif map.getTile(pos) == 1:
                                                 self.draw_cell(i,j,cellsize, color = 'black')
                         
@@ -225,6 +227,7 @@ class Maze(tkinter.Frame):
 
                 if robot.orientation ==0:
                         bottom1 = self.canvas.create_rectangle(x1,y1, x2, y2-50, fill = 'bisque2')
+                        self.canvas.create_text(x1, y1-10, anchor=W, font=("Purisa", 8), text="Head")
                         top1 = self.canvas.create_rectangle(x1,y1 +25, x2, y2+25, fill ='green')
                         left1 = self.canvas.create_rectangle(x1,y1, x2-50, y2, fill ='indigo')
                         right1 = self.canvas.create_rectangle(x1 + 25,y1, x2 + 25, y2, fill ='deep pink') #the orientation is tilted
@@ -232,17 +235,20 @@ class Maze(tkinter.Frame):
                 elif robot.orientation ==1:
                         top1 = self.canvas.create_rectangle(x1,y1, x2-50, y2, fill ='green') #left1
                         bottom1 = self.canvas.create_rectangle(x1 + 25,y1, x2 + 25, y2, fill = 'bisque2') #right1
+                        self.canvas.create_text(x1, y1, anchor=W, font=("Purisa", 8), text="Head")
                         right1 = self.canvas.create_rectangle(x1,y1 +25, x2, y2+25, fill ='deep pink')#top1
                         left1 = self.canvas.create_rectangle(x1,y1, x2, y2-50, fill ='indigo') #bottom1
                                              
                 elif robot.orientation ==2:
                         top1 = self.canvas.create_rectangle(x1,y1, x2, y2-50, fill ='green') #bottom1
                         bottom1 = self.canvas.create_rectangle(x1,y1 +25, x2, y2+25, fill = 'bisque2') #top1
+                        self.canvas.create_text(x1, y1+25, anchor=W, font=("Purisa", 8), text="Head")
                         right1 = self.canvas.create_rectangle(x1,y1, x2-50, y2, fill ='deep pink') #left1
                         left1 = self.canvas.create_rectangle(x1 + 25,y1, x2 + 25, y2, fill ='indigo') #right1
                 elif robot.orientation ==3:
                         top1 = self.canvas.create_rectangle(x1 + 25,y1, x2 + 25, y2, fill ='green') #right1
                         bottom1 = self.canvas.create_rectangle(x1,y1, x2-50, y2, fill = 'bisque2') #left1
+                        self.canvas.create_text(x1, y1, anchor=W, font=("Purisa", 8), text="Head")
                         right1 = self.canvas.create_rectangle(x1,y1, x2, y2-50, fill ='deep pink') #bottom1
                         left1 = self.canvas.create_rectangle(x1,y1 +25, x2, y2+25, fill ='indigo')#top1
                         
