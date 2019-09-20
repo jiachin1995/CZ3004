@@ -6,180 +6,211 @@ from robot import Robot
 
 import time
 
-map = Map('sample_maze.txt')
-
-
-"""code to check explorer + steps per sec limit"""
-robot = Robot(fakeRun=True, fakeMap = map)
-
-
-def mapGUI(robot, termCondition):
-    while not eval(termCondition):
-        time.sleep(0.5)
-        robot.map.printmap(robot)
+class Interface:
+    def __init__(self):
+        instructions = {
+            'forward': self.forward,
+            'turnLeft': self.turnLeft,
+            'turnRight': self.turnRight,
+            'readmap': self.getmap,
+            'explore': self.explore,
+            'fastestpath': self.fastestpath,
+            'runSimulator': self.runSimulator,
+        }
         
+        self.fakeMap = Map('sample_maze.txt')
+        #self.robot = Robot()
+        self.robot = Robot(fakeRun=True, fakeMap = self.fakeMap)
 
-def stepsPerSec_test():
-    userinput = input("Enter steps per second:")  
-    
-    try:
-       val = int(userinput)
-    except ValueError:
-       print("That's not an int!")
-       return
+    def mapGUI(self, termCondition):
+        while not eval(termCondition):
+            time.sleep(0.5)
+            self.robot.map.printmap(self.robot)
+            
 
-    robot.coordinator.stepsPerSec =  val
-
-    termCondition = "robot.map.is_explored() and robot.pos == [1,1]"
-
-    t1 = Thread(target=robot.explore, args=(None,))
-    t2 = Thread(target=mapGUI, args=(robot,termCondition,))
-
-    #start thread
-    t1.start()
-    t2.start()
-
-    # Waiting for threads to finish execution...
-    t1.join()
-    t2.join()
-
-def explorelimit_test():
-    userinput = input("Enter explore limit in floats format. E.g. 0.0 : \n")  
-    
-    try:
-       val = float(userinput)
-    except ValueError:
-       print("That's not a float!")
-       return
-
-    termCondition = "robot.explorer.state == 'Exploration done' and robot.pos == [1,1]"
-
-    t1 = Thread(target=robot.explore, kwargs={'exploreLimit': val })
-    t2 = Thread(target=mapGUI, args=(robot,termCondition,))
-
-    #start thread
-    t1.start()
-    t2.start()
-
-    # Waiting for threads to finish execution...
-    t1.join()
-    t2.join()
- 
-
-def fastestpath_test():
-    userinput = input("Enter waypoint in the format x,y:  \n")  
-    
-    try:
-        x,y = userinput.split(",", 1)
-   
-        x = int(x)
-        y = int(y)
-    except ValueError:
-       print("That's not an int!")
-    
-    robot.coordinator.stepsPerSec =  2
-
-    termCondition = "robot.pos == [13,18]"
-
-    t1 = Thread(target=robot.findpath, kwargs={'waypoint':[x,y]})
-    t2 = Thread(target=mapGUI, args=(robot,termCondition,))
-
-    #start thread
-    t1.start()
-    t2.start()
-
-    # Waiting for threads to finish execution...
-    t1.join()
-    t2.join()
-
-def loadmap():
-    userinput = input("Enter file name:")  
-    
-    try:
-        global map 
-        map = Map(userinput)
+    def stepsPerSec_test(self):
+        userinput = input("Enter steps per second:")  
         
-        global robot
-        robot = Robot(fakeRun=True, fakeMap = map)
-    except FileNotFoundError:
-        print("File does not exist!")
-        return
+        try:
+           val = int(userinput)
+        except ValueError:
+           print("That's not an int!")
+           return
 
-    map.printmap()
+        self.robot.coordinator.stepsPerSec =  val
 
-def printmap():
-    map.printmap()
+        termCondition = "self.robot.map.is_explored() and self.robot.pos == [1,1]"
+
+        t1 = Thread(target=self.robot.explore, args=(None,))
+        t2 = Thread(target=self.mapGUI, args=(termCondition,))
+
+        #start thread
+        t1.start()
+        t2.start()
+
+        # Waiting for threads to finish execution...
+        t1.join()
+        t2.join()
+
+    def explore(self):
+        pass
+
+    def explorelimit_test(self):
+        userinput = input("Enter explore limit in floats format. E.g. 0.0 : \n")  
+        
+        try:
+           val = float(userinput)
+        except ValueError:
+           print("That's not a float!")
+           return
+
+        termCondition = "self.robot.explorer.state == 'Exploration done' and self.robot.pos == [1,1]"
+
+        t1 = Thread(target=self.robot.explore, kwargs={'exploreLimit': val })
+        t2 = Thread(target=self.mapGUI, args=(termCondition,))
+
+        #start thread
+        t1.start()
+        t2.start()
+
+        # Waiting for threads to finish execution...
+        t1.join()
+        t2.join()
+     
+    def fastestpath(self):
+        pass
+
+    def fastestpath_test(self):
+        userinput = input("Enter waypoint in the format x,y:  \n")  
+        
+        try:
+            x,y = userinput.split(",", 1)
+       
+            x = int(x)
+            y = int(y)
+        except ValueError:
+           print("That's not an int!")
+        
+        self.robot.coordinator.stepsPerSec =  2
+
+        termCondition = "self.robot.pos == [13,18]"
+
+        t1 = Thread(target=self.robot.findpath, kwargs={'waypoint':[x,y]})
+        t2 = Thread(target=self.mapGUI, args=(termCondition,))
+
+        #start thread
+        t1.start()
+        t2.start()
+
+        # Waiting for threads to finish execution...
+        t1.join()
+        t2.join()
+
+    def forward(self):
+        pass
+
+    def getmap(self):
+        pass
+
+    def loadmap(self):
+        userinput = input("Enter file name:")  
+        
+        try:
+            global map 
+            map = Map(userinput)
+            
+            self.robot = Robot(fakeRun=True, fakeMap = map)
+        except FileNotFoundError:
+            print("File does not exist!")
+            return
+
+        map.printmap()
+
+    def printmap(self):
+        map.printmap()
 
 
-def printMDF():
-    print("Explored map string is:")
-    for item in robot.map.convert():
-        print(item)
+    def printMDF(self):
+        print("Explored map string is:")
+        for item in self.robot.map.convert():
+            print(item)
 
-def timer_test():
-    userinput = input("Enter timer in seconds (Integer):  \n")  
+    def read(self, instruction):
+        pass
+        
+    def runSimulator(self):
+        pass
+
+    def timer_test(self):
+        userinput = input("Enter timer in seconds (Integer):  \n")  
+        
+        try:
+           val = int(userinput)
+        except ValueError:
+           print("That's not an int!")
+           return
+        
+        termCondition = "self.robot.explorer.state == 'Out of time' and self.robot.pos == [1,1]"
+
+        t1 = Thread(target=self.robot.explore, kwargs={'timer': val })
+        t2 = Thread(target=self.mapGUI, args=(self.robot,termCondition,))
+
+        #start thread
+        t1.start()
+        t2.start()
+
+        # Waiting for threads to finish execution...
+        t1.join()
+        t2.join()
+        
+    def turnLeft(self):
+        pass
+        
+    def turnRight(self):
+        pass
+        
     
-    try:
-       val = int(userinput)
-    except ValueError:
-       print("That's not an int!")
-       return
-    
-    termCondition = "robot.explorer.state == 'Out of time' and robot.pos == [1,1]"
 
-    t1 = Thread(target=robot.explore, kwargs={'timer': val })
-    t2 = Thread(target=mapGUI, args=(robot,termCondition,))
+if __name__ == "__main__":
+    interface = Interface()
 
-    #start thread
-    t1.start()
-    t2.start()
+    interface.robot.map.printmap()
+    print("The Map above is the virtual arena.")
+    print(interface.robot.pos)
+    print(interface.robot.orientation)
 
-    # Waiting for threads to finish execution...
-    t1.join()
-    t2.join()
+    prompt = "Choose an option:   \n  \
+               0: break             \n  \
+               1: simulate explore with steps per second  \n  \
+               2: simulate explore with coverage limit    \n  \
+               3: simulate explore with timer \n  \
+               4: after running explore (option 1), show fastest path   \n  \
+               5: show virtual arena    \n  \
+               6: show explored map     \n  \
+               7: load map from file    \n  \
+               8: print MDF           \n    "
 
-
-robot.map.printmap()
-print("The Map above is the virtual arena.")
-print(robot.pos)
-print(robot.orientation)
-
-
-
-prompt = "Choose an option:   \n  \
-           0: break             \n  \
-           1: simulate explore with steps per second  \n  \
-           2: simulate explore with coverage limit    \n  \
-           3: simulate explore with timer \n  \
-           4: after running explore (option 1), show fastest path   \n  \
-           5: show virtual arena    \n  \
-           6: show explored map     \n  \
-           7: load map from file    \n  \
-           8: print MDF           \n  \
-"
-
-
-switch= {
-    0: "break",
-    1: stepsPerSec_test,
-    2: explorelimit_test,
-    3: timer_test,
-    4: fastestpath_test,
-    5: printmap,
-    6: robot.map.printmap,
-    7: loadmap,
-    8: printMDF,
-}
-while True:
-    userinput = input(prompt)      
-    
-    try:
-        val = int(userinput)
-    except ValueError:
-        print("That's not an int!")
-        continue
-    
-    if val == 0:
-        break
-    
-    switch[val]()
+    switch= {
+        0: "break",
+        1: interface.stepsPerSec_test,
+        2: interface.explorelimit_test,
+        3: interface.timer_test,
+        4: interface.fastestpath_test,
+        5: interface.printmap,
+        6: interface.robot.map.printmap,
+        7: interface.loadmap,
+        8: interface.printMDF,
+    }
+    while True:
+        userinput = input(prompt)      
+        
+        try:
+            val = int(userinput)
+        except ValueError:
+            print("That's not an int!")
+            continue
+        
+        if val == 0:
+            break
+        
+        switch[val]()

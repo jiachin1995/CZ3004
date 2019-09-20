@@ -8,6 +8,7 @@ map = Map('sample_maze.txt')
 map.printmap()
 print(map.getIslands())
 
+
 """ code to create mazes"""
 # map = [[0 for _ in range(15)] for _ in range(20)]
 # map = Map(map)
