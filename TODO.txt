@@ -1,12 +1,7 @@
-Map.py:
-	1.check save() and load() works as intended
-	2.check that waypoint is working as intended
+1. Receive instructions from android
+2. Respond to android
+3. Read sensors from arduino
+4. Send commands to arduino
 
-
-Explorer.py:
-	1.multithreading
-
-
-COVERAGE LIMITED
-STEPS PER SECONDS
-Extension
+rewrite read from android to run read instructions.
+consider flushing sensors if he is actively broadcasting

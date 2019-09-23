@@ -8,25 +8,24 @@ import time
 
 class Interface:
     def __init__(self):
-        instructions = {
+        self.instructions = {
             'forward': self.forward,
             'turnLeft': self.turnLeft,
             'turnRight': self.turnRight,
             'readmap': self.getmap,
             'explore': self.explore,
             'fastestpath': self.fastestpath,
-            'runSimulator': self.runSimulator,
+            'new': self.new,
         }
+
         
-        self.fakeMap = Map('sample_maze.txt')
-        #self.robot = Robot()
-        self.robot = Robot(fakeRun=True, fakeMap = self.fakeMap)
 
     def mapGUI(self, termCondition):
         while not eval(termCondition):
             time.sleep(0.5)
             self.robot.map.printmap(self.robot)
-            
+           
+      
 
     def stepsPerSec_test(self):
         userinput = input("Enter steps per second:")  
@@ -126,6 +125,9 @@ class Interface:
 
         map.printmap()
 
+    def new(self, fakeRun=False, fakeMap=None):
+        self.robot = Robot(fakeRun=fakeRun, fakeMap = self.fakeMap)
+
     def printmap(self):
         map.printmap()
 
@@ -140,6 +142,8 @@ class Interface:
         
     def runSimulator(self):
         pass
+
+
 
     def timer_test(self):
         userinput = input("Enter timer in seconds (Integer):  \n")  
