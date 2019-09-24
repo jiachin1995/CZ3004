@@ -13,7 +13,7 @@ class Interface:
     lock = Lock()
     process = None
     
-    def __init__(self, arduino, fakeRun=False, fakeMap=None):
+    def __init__(self, arduino=None, fakeRun=True, fakeMap=None):
         self.instructions = {
             'forward': self.forward,
             'turnLeft': self.turnLeft,
@@ -183,9 +183,9 @@ class Interface:
         
 
     def reset(self, arduino = None, fakeRun=False, fakeMap=None):
-        self.robot = Robot(arduino=arduino, fakeRun=fakeRun, fakeMap = self.fakeMap)
+        self.robot = Robot(arduino=arduino, fakeRun=fakeRun, fakeMap = fakeMap)
     
-    def stop(se;f):
+    def stop(self):
         if self.process:
             self.process.terminate()
 
@@ -220,7 +220,8 @@ class Interface:
         
 
 if __name__ == "__main__":
-    interface = Interface()
+    map = Map("sample_maze.txt")
+    interface = Interface(fakeMap = map)
 
     interface.robot.map.printmap()
     print("The Map above is the virtual arena.")

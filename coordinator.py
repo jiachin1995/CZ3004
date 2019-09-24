@@ -12,12 +12,14 @@ class Coordinator:
     """
     instructions = {
         "forward": "forward",
-        "left": "left"",
+        "left": "left",
         "right": "right",
         "movement done" : "done"
     }
     fakeRun = False
     stepsPerSec = 2
+    check_rate = 0.5
+
 
     arduino = None
     
@@ -41,10 +43,12 @@ class Coordinator:
             while True:
                 msg = self.arduino.read()
                 if msg == None:
-                    return print("[#] nothing to read [read_from_serial]")
-                
+                    print("[#] nothing to read [read_from_serial]")
+                    
                 elif msg == self.instructions["movement done"]:
                     return
+                    
+                time.sleep(check_rate)
     
     def turnLeft(self):
         """ 
@@ -62,10 +66,12 @@ class Coordinator:
             while True:
                 msg = self.arduino.read()
                 if msg == None:
-                    return print("[#] nothing to read [read_from_serial]")
+                    print("[#] nothing to read [read_from_serial]")
                 
                 elif msg == self.instructions["movement done"]:
                     return
+                    
+                time.sleep(check_rate)
     
     def turnRight(self):
         """ 
@@ -83,10 +89,12 @@ class Coordinator:
             while True:
                 msg = self.arduino.read()
                 if msg == None:
-                    return print("[#] nothing to read [read_from_serial]")
+                    print("[#] nothing to read [read_from_serial]")
                 
                 elif msg == self.instructions["movement done"]:
                     return
+                    
+                time.sleep(check_rate)
             
     def fakeRunWait(self):
         """ 

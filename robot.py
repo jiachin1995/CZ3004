@@ -60,6 +60,8 @@ class Robot:
             self.sensors = Sensors(self, fakeMap)    #fake sensors for simulation
             self.coordinator.fakeRun = True
             self.coordinator.stepsPerSec = stepsPerSec
+        elif arduino is None:
+            raise Exception("Real run requires arduino to be present")
         else:
             self.sensors = Sensors(arduino)
             self.coordinator.arduino = arduino

@@ -8,7 +8,7 @@ from arduino import Arduino
 from interface import Interface
 
 class Main:
-    interface = Interface()
+    interface = None
 
     listen_rate = 1
 
@@ -17,15 +17,15 @@ class Main:
 
         #self.pc = PC(tcp_ip="192.168.1.1")
         self.android = Android()
-        self.serial = Serial()
+        self.arduino = Arduino()
 
         #self.pc.connect()
         self.android.connect()
-        self.serial.connect()
+        self.arduino.connect()
 
         time.sleep(1)
         
-        
+        self.interface = Interface(arduino = arduino)
 
     def write_to_pc(self, msg):
         self.pc.write(msg)
@@ -59,7 +59,7 @@ class Main:
     def close_all_connections(self):
         self.pc.close()
         self.android.close()
-        self.serial.close()
+        self.arduino.close()
 
 
 if __name__ == "__main__":

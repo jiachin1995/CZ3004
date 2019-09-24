@@ -30,8 +30,9 @@ class Sensors:
         
         msg = self.arduino.read()
         if msg == None:
-            return print("[#] nothing to read [read_from_serial]")
+            print("[#] nothing to read [read_from_serial]")
     
+        #do something with msg
         
     
     def getLeft(self):
@@ -49,9 +50,9 @@ class Sensors:
         
         msg = self.arduino.read()
         if msg == None:
-            return print("[#] nothing to read [read_from_serial]")
+            print("[#] nothing to read [read_from_serial]")
         
-        
+        #do something with msg
     
     
     def isFrontBlocked():
