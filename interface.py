@@ -1,3 +1,4 @@
+from multiprocessing import Process, Lock
 from threading import Thread
 
 from map import Map
@@ -7,17 +8,25 @@ from robot import Robot
 import time
 
 class Interface:
-    def __init__(self):
+    robot = None
+    
+    lock = Lock()
+    process = None
+    
+    def __init__(self, arduino, fakeRun=False, fakeMap=None):
         self.instructions = {
             'forward': self.forward,
             'turnLeft': self.turnLeft,
             'turnRight': self.turnRight,
-            'readmap': self.getmap,
+            'getreport': self.getreport,
             'explore': self.explore,
             'fastestpath': self.fastestpath,
-            'new': self.new,
+            'reset': self.reset,
+            'stop': self.stop,
+            'loadfakeMap': self.loadmap,
         }
-
+        
+        self.reset(arduino=arduino, fakeRun=fakeRun, fakeMap=fakeMap)
         
 
     def mapGUI(self, termCondition):
@@ -25,8 +34,17 @@ class Interface:
             time.sleep(0.5)
             self.robot.map.printmap(self.robot)
            
-      
-
+    def startprocess(target, **kwargs):
+        if self.lock.acquire(block=False):
+            self.process = Process(target=target, kwargs=kwargs)
+            self.process.start()
+    
+            self.lock.release()
+            
+            return "Done"
+        else:
+            return "Cancelled Instruction. Other processes already running."
+        
     def stepsPerSec_test(self):
         userinput = input("Enter steps per second:")  
         
@@ -51,8 +69,9 @@ class Interface:
         t1.join()
         t2.join()
 
-    def explore(self):
-        pass
+    def explore(self, **kwargs):
+        return self.startprocess(target = self.robot.explore, kwargs=kwargs)
+        
 
     def explorelimit_test(self):
         userinput = input("Enter explore limit in floats format. E.g. 0.0 : \n")  
@@ -76,8 +95,9 @@ class Interface:
         t1.join()
         t2.join()
      
-    def fastestpath(self):
-        pass
+    def fastestpath(self, **kwargs):
+        return self.startprocess(target = self.robot.findpath, kwargs=kwargs)
+    
 
     def fastestpath_test(self):
         userinput = input("Enter waypoint in the format x,y:  \n")  
@@ -105,13 +125,19 @@ class Interface:
         t1.join()
         t2.join()
 
-    def forward(self):
-        pass
+    def forward(self, steps = 1):
+        return self.startprocess(target = self.robot.forward, args=(steps))
 
-    def getmap(self):
-        pass
 
-    def loadmap(self):
+    def getreport(self):
+        results = [
+            self.robot.map.convert(),
+            self.robot.pos,
+            self.robot.orientation
+        ]
+        return results
+
+    def loadmap_test(self):
         userinput = input("Enter file name:")  
         
         try:
@@ -124,25 +150,44 @@ class Interface:
             return
 
         map.printmap()
-
-    def new(self, fakeRun=False, fakeMap=None):
-        self.robot = Robot(fakeRun=fakeRun, fakeMap = self.fakeMap)
+        
+    def loadmap(self, load):
+        try:
+            map = Map(load)
+            self.robot = Robot(fakeRun=True, fakeMap = map)
+            
+            return "Done"
+   
+        except Exception as e:
+            print("Unable to load map")
+            print(e)
+            
+            return "Unable to load map"
 
     def printmap(self):
         map.printmap()
-
 
     def printMDF(self):
         print("Explored map string is:")
         for item in self.robot.map.convert():
             print(item)
 
-    def read(self, instruction):
-        pass
+    
+    def readinstructions(self, instr):
+        #expected instruction format is "instr : {kwargs}"
+        instr, kwargs = instr.split(separator=":", maxsplit=1)
+        func = self.instructions[instr]
+        kwargs = eval(kwargs)
         
-    def runSimulator(self):
-        pass
+        return func(**kwargs)
+        
 
+    def reset(self, arduino = None, fakeRun=False, fakeMap=None):
+        self.robot = Robot(arduino=arduino, fakeRun=fakeRun, fakeMap = self.fakeMap)
+    
+    def stop(se;f):
+        if self.process:
+            self.process.terminate()
 
 
     def timer_test(self):
@@ -168,12 +213,11 @@ class Interface:
         t2.join()
         
     def turnLeft(self):
-        pass
+        return self.startprocess(target = self.robot.turnLeft, args=())
         
     def turnRight(self):
-        pass
+        return self.startprocess(target = self.robot.turnRight, args=())
         
-    
 
 if __name__ == "__main__":
     interface = Interface()
@@ -202,7 +246,7 @@ if __name__ == "__main__":
         4: interface.fastestpath_test,
         5: interface.printmap,
         6: interface.robot.map.printmap,
-        7: interface.loadmap,
+        7: interface.loadmap_test,
         8: interface.printMDF,
     }
     while True:

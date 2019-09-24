@@ -31,13 +31,13 @@ class Robot:
     orientation = 0
     explore = True
     map = Map()
-    sensors = Sensors()
+    sensors = None
     coordinator = Coordinator()
     pathfinder = None
     explorer = None
 
     
-    def __init__(self, fakeRun= False, fakeMap=None, stepsPerSec=1, **kwargs):  
+    def __init__(self, arduino = None, fakeRun= False, fakeMap=None, stepsPerSec=1, **kwargs):  
         """ 
         Constructor. Accepts attributes as kwargs.
             
@@ -60,7 +60,9 @@ class Robot:
             self.sensors = Sensors(self, fakeMap)    #fake sensors for simulation
             self.coordinator.fakeRun = True
             self.coordinator.stepsPerSec = stepsPerSec
-            
+        else:
+            self.sensors = Sensors(arduino)
+            self.coordinator.arduino = arduino
             
         #update map
         self.updatemap()
