@@ -25,6 +25,7 @@ class Interface:
             'fastestpath': self.fastestpath,
             'waypoint': self.setwaypoint,
             'reset': self.reset,
+            'setrobotpos': self.setpos,
             'stop': self.stop,
             'loadfakeMap': self.loadmap,
         }
@@ -192,13 +193,18 @@ class Interface:
     def readinstructions(self, instr):
         kwargs = {}
     
-        if "waypoint" in instr:
-            instr, waypoint = instr.split(separator=" ")
+        if "waypointCoord" in instr:
+            instr, waypoint = instr.split(separator=" ", maxsplit = 1)
             func = self.instructions["waypoint"]
             kwargs = {'waypoint' : eval(waypoint)}
             
             #return setwaypoint(waypoint = eval(waypoint))
+        elif "robotCoord" in instr:
+            instr, pos = instr.split(separator=" ", maxsplit = 1)
+            func = self.instructions["setrobotpos"]
+            kwargs = {'pos' : eval(pos)}
             
+            #return setpos(pos = eval(pos))  
         else: 
             func = self.instructions[instr]
         
@@ -208,6 +214,9 @@ class Interface:
 
     def reset(self, arduino = None, fakeRun=False, fakeMap=None):
         self.robot = Robot(arduino=arduino, fakeRun=fakeRun, fakeMap = fakeMap)
+    
+    def setpos(self, pos):
+        self.robot.pos = list(pos)
     
     def setwaypoint(self, waypoint):
         self.robot.pathfinder.waypoint = list(waypoint)
