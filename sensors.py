@@ -1,3 +1,6 @@
+import time
+        
+
 class Sensors:
     """
     Sensors class. Reads sensors input.

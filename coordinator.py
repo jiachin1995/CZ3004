@@ -1,4 +1,5 @@
-#purpose of this module is to ensure robot alignment, position & movement
+import time
+        
 
 class Coordinator:
     """
@@ -126,8 +127,7 @@ class Coordinator:
         """ 
         If running in simulation, pause the algorithm for (1/stepsPerSec) seconds.
         """ 
-        import time
-        
+
         wait = 1.0/ float(self.stepsPerSec)
         time.sleep(wait)
 
