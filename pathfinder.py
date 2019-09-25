@@ -12,6 +12,7 @@ class Pathfinder:
     """
     start = [1, 1]
     goal = [13, 18]
+    waypoint=None
     
     map = None
     weightmap = []
@@ -68,7 +69,9 @@ class Pathfinder:
                 )
         
         if checklist:
-            self.bfs(**checklist.pop(0), checklist=checklist)
+            kwargs = checklist.pop(0)
+            self.bfs(**kwargs, checklist=checklist)
+            #self.bfs('pos'=kwargs['pos'],'end'=kwargs['end'],'weight'=kwargs['weight'], checklist=checklist)
            
     def findpath(self, start=start, goal=goal, waypoint=None, orientation=0):
         """
@@ -85,12 +88,16 @@ class Pathfinder:
             orientation: Integer. Defaults to 0. Direction where the robot is currently facing.
         
         """
+        #set waypoint
+        if waypoint:
+            self.waypoint = waypoint
+        
         #ensure that weightmap is clean
         self.resetweights()
     
         #update weightmap, the goal will have weight 0
-        if waypoint:
-            self.bfs(waypoint, start)    #search from start to waypoint
+        if self.waypoint:
+            self.bfs(self.waypoint, start)    #search from start to waypoint
         else:
             self.bfs(goal, start)        #search from start to goal
 
@@ -103,11 +110,11 @@ class Pathfinder:
         
         
         #If there is waypoint, we must now search from waypoint to goal
-        if waypoint:
+        if self.waypoint:
             #reset weights before doing bfs again
             self.resetweights()
             
-            self.bfs(goal, waypoint)
+            self.bfs(goal, self.waypoint)
             if settings.logging:
                 print("====== Waypoint Weights ======= \n")
                 self.printweightmap()     

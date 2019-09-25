@@ -75,7 +75,30 @@ class Robot:
         #initialise explorer
         self.explorer = Explorer(self)
 
-            
+    def backward(self):
+        """ 
+        Moves the robot backward.
+        """  
+        self.coordinator.backward()
+        
+        x,y = self.pos
+        newpos_dict = {
+            0: "[x, y-1]", 
+            1: "[x-1,y]",
+            2: "[x, y+1]",
+            3: "[x+1,y]"
+        }
+        self.pos = eval(
+                newpos_dict[self.orientation]
+            )
+        
+        if self.explore: self.updatemap()
+        
+        if settings.logging:
+            print("Movement: Robot goes backward")
+
+
+        
     def explore(self, timer = None, exploreLimit = None): 
         """ 
         Starts exploration.

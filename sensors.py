@@ -7,8 +7,9 @@ class Sensors:
     instructions = {
         "getFront": "get front sensors",
         "getLeft": "get left sensors",
+        "getAll": "z"
     }
-    
+    check_rate = 0.5
     
     def __init__(self, arduino):
         self.arduino = arduino
@@ -22,18 +23,23 @@ class Sensors:
         
         For example, if front obstacle is T-shaped, getFront() might return 1, 0, 1.
         """
-        instr = self.instructions["getFront"]
+        instr = self.instructions["getAll"]
         
         self.arduino.write(instr)
         print("[@] Sent to Serial: {}".format(instr))
         
+        while True:
+            msg = self.arduino.read()
+            if msg == None:
+                print("[#] nothing to read [read_from_serial]")
+                
+            else:
+                front_mid,front_left, front_right,left_front, left_back = msg.split(separator=',')
+                break
+                
+            time.sleep(check_rate)
         
-        msg = self.arduino.read()
-        if msg == None:
-            print("[#] nothing to read [read_from_serial]")
-    
-        #do something with msg
-        
+        return [int(front_left), int(front_mid), int(front_right)]
     
     def getLeft(self):
         """
@@ -42,17 +48,23 @@ class Sensors:
         
         Similar to getFront(). Refer to getFront() above
         """
-        instr = self.instructions["getLeft"]
+        instr = self.instructions["getAll"]
         
         self.arduino.write(instr)
         print("[@] Sent to Serial: {}".format(instr))
         
+        while True:
+            msg = self.arduino.read()
+            if msg == None:
+                print("[#] nothing to read [read_from_serial]")
+                
+            else:
+                front_mid,front_left, front_right,left_front, left_back = msg.split(separator=',')
+                break
+                
+            time.sleep(check_rate)
         
-        msg = self.arduino.read()
-        if msg == None:
-            print("[#] nothing to read [read_from_serial]")
-        
-        #do something with msg
+        return [int(left_front), int(left_back)]
     
     
     def isFrontBlocked():

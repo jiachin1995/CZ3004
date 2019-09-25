@@ -5,6 +5,7 @@ from map import Map
 from pathfinder import Pathfinder
 from robot import Robot
 
+import json
 import time
 
 class Interface:
@@ -18,9 +19,11 @@ class Interface:
             'forward': self.forward,
             'turnLeft': self.turnLeft,
             'turnRight': self.turnRight,
+            'backward': self.backward,
             'getreport': self.getreport,
             'explore': self.explore,
             'fastestpath': self.fastestpath,
+            'waypoint': self.setwaypoint,
             'reset': self.reset,
             'stop': self.stop,
             'loadfakeMap': self.loadmap,
@@ -28,6 +31,8 @@ class Interface:
         
         self.reset(arduino=arduino, fakeRun=fakeRun, fakeMap=fakeMap)
         
+    def backward(self):
+        return self.startprocess(target = self.robot.backward, args=())
 
     def mapGUI(self, termCondition):
         while not eval(termCondition):
@@ -41,7 +46,7 @@ class Interface:
     
             self.lock.release()
             
-            return "Done"
+            return "done"
         else:
             return "Cancelled Instruction. Other processes already running."
         
@@ -130,12 +135,22 @@ class Interface:
 
 
     def getreport(self):
-        results = [
-            self.robot.map.convert(),
-            self.robot.pos,
-            self.robot.orientation
-        ]
-        return results
+        results = "" 
+        for item in self.robot.map.convert():
+            results += item[2:].upper() + ','
+            
+        for coords in self.robot.pos:
+            results += str(coords) + ','
+        
+        orientation = 90 * self.robot.orientation
+        results += str(orientation)
+        
+        dict = {
+            "robot" : results
+        }
+        output = json.dumps(dict)
+        
+        return output
 
     def loadmap_test(self):
         userinput = input("Enter file name:")  
@@ -168,22 +183,34 @@ class Interface:
         map.printmap()
 
     def printMDF(self):
-        print("Explored map string is:")
-        for item in self.robot.map.convert():
-            print(item)
+        # print("Explored map string is:")
+        # for item in self.robot.map.convert():
+            # print(item)
+        print(self.getreport())
 
     
     def readinstructions(self, instr):
-        #expected instruction format is "instr : {kwargs}"
-        instr, kwargs = instr.split(separator=":", maxsplit=1)
-        func = self.instructions[instr]
-        kwargs = eval(kwargs)
+        kwargs = {}
+    
+        if "waypoint" in instr:
+            instr, waypoint = instr.split(separator=" ")
+            func = self.instructions["waypoint"]
+            kwargs = {'waypoint' : eval(waypoint)}
+            
+            #return setwaypoint(waypoint = eval(waypoint))
+            
+        else: 
+            func = self.instructions[instr]
         
         return func(**kwargs)
+        #return func()
         
 
     def reset(self, arduino = None, fakeRun=False, fakeMap=None):
         self.robot = Robot(arduino=arduino, fakeRun=fakeRun, fakeMap = fakeMap)
+    
+    def setwaypoint(self, waypoint):
+        self.robot.pathfinder.waypoint = list(waypoint)
     
     def stop(self):
         if self.process:
@@ -202,7 +229,7 @@ class Interface:
         termCondition = "self.robot.explorer.state == 'Out of time' and self.robot.pos == [1,1]"
 
         t1 = Thread(target=self.robot.explore, kwargs={'timer': val })
-        t2 = Thread(target=self.mapGUI, args=(self.robot,termCondition,))
+        t2 = Thread(target=self.mapGUI, args=(termCondition,))
 
         #start thread
         t1.start()

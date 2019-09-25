@@ -11,9 +11,10 @@ class Coordinator:
         stepsPerSec: Number of steps to take per second, if running in simulation
     """
     instructions = {
-        "forward": "forward",
-        "left": "left",
-        "right": "right",
+        "forward": "w",
+        "backward": "s1",
+        "left": "a2",
+        "right": "d2",
         "movement done" : "done"
     }
     fakeRun = False
@@ -22,6 +23,30 @@ class Coordinator:
 
 
     arduino = None
+    
+    def backward(self):
+        """ 
+        Moves the robot backward
+        """   
+        if self.fakeRun:
+            for i in range(0,steps):
+                self.fakeRunWait()
+            return
+        else:
+            instr = self.instructions["backward"]
+        
+            self.arduino.write(instr)
+            print("[@] Sent to Serial: {}".format(instr))
+            
+            while True:
+                msg = self.arduino.read()
+                if msg == None:
+                    print("[#] nothing to read [read_from_serial]")
+                    
+                elif msg == self.instructions["movement done"]:
+                    return
+                    
+                time.sleep(check_rate)
     
     def forward(self,steps):
         """ 
@@ -36,6 +61,7 @@ class Coordinator:
             return
         else:
             instr = self.instructions["forward"]
+            instr += str(steps)
         
             self.arduino.write(instr)
             print("[@] Sent to Serial: {}".format(instr))
