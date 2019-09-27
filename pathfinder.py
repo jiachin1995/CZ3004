@@ -70,8 +70,7 @@ class Pathfinder:
         
         if checklist:
             kwargs = checklist.pop(0)
-            self.bfs(**kwargs, checklist=checklist)
-            #self.bfs('pos'=kwargs['pos'],'end'=kwargs['end'],'weight'=kwargs['weight'], checklist=checklist)
+            self.bfs(pos=kwargs['pos'],end=kwargs['end'],weight=kwargs['weight'], checklist=checklist)
            
     def findpath(self, start=start, goal=goal, waypoint=None, orientation=0):
         """
@@ -220,14 +219,14 @@ class Pathfinder:
 
         """
     
-        for y in range(1,19):
-            for x in range(1,14):
+        for y in range(20):
+            for x in range(15):
                 if self.map.getTile([x,y]) != 0: 
                     #if obstacle/unexplored is found, mark as untraversible in a 3x3 area around it
                     for i in range(-1,2):
-                        self.weightmap[y-1][x+i] = -1
-                        self.weightmap[y][x+i] = -1
-                        self.weightmap[y+1][x+i] = -1
+                        self.setweights(pos = [x+i,y-1], val = -1)
+                        self.setweights(pos = [x+i,y], val = -1)
+                        self.setweights(pos = [x+i,y+1], val = -1)
                     
 
     def optimise_diagonals(self, directions):
@@ -274,5 +273,11 @@ class Pathfinder:
             
         self.mark_untraversible()
     
+    def setweights(self, pos, val):
+        x,y = pos
+        #out of range
+        if x<0 or x>14 or y<0 or y>19:
+            return
             
+        self.weightmap[y][x] = val
             

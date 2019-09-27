@@ -11,6 +11,10 @@ class Main:
     interface = None
 
     listen_rate = 1
+    
+    android=None
+    arduino=None
+    
 
     def __init__(self):
         threading.Thread.__init__(self)
@@ -25,7 +29,7 @@ class Main:
 
         time.sleep(1)
         
-        self.interface = Interface(arduino = arduino)
+        self.interface = Interface(arduino = self.arduino)
 
     def write_to_pc(self, msg):
         self.pc.write(msg)
@@ -47,17 +51,17 @@ class Main:
                 results = self.interface.readinstructions(msg)
                 
                 if results is None:
-                    self.android.write("done")
+                    self.android.write(bytes("done"))
                 else:
-                    self.android.write(results)
+                    self.android.write(bytes(results))
                 
             except Exception as e:
                 print("[@] Error reading instructions")
                 print(e)  
-                time.sleep(listen_rate)
+                time.sleep(self.listen_rate)
 
     def close_all_connections(self):
-        self.pc.close()
+        #self.pc.close()
         self.android.close()
         self.arduino.close()
 
@@ -66,7 +70,6 @@ if __name__ == "__main__":
     print("[@] Starting main program..")
     app = Main()
     try:
-        app.initialise_threads()
         app.start_listening()
     except Exception as e:
         print("[@] Error running main")

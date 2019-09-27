@@ -53,6 +53,10 @@ class Explorer:
         if self.state == "Initial": 
             self.hugleftwall()
     
+        if settings.logging:
+            self.robot.map.printmap()
+            print(self.robot.map.convert())
+    
         while not self.exploreDone():  
             if self.noTimeLeft():
                 break
