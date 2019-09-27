@@ -49,7 +49,7 @@ class Main:
             print("Received msg is {}".format(msg))
                 
             try: 
-                results = self.interface.readinstructions(msg)
+                results = self.interface.readinstructions(str(msg))
                 
                 if results is None:
                     self.android.write(bytes("done", 'utf-8'))
