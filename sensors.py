@@ -28,7 +28,7 @@ class Sensors:
         """
         instr = self.instructions["getAll"]
         
-        self.arduino.write(bytes(instr, 'utf-8'))
+        self.arduino.write(instr)
         print("[@] Sent to Serial: {}".format(instr))
         
         while True:
@@ -37,7 +37,6 @@ class Sensors:
                 print("[#] nothing to read [read_from_serial]")
                 
             else:
-                msg = str(msg)
                 front_mid,front_left, front_right,left_front, left_back = msg.split(separator=',')
                 break
                 
@@ -54,8 +53,7 @@ class Sensors:
         """
         instr = self.instructions["getAll"]
         
-        self.arduino.write(bytes(instr, 'utf-8'))
-        print("[@] Sent to Serial: {}".format(instr))
+        self.arduino.write(instr)
         
         while True:
             msg = self.arduino.read()
@@ -63,7 +61,6 @@ class Sensors:
                 print("[#] nothing to read [read_from_serial]")
                 
             else:
-                msg = str(msg)
                 front_mid,front_left, front_right,left_front, left_back = msg.split(separator=',')
                 break
                 

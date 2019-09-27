@@ -1,6 +1,6 @@
 import serial
 import time
-
+import settings
 
 class Arduino:
     def __init__(self):
@@ -24,7 +24,13 @@ class Arduino:
         print("[@] Serial link is now closed")
 
     def write(self, msg):
+        if settings.comms:  
+            print("writing msg <{}> to arduino".format(msg))
+    
+        if msg is None:
+            raise Exception('Error: Attempted to write None object to arduino!')
         try:
+            msg = bytes(msg, 'utf-8')
             return self.serial.write(msg)
         except Exception as e:
             print("[!] Error writing to serial link")
@@ -33,7 +39,14 @@ class Arduino:
     def read(self):
         # https://pythonhosted.org/pyserial/shortintro.html#readline
         try:
-            return self.serial.readline()
+            msg = self.serial.readline()
+                      
+            if settings.comms:  
+                print("Receiveed msg <{}> from arduino".format(msg))
+                      
+            if msg is None:
+                return None
+            return str(msg)
         except Exception as e:
             print("[!] Error reading from serial link")
             print(e)

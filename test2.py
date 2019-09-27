@@ -1,17 +1,15 @@
 from map import Map
 from pathfinder import Pathfinder
 from robot import Robot
+from interface import Interface
+import time
 
+interface = Interface(fakeRun=True)
+interface.robot.coordinator.stepsPerSec =20
 
-map = Map('zz2.txt')
+print(interface.readinstructions("explore"))
+print(interface.readinstructions("turnLeft"))
+time.sleep(40)
+print(interface.readinstructions("fastestpath"))
 
-
-
-robot = Robot(fakeRun=True, fakeMap = map)
-
-robot.coordinator.stepsPerSec = 15
-robot.explorer.start()
-
-
-
-#hi dorvin
+#interface.readinstructions("fastestpath")

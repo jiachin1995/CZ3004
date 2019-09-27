@@ -5,3 +5,8 @@
 
 rewrite read from android to run read instructions.
 consider flushing sensors if he is actively broadcasting
+
+
+1. findimages algorithm
+2. sendimages info
+3. calibration

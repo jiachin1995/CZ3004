@@ -30,13 +30,12 @@ class Coordinator:
         Moves the robot backward
         """   
         if self.fakeRun:
-            for i in range(0,steps):
-                self.fakeRunWait()
-            return
+            self.fakeRunWait()
+
         else:
             instr = self.instructions["backward"]
         
-            self.arduino.write(bytes(instr, 'utf-8'))
+            self.arduino.write(instr)
             print("[@] Sent to Serial: {}".format(instr))
             
             while True:
@@ -44,7 +43,7 @@ class Coordinator:
                 if msg == None:
                     print("[#] nothing to read [read_from_serial]")
                     
-                elif str(msg) == self.instructions["movement done"]:
+                elif msg == self.instructions["movement done"]:
                     return
                     
                 time.sleep(check_rate)
@@ -64,15 +63,14 @@ class Coordinator:
             instr = self.instructions["forward"]
             instr += str(steps)
         
-            self.arduino.write(bytes(instr, 'utf-8'))
-            print("[@] Sent to Serial: {}".format(instr))
+            self.arduino.write(instr)
             
             while True:
                 msg = self.arduino.read()
                 if msg == None:
                     print("[#] nothing to read [read_from_serial]")
                     
-                elif str(msg) == self.instructions["movement done"]:
+                elif msg == self.instructions["movement done"]:
                     return
                     
                 time.sleep(check_rate)
@@ -87,15 +85,14 @@ class Coordinator:
         else:
             instr = self.instructions["forward"]
         
-            self.arduino.write(bytes(instr, 'utf-8'))
-            print("[@] Sent to Serial: {}".format(instr))
+            self.arduino.write(instr)
             
             while True:
                 msg = self.arduino.read()
                 if msg == None:
                     print("[#] nothing to read [read_from_serial]")
                 
-                elif str(msg) == self.instructions["movement done"]:
+                elif msg == self.instructions["movement done"]:
                     return
                     
                 time.sleep(check_rate)
@@ -110,7 +107,7 @@ class Coordinator:
         else:
             instr = self.instructions["forward"]
         
-            self.arduino.write(bytes(instr, 'utf-8'))
+            self.arduino.write(instr)
             print("[@] Sent to Serial: {}".format(instr))  
             
             while True:
@@ -118,7 +115,7 @@ class Coordinator:
                 if msg == None:
                     print("[#] nothing to read [read_from_serial]")
                 
-                elif str(msg) == self.instructions["movement done"]:
+                elif msg == self.instructions["movement done"]:
                     return
                     
                 time.sleep(check_rate)

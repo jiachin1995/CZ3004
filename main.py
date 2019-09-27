@@ -45,16 +45,15 @@ class Main:
         while True:
             msg = self.android.read()
             if msg == None:
-                return print("[#] nothing to read [read_from_android]")
-            print("Received msg is {}".format(msg))
+                continue
                 
             try: 
-                results = self.interface.readinstructions(str(msg))
+                results = self.interface.readinstructions(msg)
                 
                 if results is None:
-                    self.android.write(bytes("done", 'utf-8'))
+                    self.android.write("done")
                 else:
-                    self.android.write(bytes(results, 'utf-8'))
+                    self.android.write(results)
                 
             except Exception as e:
                 print("[@] Error reading instructions")
