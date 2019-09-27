@@ -36,7 +36,7 @@ class Coordinator:
         else:
             instr = self.instructions["backward"]
         
-            self.arduino.write(instr)
+            self.arduino.write(bytes(instr, 'utf-8'))
             print("[@] Sent to Serial: {}".format(instr))
             
             while True:
@@ -64,7 +64,7 @@ class Coordinator:
             instr = self.instructions["forward"]
             instr += str(steps)
         
-            self.arduino.write(instr)
+            self.arduino.write(bytes(instr, 'utf-8'))
             print("[@] Sent to Serial: {}".format(instr))
             
             while True:
@@ -87,7 +87,7 @@ class Coordinator:
         else:
             instr = self.instructions["forward"]
         
-            self.arduino.write(instr)
+            self.arduino.write(bytes(instr, 'utf-8'))
             print("[@] Sent to Serial: {}".format(instr))
             
             while True:
@@ -110,7 +110,7 @@ class Coordinator:
         else:
             instr = self.instructions["forward"]
         
-            self.arduino.write(instr)
+            self.arduino.write(bytes(instr, 'utf-8'))
             print("[@] Sent to Serial: {}".format(instr))  
             
             while True:

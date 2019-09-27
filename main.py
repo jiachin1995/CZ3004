@@ -52,9 +52,9 @@ class Main:
                 results = self.interface.readinstructions(msg)
                 
                 if results is None:
-                    self.android.write(bytes("done"))
+                    self.android.write(bytes("done", 'utf-8'))
                 else:
-                    self.android.write(bytes(results))
+                    self.android.write(bytes(results, 'utf-8'))
                 
             except Exception as e:
                 print("[@] Error reading instructions")

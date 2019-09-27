@@ -28,7 +28,7 @@ class Sensors:
         """
         instr = self.instructions["getAll"]
         
-        self.arduino.write(instr)
+        self.arduino.write(bytes(instr, 'utf-8'))
         print("[@] Sent to Serial: {}".format(instr))
         
         while True:
@@ -53,7 +53,7 @@ class Sensors:
         """
         instr = self.instructions["getAll"]
         
-        self.arduino.write(instr)
+        self.arduino.write(bytes(instr, 'utf-8'))
         print("[@] Sent to Serial: {}".format(instr))
         
         while True:
