@@ -115,6 +115,37 @@ class Map:
                 if self.getTile([x,y]) is None: 
                     return [x,y]
         
+    def findAdjacentFreeSpace(self, tile):
+        x,y = tile
+        dict = {
+            0: [x,y+2],
+            1: [x+2,y],
+            2: [x,y-2],
+            3: [x-2,y],
+        }
+        
+        #check right
+        centre = dict[1]
+        if self.is_freespace(centre):
+            return [centre, 3]
+            
+        #check left
+        centre = dict[3]
+        if self.is_freespace(centre):
+            return [centre, 1]
+            
+        #check bottom
+        centre = dict[2]
+        if self.is_freespace(centre):
+            return [centre, 0]
+            
+        #check top
+        centre = dict[0]
+        if self.is_freespace(centre):
+            return [centre, 2]
+            
+        
+        
     def findSpaceInRow(self, y, toRight=True):
         """
         Given horizontal row, find a space that robot can occupy in said row. 
@@ -219,6 +250,17 @@ class Map:
             for val in row:
                 if val is None: return False
         return True
+        
+    def is_freespace(self, centretile):
+        x, y = centretile
+        
+        for i in range(-1,2):
+            for j in range(-1,2):
+                if self.getTile([x+i,y+j]) != 0:
+                    return False
+
+        return True
+
         
     def is_rowexplored(self, y):
         """

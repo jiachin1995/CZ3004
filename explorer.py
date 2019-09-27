@@ -25,9 +25,11 @@ class Explorer:
     state = "Initial"
 
     startTime = None
-    timer = 500
+    timer = 360
     timeToReturn = 60       #buffer time to return to start, in seconds
     exploreLimit = 1.0
+
+    prevUnexploredTile = None
 
     def __init__(self, robot):
         """
@@ -293,6 +295,15 @@ class Explorer:
             print("UNEXPLORED TILE")
             print([x,y])
             
+        #escape function
+        if [x,y] == self.prevUnexploredTile:
+            goal, dir = self.robot.map.findAdjacentFreeSpace([x,y])
+            
+            self.robot.findpath(goal=goal)
+            self.robot.faceDirection(dir)
+            return
+            
+        self.prevUnexploredTile = [x,y]
             
         if self.robot.pos[1] != y:
             #move to unexplored Tile's y-axis

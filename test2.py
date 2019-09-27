@@ -3,7 +3,7 @@ from pathfinder import Pathfinder
 from robot import Robot
 
 
-map = Map('zz.txt')
+map = Map('zz2.txt')
 
 
 
