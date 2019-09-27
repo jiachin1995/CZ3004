@@ -46,6 +46,7 @@ class Main:
             msg = self.android.read()
             if msg == None:
                 return print("[#] nothing to read [read_from_android]")
+            print("Received msg is {}".format(msg))
                 
             try: 
                 results = self.interface.readinstructions(msg)
