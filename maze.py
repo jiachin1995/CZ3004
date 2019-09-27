@@ -4,8 +4,6 @@ from map import Map
 from robot import Robot
 from threading import Thread
 import time
-import PIL
-from PIL import Image, ImageTk
 
 map = Map("sweet3.txt")
 robot = Robot(fakeRun=True, fakeMap = map)
