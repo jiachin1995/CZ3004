@@ -2,6 +2,7 @@ from bluetooth import *
 import subprocess
 import settings
 
+
 class Android:
     def __init__(self, bluetooth_channel=3):
         self.server_socket = None
@@ -48,14 +49,16 @@ class Android:
         except Exception as e:
             print(e)
 
-    def write(self, msg):
-        if settings.comms:  
-            print("writing msg <{}> to android".format(msg))
-    
+    def write(self, msg=None):
         if msg is None:
-            raise Exception('Error: Attempted to write None object to android!')
+            raise Exception(
+                'Error: Attempted to write None object to android!')
+
+        if settings.comms:
+            print("[@] Writing msg <{}> to Android".format(msg))
+
         try:
-            msg = bytes(msg, 'utf-8')
+            msg = bytes(msg, "UTF-8")
             self.client_socket.send(msg)
         except Exception as e:
             print("[!] Error writing message to BT device.")
@@ -64,13 +67,13 @@ class Android:
     def read(self):
         try:
             msg = self.client_socket.recv(2048)
-            
-            if settings.comms:  
-                print("Received msg <{}> from android".format(msg))
-            
             if msg is None:
+                print("[!] Failed to receive any message from Android.")
                 return None
-            return str(msg)
+            if settings.comms:
+                print("[@] Received msg <{}> from android".format(
+                    msg.decode("UTF-8")))
+            return msg.decode("UTF-8")
         except Exception as e:
             print("[!] Error reading message from BT device. Reconnecting..")
             self.connect()
