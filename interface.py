@@ -1,4 +1,4 @@
-from multiprocessing import Process, Lock
+#from multiprocessing import Process, Lock
 from threading import Thread
 
 from map import Map
@@ -11,8 +11,7 @@ import time
 class Interface:
     robot = None
     
-    lock = Lock()
-    process = None
+    thread = Thread()
     
     def __init__(self, arduino=None, fakeRun=True, fakeMap=None):
         self.instructions = {
@@ -21,62 +20,27 @@ class Interface:
             'turnRight': self.turnRight,
             'backward': self.backward,
             'getreport': self.getreport,
+            "getimages": self.getimages,
             'explore': self.explore,
             'fastestpath': self.fastestpath,
             'waypoint': self.setwaypoint,
             'reset': self.reset,
             'setrobotpos': self.setpos,
-            'stop': self.stop,
             'loadfakeMap': self.loadmap,
         }
         
         self.reset(arduino=arduino, fakeRun=fakeRun, fakeMap=fakeMap)
         
     def backward(self):
-        return self.startprocess(target = self.robot.backward, args=())
+        return self.startprocess(target = self.robot.backward)
 
     def mapGUI(self, termCondition):
         while not eval(termCondition):
             time.sleep(0.5)
             self.robot.map.printmap(self.robot)
-           
-    def startprocess(target, **kwargs):
-        if self.lock.acquire(block=False):
-            self.process = Process(target=target, kwargs=kwargs)
-            self.process.start()
-    
-            self.lock.release()
-            
-            return "done"
-        else:
-            return "Cancelled Instruction. Other processes already running."
-        
-    def stepsPerSec_test(self):
-        userinput = input("Enter steps per second:")  
-        
-        try:
-           val = int(userinput)
-        except ValueError:
-           print("That's not an int!")
-           return
-
-        self.robot.coordinator.stepsPerSec =  val
-
-        termCondition = "self.robot.map.is_explored() and self.robot.pos == [1,1]"
-
-        t1 = Thread(target=self.robot.explore, args=(None,))
-        t2 = Thread(target=self.mapGUI, args=(termCondition,))
-
-        #start thread
-        t1.start()
-        t2.start()
-
-        # Waiting for threads to finish execution...
-        t1.join()
-        t2.join()
 
     def explore(self, **kwargs):
-        return self.startprocess(target = self.robot.explore, kwargs=kwargs)
+        return self.startprocess(target = self.robot.explore)
         
 
     def explorelimit_test(self):
@@ -102,7 +66,7 @@ class Interface:
         t2.join()
      
     def fastestpath(self, **kwargs):
-        return self.startprocess(target = self.robot.findpath, kwargs=kwargs)
+        return self.startprocess(target = self.robot.findpath)
     
 
     def fastestpath_test(self):
@@ -132,7 +96,7 @@ class Interface:
         t2.join()
 
     def forward(self, steps = 1):
-        return self.startprocess(target = self.robot.forward, args=(steps))
+        return self.startprocess(target = self.robot.forward, **{'steps':steps})
 
 
     def getreport(self):
@@ -152,6 +116,19 @@ class Interface:
         output = json.dumps(dict)
         
         return output
+
+    def getimages(self):
+        results = [] 
+
+        #{"numberDisplay": [x,y, "some_letter"]}
+
+        dict = {
+            "numberDisplay" : results
+        }
+        output = json.dumps(dict)
+        
+        return output
+
 
     def loadmap_test(self):
         userinput = input("Enter file name:")  
@@ -215,17 +192,48 @@ class Interface:
     def reset(self, arduino = None, fakeRun=False, fakeMap=None):
         self.robot = Robot(arduino=arduino, fakeRun=fakeRun, fakeMap = fakeMap)
     
+           
+    def startprocess(self, target, **kwargs):
+        if not self.thread.isAlive():
+            self.thread = Thread(target=target, kwargs=kwargs)
+            self.thread.start()
+    
+            return "done"
+        else:
+            return "Cancelled Instruction. Other processes already running."
+        
+    def stepsPerSec_test(self):
+        userinput = input("Enter steps per second:")  
+        
+        try:
+           val = int(userinput)
+        except ValueError:
+           print("That's not an int!")
+           return
+
+        self.robot.coordinator.stepsPerSec =  val
+
+        termCondition = "self.robot.map.is_explored() and self.robot.pos == [1,1]"
+
+        t1 = Thread(target=self.robot.explore, args=(None,))
+        t2 = Thread(target=self.mapGUI, args=(termCondition,))
+
+        #start thread
+        t1.start()
+        t2.start()
+
+        # Waiting for threads to finish execution...
+        t1.join()
+        t2.join()
+
+    
+    
     def setpos(self, pos):
         self.robot.pos = list(pos)
     
     def setwaypoint(self, waypoint):
         self.robot.pathfinder.waypoint = list(waypoint)
     
-    def stop(self):
-        if self.process:
-            self.process.terminate()
-
-
     def timer_test(self):
         userinput = input("Enter timer in seconds (Integer):  \n")  
         
@@ -249,10 +257,10 @@ class Interface:
         t2.join()
         
     def turnLeft(self):
-        return self.startprocess(target = self.robot.turnLeft, args=())
+        return self.startprocess(target = self.robot.turnLeft)
         
     def turnRight(self):
-        return self.startprocess(target = self.robot.turnRight, args=())
+        return self.startprocess(target = self.robot.turnRight)
         
 
 if __name__ == "__main__":
