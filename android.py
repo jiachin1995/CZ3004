@@ -70,10 +70,12 @@ class Android:
             if msg is None:
                 print("[!] Failed to receive any message from Android.")
                 return None
+
+            msg = msg.decode("UTF-8")
             if settings.comms:
                 print("[@] Received msg <{}> from android".format(
-                    msg.decode("UTF-8")))
-            return msg.decode("UTF-8")
+                    msg))
+            return msg
         except Exception as e:
             print("[!] Error reading message from BT device. Reconnecting..")
             self.connect()
