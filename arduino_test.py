@@ -2,7 +2,7 @@ from arduino import Arduino
 
 if __name__ == '__main__':
     serial = Arduino(port="/dev/virtual-tty")
-    arduino.connect()
+    serial.connect()
     try:
         msg = input("Enter msg to send: ")
         print("[@] Writing to Arduino: {}".format(msg))
