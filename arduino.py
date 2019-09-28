@@ -46,6 +46,7 @@ class Arduino:
                 print("[!] No message from serial")
                 return None
 
+            msg = msg.decode("utf-8")
             if settings.comms:
                 print("Receiveed msg <{}> from arduino".format(msg))
 
