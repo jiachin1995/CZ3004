@@ -24,7 +24,7 @@ class Arduino:
             self.serial.close()
         print("[@] Serial link is now closed")
 
-    def write(self, msg = None):
+    def write(self, msg=None):
         if msg is None:
             raise Exception(
                 "Error: Attempted to write None object to arduino!")
@@ -48,8 +48,7 @@ class Arduino:
 
             msg = msg.decode("utf-8")
             if settings.comms:
-                print("Receiveed msg <{}> from arduino".format(msg))
-
+                print("[@] Receiveed msg <{}> from arduino".format(msg))
             return str(msg)
         except Exception as e:
             print("[!] Error reading from serial link")
