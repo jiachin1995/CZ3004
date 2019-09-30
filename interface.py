@@ -168,25 +168,41 @@ class Interface:
 
     
     def readinstructions(self, instr):
-        kwargs = {}
-    
-        if "waypointCoord" in instr:
-            instr, waypoint = instr.split(separator=" ", maxsplit = 1)
-            func = self.instructions["waypoint"]
-            kwargs = {'waypoint' : eval(waypoint)}
-            
-            #return setwaypoint(waypoint = eval(waypoint))
-        elif "robotCoord" in instr:
-            instr, pos = instr.split(separator=" ", maxsplit = 1)
-            func = self.instructions["setrobotpos"]
-            kwargs = {'pos' : eval(pos)}
-            
-            #return setpos(pos = eval(pos))  
-        else: 
-            func = self.instructions[instr]
+        try:
+            kwargs = {}
         
-        return func(**kwargs)
-        #return func()
+            if "waypointCoord" in instr:
+                instr, waypoint = instr.split(separator=" ", maxsplit = 1)
+                func = self.instructions["waypoint"]
+                kwargs = {'waypoint' : eval(waypoint)}
+                
+                #return setwaypoint(waypoint = eval(waypoint))
+            elif "robotCoord" in instr:
+                instr, pos = instr.split(separator=" ", maxsplit = 1)
+                func = self.instructions["setrobotpos"]
+                kwargs = {'pos' : eval(pos)}
+                
+                #return setpos(pos = eval(pos))  
+            else: 
+                func = self.instructions[instr]
+            
+            return func(**kwargs)
+            
+        except KeyError as e:
+            print("Key Error. Forwarding instruction to arduino")
+            
+            instr = e.args[0]
+            self.robot.sensors.arduino.write(instr)
+    
+            while True:
+                msg = self.robot.sensors.arduino.read()
+                if msg == None:
+                    print("[#] nothing to read [read_from_serial]")
+                    
+                else:
+                    return msg
+                    
+                time.sleep(0.5)
         
 
     def reset(self, arduino = None, fakeRun=False, fakeMap=None):
