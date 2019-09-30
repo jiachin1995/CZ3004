@@ -37,7 +37,7 @@ class Sensors:
                 print("[#] nothing to read [read_from_serial]")
                 
             else:
-                front_mid,front_left, front_right,left_front, left_back = msg.split(separator=',')
+                front_mid,front_left, front_right,left_front, left_back = msg.split(str=',')
                 break
                 
             time.sleep(check_rate)
