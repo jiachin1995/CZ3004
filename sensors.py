@@ -17,7 +17,7 @@ class Sensors:
     def __init__(self, arduino):
         self.arduino = arduino
     
-    def getFront():
+    def getFront(self):
         """
         Returns front terrain in the form of a list, containing [left,middle,right].
         Left,middle,right are integers.
@@ -69,7 +69,7 @@ class Sensors:
         return [int(left_front), int(left_back)]
     
     
-    def isFrontBlocked():
+    def isFrontBlocked(self):
         """
         Returns True if any tiles immediately in front of robot is occupied.
         
@@ -80,7 +80,7 @@ class Sensors:
                 return True
         return False
         
-    def isLeftBlocked():
+    def isLeftBlocked(self):
         """
         Returns True if any tiles immediately left of robot is occupied.
         
