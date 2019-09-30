@@ -4,7 +4,7 @@ import settings
 
 
 class Arduino:
-    def __init__(self, port="/dev/ttyACM0"):
+    def __init__(self, port="/dev/ttyACM1"):
         self.port = port
         self.baud_rate = 115200
         self.serial = None
