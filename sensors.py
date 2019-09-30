@@ -67,7 +67,7 @@ class Sensors:
                 front_mid,front_left, front_right,left_front, left_back = msg.split(',')
                 break
                 
-            time.sleep(check_rate)
+            time.sleep(self.check_rate)
         
         return [int(left_front), int(left_back)]
     
