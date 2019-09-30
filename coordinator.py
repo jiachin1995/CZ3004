@@ -46,7 +46,7 @@ class Coordinator:
                 elif msg == self.instructions["movement done"]:
                     return
                     
-                time.sleep(check_rate)
+                time.sleep(self.check_rate)
     
     def forward(self,steps):
         """ 
@@ -75,7 +75,7 @@ class Coordinator:
                 elif msg == self.instructions["movement done"]:
                     return
                     
-                time.sleep(check_rate)
+                time.sleep(self.check_rate)
     
     def turnLeft(self):
         """ 
@@ -97,7 +97,7 @@ class Coordinator:
                 elif msg == self.instructions["movement done"]:
                     return
                     
-                time.sleep(check_rate)
+                time.sleep(self.check_rate)
     
     def turnRight(self):
         """ 
@@ -120,7 +120,7 @@ class Coordinator:
                 elif msg == self.instructions["movement done"]:
                     return
                     
-                time.sleep(check_rate)
+                time.sleep(self.check_rate)
             
     def fakeRunWait(self):
         """ 
