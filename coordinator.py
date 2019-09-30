@@ -55,6 +55,8 @@ class Coordinator:
         Args:
             steps: Integer. Number of steps to take.
         """   
+        print("forward called")
+
         if self.fakeRun:
             for i in range(0,steps):
                 self.fakeRunWait()

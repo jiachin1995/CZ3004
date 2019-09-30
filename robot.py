@@ -35,6 +35,7 @@ class Robot:
     coordinator = Coordinator()
     pathfinder = None
     explorer = None
+    sensors = None
 
     
     def __init__(self, arduino = None, fakeRun= False, fakeMap=None, stepsPerSec=1, **kwargs):  

@@ -13,12 +13,12 @@ class Interface:
     
     thread = Thread()
     
-    def __init__(self, arduino=None, fakeRun=True, fakeMap=None):
+    def __init__(self, arduino=None, fakeRun=False, fakeMap=None):
         self.instructions = {
-            'forward': self.forward,
-            'turnLeft': self.turnLeft,
-            'turnRight': self.turnRight,
-            'backward': self.backward,
+            'w1': self.forward,
+            'a2': self.turnLeft,
+            'd2': self.turnRight,
+            's1': self.backward,
             'getreport': self.getreport,
             "getimages": self.getimages,
             'explore': self.explore,
