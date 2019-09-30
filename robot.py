@@ -63,7 +63,7 @@ class Robot:
         elif arduino is None:
             raise Exception("Real run requires arduino to be present")
         else:
-			from sensors import Sensors
+            from sensors import Sensors
             self.sensors = Sensors(arduino)
             self.coordinator.arduino = arduino
             
