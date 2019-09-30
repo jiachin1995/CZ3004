@@ -14,6 +14,9 @@ class Sensors:
     }
     check_rate = 0.5
     
+    front_sensors_range = 4
+    left_sensors_range = 4
+    
     def __init__(self, arduino):
         self.arduino = arduino
     
