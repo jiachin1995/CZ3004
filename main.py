@@ -28,7 +28,7 @@ class Main:
 
         time.sleep(1)
         
-        self.interface = Interface(arduino = self.arduino, fakeRun=False)
+        self.interface = Interface(arduino = self.arduino, fakeRun=False, android=self.android)
 
     def write_to_pc(self, msg):
         self.pc.write(msg)

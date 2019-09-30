@@ -10,10 +10,13 @@ import time
 
 class Interface:
     robot = None
+    android=None
     
     thread = Thread()
     
-    def __init__(self, arduino=None, fakeRun=False, fakeMap=None):
+    check_rate = 0.5
+    
+    def __init__(self, arduino=None, fakeRun=False, fakeMap=None, android=None):
         self.instructions = {
             'w1': self.forward,
             'a2': self.turnLeft,
@@ -31,12 +34,15 @@ class Interface:
         
         self.reset(arduino=arduino, fakeRun=fakeRun, fakeMap=fakeMap)
         
+        if android:
+            self.android = android
+        
     def backward(self):
         return self.startprocess(target = self.robot.backward)
 
     def mapGUI(self, termCondition):
         while not eval(termCondition):
-            time.sleep(0.5)
+            time.sleep(check_rate)
             self.robot.map.printmap(self.robot)
 
     def explore(self, **kwargs):
@@ -202,7 +208,7 @@ class Interface:
                 else:
                     return msg
                     
-                time.sleep(0.5)
+                time.sleep(check_rate)
         
 
     def reset(self, arduino = None, fakeRun=False, fakeMap=None):
@@ -213,6 +219,8 @@ class Interface:
         if not self.thread.isAlive():
             self.thread = Thread(target=target, kwargs=kwargs)
             self.thread.start()
+    
+            self.writeReport()
     
             return "done"
         else:
@@ -278,7 +286,24 @@ class Interface:
     def turnRight(self):
         return self.startprocess(target = self.robot.turnRight)
         
+    def writeReport(self):
+        report_thread = Thread(target=self._writeReport, args=())
+        report_thread.start()
 
+        
+    def _writeReport(self):
+        movement_thread = self.thread
+    
+        while movement_thread.isAlive:
+            report = self.getreport()
+            self.android.write(report)
+            
+            time.sleep(check_rate)
+
+        report = self.getreport()
+        self.android.write(report)
+        
+        
 if __name__ == "__main__":
     map = Map("sample_maze.txt")
     interface = Interface(fakeMap = map)

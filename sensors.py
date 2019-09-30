@@ -12,7 +12,7 @@ class Sensors:
         "getLeft": "get left sensors",
         "getAll": "z"
     }
-    check_rate = 0.5
+    check_rate = 0.1
     
     front_sensors_range = 4
     left_sensors_range = 4

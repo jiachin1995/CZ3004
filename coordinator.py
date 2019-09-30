@@ -20,7 +20,7 @@ class Coordinator:
     }
     fakeRun = False
     stepsPerSec = 2
-    check_rate = 0.5
+    check_rate = 0.1
 
 
     arduino = None
@@ -85,7 +85,7 @@ class Coordinator:
             self.fakeRunWait()
             return
         else:
-            instr = self.instructions["forward"]
+            instr = self.instructions["left"]
         
             self.arduino.write(instr)
             
@@ -107,7 +107,7 @@ class Coordinator:
             self.fakeRunWait()
             return
         else:
-            instr = self.instructions["forward"]
+            instr = self.instructions["right"]
         
             self.arduino.write(instr)
             print("[@] Sent to Serial: {}".format(instr))  
