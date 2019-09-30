@@ -1,8 +1,10 @@
-from sensors import Sensors
-from map import Map
-from explorer import Explorer
 from coordinator import Coordinator
+from explorer import Explorer
+#from imagefinder import Imagefinder
+from map import Map
 from pathfinder import Pathfinder
+from sensors import Sensors
+
 
 import settings
 
@@ -130,6 +132,15 @@ class Robot:
             self.turnRight()
             self.turnRight()
   
+    def findImage(self):
+        #results = self.imagefinder.find()
+        #if results is not None:
+        #    image, location = results
+        #
+        # pos = findpos(location)
+        # self.images.append([image, pos])
+        pass
+  
     def findpath(self, start=None, goal=[13,18], waypoint=None, move=True, rowgoal=None):
         """
         Method for robot to find shortest path.
@@ -159,7 +170,7 @@ class Robot:
             
         return [path, directions]
     
-    def forward(self, steps = 1):
+    def forward(self, steps = 1, findImage=False):
         """ 
         Moves the robot forward.
         
@@ -346,7 +357,7 @@ class Robot:
             concat = "self."+key+" = " + value
             eval(concat)                    #Set attributes. Evaluate self.key = value  
             
-    def turnLeft(self):
+    def turnLeft(self, findImage=False):
         """
         Turns the robot left.
         """
@@ -358,7 +369,7 @@ class Robot:
         if settings.logging:
             print("Movement: Robot Turns Left")
     
-    def turnRight(self):
+    def turnRight(self, findImage=False):
         """
         Turns the robot right.
         """
