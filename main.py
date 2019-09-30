@@ -14,10 +14,6 @@ class Main:
     
     android=None
     arduino=None
-    
-    front_sensors_range = 4
-    left_sensors_range = 4
-
 
     def __init__(self):
         threading.Thread.__init__(self)
