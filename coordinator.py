@@ -43,7 +43,7 @@ class Coordinator:
                 if msg == None:
                     print("[#] nothing to read [read_from_serial]")
                     
-                elif msg == self.instructions["movement done"]:
+                elif self.instructions["movement done"] in msg:
                     return
                     
                 time.sleep(self.check_rate)
@@ -72,7 +72,7 @@ class Coordinator:
                 if msg == None:
                     print("[#] nothing to read [read_from_serial]")
                     
-                elif msg == self.instructions["movement done"]:
+                elif self.instructions["movement done"] in msg:
                     return
                     
                 time.sleep(self.check_rate)
@@ -94,7 +94,7 @@ class Coordinator:
                 if msg == None:
                     print("[#] nothing to read [read_from_serial]")
                 
-                elif msg == self.instructions["movement done"]:
+                elif self.instructions["movement done"] in msg:
                     return
                     
                 time.sleep(self.check_rate)
@@ -117,7 +117,7 @@ class Coordinator:
                 if msg == None:
                     print("[#] nothing to read [read_from_serial]")
                 
-                elif msg == self.instructions["movement done"]:
+                elif self.instructions["movement done"] in msg:
                     return
                     
                 time.sleep(self.check_rate)
