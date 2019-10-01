@@ -34,23 +34,20 @@ class Sensors:
         For example, if front obstacle is T-shaped, getFront() might return 1, 0, 1.
         """
         #check if map explored, return obstacles
-        if isFrontExplored:
-            baseline = self.getBaseLine()
-            tileRange = self.getTileRange()
+        if self.isFrontExplored():
+            tiles_array = self.robot.getBaseLineRange(length = self.front_sensors_range)
             
-            results = []
-            for tile in baseline:
-                x,y = tile
+            for row in tiles_array:
                 count = 0
-                for i in range(self.front_sensors_range):  
-                    if self.robot.map.getTile([x,y]) == 1 or self.robot.map.getTile([x,y]) == -1:
+                for tile in row:
+                    if self.robot.map.getTile(tile) == 1 or self.robot.map.getTile(tile) == -1:
                         break
-                    count += 1
-                    x,y = eval(tileRange)
-                    
+                    else:
+                        count += 1
                 results.append(count)
                 
             return results
+        
         
         #if not explored, use sensors        
         instr = self.instructions["getAll"]
@@ -79,24 +76,20 @@ class Sensors:
         Similar to getFront(). Refer to getFront() above
         """
         #check if map explored, return obstacles
-        if isLeftExplored:
-            baseline_vert = self.getBaseLineVert()
-            baseline_vert.pop(1)
-            tileRange_vert = self.getTileRangeVert()
+        if self.isLeftExplored():
+            tiles_array = self.robot.getBaseLineVertRange(length = self.left_sensors_range)
             
-            results = []
-            for tile in baseline_vert:
-                x,y = tile
+            for row in tiles_array:
                 count = 0
-                for i in range(self.left_sensors_range):  
-                    if self.robot.map.getTile([x,y]) == 1 or self.robot.map.getTile([x,y]) == -1:
+                for tile in row:
+                    if self.robot.map.getTile(tile) == 1 or self.robot.map.getTile(tile) == -1:
                         break
-                    count += 1
-                    x,y = eval(tileRange_vert)
-                    
+                    else:
+                        count += 1
                 results.append(count)
                 
             return results
+            
         
         #if not explored, use sensors  
         instr = self.instructions["getAll"]
@@ -117,31 +110,24 @@ class Sensors:
         return [int(left_front), int(left_back)]
     
     def isFrontExplored(self):
-        baseline = self.getBaseLine()
-        tileRange = self.getTileRange()
-        
-        for tile in baseline:
-            x,y = tile
-            for i in range(self.front_sensors_range):  
+        tiles_array = self.robot.getBaseLineRange(length = self.front_sensors_range)
+
+        for row in tiles_array:
+            for tile in row:
                 if self.robot.map.getTile([x,y]) == None:
                     return False
-                x,y = eval(tileRange)
-    
         return True
+    
     
     def isLeftExplored(self):
-        baseline_vert = self.getBaseLineVert()
-        baseline_vert.pop(1)
-        tileRange_vert = self.getTileRangeVert()
-        
-        for tile in baseline_vert:
-            x,y = tile
-            for i in range(self.left_sensors_range):  
+        tiles_array = self.robot.getBaseLineVertRange(length = self.left_sensors_range)
+    
+        for row in tiles_array:
+            for tile in row:
                 if self.robot.map.getTile([x,y]) == None:
                     return False
-                x,y = eval(tileRange_vert)
-    
         return True
+    
     
     def isFrontBlocked(self):
         """

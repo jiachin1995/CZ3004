@@ -310,7 +310,7 @@ class Interface:
         
 if __name__ == "__main__":
     map = Map("sample_maze.txt")
-    interface = Interface(fakeMap = map)
+    interface = Interface(fakeRun= True, fakeMap = map)
 
     interface.robot.map.printmap()
     print("The Map above is the virtual arena.")

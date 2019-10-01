@@ -227,6 +227,23 @@ class Robot:
             
         return baseline
   
+    def getBaseLineRange(self, length=1):
+        baseline = self.getBaseLine()
+        tileRange = self.getTileRange()
+        results = []
+        
+        for tile in baseline:
+            x,y = tile
+            tiles = []
+            for i in range(length):
+                tiles.append([x,y])
+                x,y = eval(tileRange)
+            results.append(tiles)
+            
+        return results
+                
+            
+  
     def getBaseLineVert(self):
         """
         baseline_vert refers to baseline, but vertical. Refer to getBaseLine() above.
@@ -243,6 +260,22 @@ class Robot:
             )
     
         return baseline_vert
+        
+    def getBaseLineVertRange(self, length=1, exclude_mid = True):
+        baseline_vert = self.getBaseLineVert()
+        if exclude_mid: baseline_vert.pop(1)
+        tileRange_vert = self.getTileRangeVert()
+        results = []
+        
+        for tile in baseline_vert:
+            x,y = tile
+            tiles = []
+            for i in range(length):
+                tiles.append([x,y])
+                x,y = eval(tileRange_vert)
+            results.append(tiles)
+            
+        return results
         
     def getTileRange(self):
         """
@@ -402,41 +435,34 @@ class Robot:
            
         #update map with front sensors
         front_terrain = self.sensors.getFront()
+        tiles_array = self.getBaseLineRange(length = self.sensors.front_sensors_range)
         
-        baseline = self.getBaseLine()
-        tileRange = self.getTileRange()
-        
-        for terr in front_terrain:              #for every column in front_terrain
-            x,y = baseline.pop(0)
+        for row in tiles_array:                     #for each row - left, middle, right
+            terr = front_terrain.pop(0)
             for i in range(0, terr):            
-                freeTiles.append([x,y])
+                freeTiles.append(row[i])
                 valuelist += [0]
                 
-                x,y = eval(tileRange)
-                
             if terr < self.sensors.front_sensors_range:
-                freeTiles.append([x,y])
-                valuelist += [1]                #obstacle detected. Add to map
+                freeTiles.append(row[terr])
+                valuelist += [1]                   #obstacle detected. Add to map
             
         
         #update map with left sensors
         left_terrain = self.sensors.getLeft()
+        tiles_array = self.getBaseLineVertRange(length = self.sensors.left_sensors_range)
         
-        baseline_vert = self.getBaseLineVert()
-        baseline_vert.pop(1)
-        tileRange_vert = self.getTileRangeVert()
-        
-        for terr in left_terrain:              #for every column in left_terrain
-            x,y = baseline_vert.pop(0)
+        for row in tiles_array:                     #for each row - front, back
+            terr = left_terrain.pop(0)
             for i in range(0, terr):            
-                freeTiles.append([x,y])
+                freeTiles.append(row[i])
                 valuelist += [0]
                 
-                x,y = eval(tileRange_vert)
-                
             if terr < self.sensors.left_sensors_range:
-                freeTiles.append([x,y])
-                valuelist += [1]                #obstacle detected. Add to map
+                freeTiles.append(row[terr])
+                valuelist += [1]                   #obstacle detected. Add to map
+        
+
         
         #TODO-update map with right sensors
         

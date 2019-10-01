@@ -44,41 +44,20 @@ class Sensors:
         
         Fake sensors does this by reading robot's position and orientation and compares it with fake map.
         """
-        x, y = self.robot.pos
-
-        baseline = self.robot.getBaseLine()
-        tileRange = self.robot.getTileRange()
+        tiles_array = self.robot.getBaseLineRange(length = self.front_sensors_range)
+        results = []
         
-        x,y = baseline.pop(0)
-        left = 0
-        for i in range(0, self.front_sensors_range):      
-            if self.map.getTile([x,y]) == 1 or self.map.getTile([x,y]) == -1:
-                break
-            else:
-                left += 1
-                x,y = eval(tileRange)
-
-             
-        x,y = baseline.pop(0)
-        middle = 0
-        for i in range(0, self.front_sensors_range):  
-            if self.map.getTile([x,y]) == 1 or self.map.getTile([x,y]) == -1:
-                break
-            else:
-                middle += 1
-                x,y = eval(tileRange)
-
-        x,y = baseline.pop(0)
-        right = 0
-        for i in range(0, self.front_sensors_range):    
-            if self.map.getTile([x,y]) == 1 or self.map.getTile([x,y]) == -1:
-                break
-            else:
-                right += 1
-                x,y = eval(tileRange)                
-                
-                
-        return [left, middle, right]
+        for row in tiles_array:
+            count = 0
+            for tile in row:
+                if self.map.getTile(tile) == 1 or self.map.getTile(tile) == -1:
+                    break
+                else:
+                    count += 1
+            results.append(count)
+            
+        return results
+            
             
     def getLeft(self):
         """
@@ -90,31 +69,20 @@ class Sensors:
         Fake sensors does this by reading robot's position and orientation and compares it with fake map.
 
         """
-        x, y = self.robot.pos
+        tiles_array = self.robot.getBaseLineVertRange(length = self.left_sensors_range)
+        results = []
+        
+        for row in tiles_array:
+            count = 0
+            for tile in row:
+                if self.map.getTile(tile) == 1 or self.map.getTile(tile) == -1:
+                    break
+                else:
+                    count += 1
+            results.append(count)
+            
+        return results
 
-        baseline_vert = self.robot.getBaseLineVert()
-        baseline_vert.pop(1)
-        tileRange_vert = self.robot.getTileRangeVert()
-        
-        x,y = baseline_vert.pop(0)
-        front = 0
-        for i in range(0, self.left_sensors_range):    
-            if self.map.getTile([x,y]) == 1 or self.map.getTile([x,y]) == -1:
-                break
-            else:
-                front += 1
-                x,y = eval(tileRange_vert)   
-                
-        x,y = baseline_vert.pop(0)
-        back = 0
-        for i in range(0, self.left_sensors_range):    
-            if self.map.getTile([x,y]) == 1 or self.map.getTile([x,y]) == -1:
-                break
-            else:
-                back += 1
-                x,y = eval(tileRange_vert)                
-        
-        return [front, back]
         
     def isFrontBlocked(self):
         """
