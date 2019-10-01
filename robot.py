@@ -66,7 +66,7 @@ class Robot:
             raise Exception("Real run requires arduino to be present")
         else:
             from sensors import Sensors
-            self.sensors = Sensors(arduino)
+            self.sensors = Sensors(self, arduino)
             self.coordinator.arduino = arduino
             
         #update map
@@ -132,7 +132,7 @@ class Robot:
             self.turnRight()
             self.turnRight()
   
-    def findImage(self):
+    def detectImage(self):
         #results = self.imagefinder.find()
         #if results is not None:
         #    image, location = results
@@ -192,6 +192,8 @@ class Robot:
         
         if self.explore: self.updatemap()
         
+        if findImage: self.detectImage()
+        
         if settings.logging:
             print("Movement: Robot goes forward " +str(steps)+ " steps")
         
@@ -219,11 +221,11 @@ class Robot:
             2: "[[x+1,y-2],[x,y-2],[x-1,y-2]]",
             3: "[[x-2,y-1],[x-2,y],[x-2,y+1]]"
         }
-        baseline_str = eval(
+        baseline = eval(
                 baseline_dict[self.orientation]
             )
             
-        return baseline_str
+        return baseline
   
     def getBaseLineVert(self):
         """
@@ -366,6 +368,8 @@ class Robot:
 
         if self.explore: self.updatemap()
         
+        if findImage: self.detectImage()
+        
         if settings.logging:
             print("Movement: Robot Turns Left")
     
@@ -377,6 +381,8 @@ class Robot:
         self.orientation = (self.orientation + 1) % 4
 
         if self.explore: self.updatemap()
+ 
+        if findImage: self.detectImage()
  
         if settings.logging:
             print("Movement: Robot Turns Right")
@@ -408,7 +414,7 @@ class Robot:
                 
                 x,y = eval(tileRange)
                 
-            if terr < self.sensors.front_sensors_range - 1:
+            if terr < self.sensors.front_sensors_range:
                 freeTiles.append([x,y])
                 valuelist += [1]                #obstacle detected. Add to map
             
@@ -428,7 +434,7 @@ class Robot:
                 
                 x,y = eval(tileRange_vert)
                 
-            if terr < self.sensors.front_sensors_range - 1:
+            if terr < self.sensors.left_sensors_range:
                 freeTiles.append([x,y])
                 valuelist += [1]                #obstacle detected. Add to map
         

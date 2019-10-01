@@ -7,6 +7,7 @@ class Sensors:
     
     """
     arduino = None
+    robot=None
     instructions = {
         "getFront": "get front sensors",
         "getLeft": "get left sensors",
@@ -14,10 +15,13 @@ class Sensors:
     }
     check_rate = 0.01
     
-    front_sensors_range = 4
-    left_sensors_range = 4
+    front_sensors_range = 3     #biggest integer that sensors will return us
+    left_sensors_range = 3
     
-    def __init__(self, arduino):
+    
+    
+    def __init__(self, robot, arduino):
+        self.robot = robot
         self.arduino = arduino
     
     def getFront(self):
@@ -29,6 +33,26 @@ class Sensors:
         
         For example, if front obstacle is T-shaped, getFront() might return 1, 0, 1.
         """
+        #check if map explored, return obstacles
+        if isFrontExplored:
+            baseline = self.getBaseLine()
+            tileRange = self.getTileRange()
+            
+            results = []
+            for tile in baseline:
+                x,y = tile
+                count = 0
+                for i in range(self.front_sensors_range):  
+                    if self.robot.map.getTile([x,y]) == 1:
+                        break
+                    count += 1
+                    x,y = eval(tileRange)
+                    
+                results.append(count)
+                
+            return results
+        
+        #if not explored, use sensors        
         instr = self.instructions["getAll"]
         
         self.arduino.write(instr)
@@ -54,6 +78,27 @@ class Sensors:
         
         Similar to getFront(). Refer to getFront() above
         """
+        #check if map explored, return obstacles
+        if isLeftExplored:
+            baseline_vert = self.getBaseLineVert()
+            baseline_vert.pop(1)
+            tileRange_vert = self.getTileRangeVert()
+            
+            results = []
+            for tile in baseline_vert:
+                x,y = tile
+                count = 0
+                for i in range(self.left_sensors_range):  
+                    if self.robot.map.getTile([x,y]) == 1:
+                        break
+                    count += 1
+                    x,y = eval(tileRange_vert)
+                    
+                results.append(count)
+                
+            return results
+        
+        #if not explored, use sensors  
         instr = self.instructions["getAll"]
         
         self.arduino.write(instr)
@@ -71,6 +116,32 @@ class Sensors:
         
         return [int(left_front), int(left_back)]
     
+    def isFrontExplored(self):
+        baseline = self.getBaseLine()
+        tileRange = self.getTileRange()
+        
+        for tile in baseline:
+            x,y = tile
+            for i in range(self.front_sensors_range):  
+                if self.robot.map.getTile([x,y]) == None:
+                    return False
+                x,y = eval(tileRange)
+    
+        return True
+    
+    def isLeftExplored(self):
+        baseline_vert = self.getBaseLineVert()
+        baseline_vert.pop(1)
+        tileRange_vert = self.getTileRangeVert()
+        
+        for tile in baseline_vert:
+            x,y = tile
+            for i in range(self.left_sensors_range):  
+                if self.robot.map.getTile([x,y]) == None:
+                    return False
+                x,y = eval(tileRange_vert)
+    
+        return True
     
     def isFrontBlocked(self):
         """
