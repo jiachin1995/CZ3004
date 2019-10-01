@@ -5,11 +5,15 @@ from interface import Interface
 import time
 
 interface = Interface(fakeRun=True)
-interface.robot.coordinator.stepsPerSec =20
 
-print(interface.readinstructions("explore"))
-print(interface.readinstructions("turnLeft"))
-time.sleep(40)
-print(interface.readinstructions("fastestpath"))
+print(interface.getreport())
 
-#interface.readinstructions("fastestpath")
+
+# interface.robot.coordinator.stepsPerSec =20
+
+# print(interface.readinstructions("explore"))
+# print(interface.readinstructions("turnLeft"))
+# time.sleep(40)
+# print(interface.readinstructions("fastestpath"))
+
+# #interface.readinstructions("fastestpath")

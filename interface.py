@@ -42,7 +42,7 @@ class Interface:
 
     def mapGUI(self, termCondition):
         while not eval(termCondition):
-            time.sleep(check_rate)
+            time.sleep(self.check_rate)
             self.robot.map.printmap(self.robot)
 
     def explore(self, **kwargs):
