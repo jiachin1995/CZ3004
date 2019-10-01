@@ -25,6 +25,7 @@ class Interface:
             'getreport': self.getreport,
             "getimages": self.getimages,
             'explore': self.explore,
+            'stopexplore': self.stopexplore,
             'fastestpath': self.fastestpath,
             'waypoint': self.setwaypoint,
             'reset': self.reset,
@@ -36,7 +37,10 @@ class Interface:
         
         if android:
             self.android = android
-        
+    
+    def stopexplore(self):
+        raise Exception("stop command issued")
+
     def backward(self):
         return self.startprocess(target = self.robot.backward)
 
