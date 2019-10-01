@@ -14,7 +14,7 @@ class Interface:
     
     thread = Thread()
     
-    check_rate = 0.5
+    check_rate = 0.4
     
     def __init__(self, arduino=None, fakeRun=False, fakeMap=None, android=None):
         self.instructions = {
