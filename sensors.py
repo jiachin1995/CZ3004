@@ -43,7 +43,7 @@ class Sensors:
                 x,y = tile
                 count = 0
                 for i in range(self.front_sensors_range):  
-                    if self.robot.map.getTile([x,y]) == 1:
+                    if self.robot.map.getTile([x,y]) == 1 or self.robot.map.getTile([x,y]) == -1:
                         break
                     count += 1
                     x,y = eval(tileRange)
@@ -89,7 +89,7 @@ class Sensors:
                 x,y = tile
                 count = 0
                 for i in range(self.left_sensors_range):  
-                    if self.robot.map.getTile([x,y]) == 1:
+                    if self.robot.map.getTile([x,y]) == 1 or self.robot.map.getTile([x,y]) == -1:
                         break
                     count += 1
                     x,y = eval(tileRange_vert)
