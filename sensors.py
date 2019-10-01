@@ -1,4 +1,5 @@
 import time
+import settings
         
 
 class Sensors:
@@ -15,8 +16,8 @@ class Sensors:
     }
     check_rate = 0.01
     
-    front_sensors_range = 3     #biggest integer that sensors will return us
-    left_sensors_range = 3
+    front_sensors_range = settings.front_sensors_range     #biggest integer that sensors will return to algo
+    left_sensors_range = settings.left_sensors_range
     
     
     

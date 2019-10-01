@@ -13,8 +13,8 @@ class Sensors:
         robot: Robot object. Required to read current pos and orientation.
     """
 
-    front_sensors_range = 4
-    left_sensors_range = 4
+    front_sensors_range = settings.front_sensors_range     #biggest integer that sensors will return to algo
+    left_sensors_range = settings.left_sensors_range
     map = None
     robot = None
 

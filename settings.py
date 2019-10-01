@@ -4,6 +4,9 @@ logging = False                             #print logs statements, normally for
 mapformat_returntype_isHex = True           #default true. If false, returns map format as bits instead of hex
 optimise_diagonals = False                  #If True, optimise shortest path such that robot will make diagonal movements
 
+front_sensors_range = 3                     #biggest integer that sensors will return to algo
+left_sensors_range = 3
+
 """
     considering
     logging = {

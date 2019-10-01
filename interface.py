@@ -312,10 +312,9 @@ if __name__ == "__main__":
     map = Map("sample_maze.txt")
     interface = Interface(fakeRun= True, fakeMap = map)
 
-    interface.robot.map.printmap()
+    interface.robot.map.printmap(robot = interface.robot)
     print("The Map above is the virtual arena.")
-    print(interface.robot.pos)
-    print(interface.robot.orientation)
+
 
     prompt = "Choose an option:   \n  \
                0: break             \n  \

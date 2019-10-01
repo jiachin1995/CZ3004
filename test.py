@@ -6,8 +6,10 @@ from robot import Robot
 map = Map('sample_maze.txt')
 
 
-# robot = Robot(fakeRun=True, fakeMap = map)
-# print(robot.getBaseLineRange(length=0))
+robot = Robot(fakeRun=True, fakeMap = map)
+print(robot.getBaseLineRange(length=0))
+
+
 
 
 """ code to create mazes"""
