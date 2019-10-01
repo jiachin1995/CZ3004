@@ -208,7 +208,7 @@ class Interface:
                 else:
                     return msg
                     
-                time.sleep(check_rate)
+                time.sleep(self.check_rate)
         
 
     def reset(self, arduino = None, fakeRun=False, fakeMap=None):
@@ -298,7 +298,7 @@ class Interface:
             report = self.getreport()
             self.android.write(report)
             
-            time.sleep(check_rate)
+            time.sleep(self.check_rate)
 
         report = self.getreport()
         self.android.write(report)
