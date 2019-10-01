@@ -41,6 +41,8 @@ class Main:
 
 
     def start_listening(self):
+        self.android.write('{"canExplore": true}')
+    
         while True:
             msg = self.android.read()
             if msg == None:
