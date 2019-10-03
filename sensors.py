@@ -36,6 +36,7 @@ class Sensors:
         """
         #check if map explored, return obstacles
         if self.isFrontExplored():
+            results = []
             tiles_array = self.robot.getBaseLineRange(length = self.front_sensors_range)
             
             for row in tiles_array:
@@ -78,6 +79,7 @@ class Sensors:
         """
         #check if map explored, return obstacles
         if self.isLeftExplored():
+            results = []
             tiles_array = self.robot.getBaseLineVertRange(length = self.left_sensors_range)
             
             for row in tiles_array:
@@ -115,7 +117,7 @@ class Sensors:
 
         for row in tiles_array:
             for tile in row:
-                if self.robot.map.getTile([x,y]) == None:
+                if self.robot.map.getTile(tile) == None:
                     return False
         return True
     
@@ -125,7 +127,7 @@ class Sensors:
     
         for row in tiles_array:
             for tile in row:
-                if self.robot.map.getTile([x,y]) == None:
+                if self.robot.map.getTile(tile) == None:
                     return False
         return True
     
