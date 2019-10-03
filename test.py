@@ -7,8 +7,8 @@ map = Map('testmaze5.txt')
 
 
 """code to test image finder"""
-islandf = Islandsfinder(map)
-islandf.printislandsmap()
+# islandf = Islandsfinder(map)
+# islandf.printislandsmap()
 #map.printmap()
 #print(islandf.getIslands())
 #print(len(islandf.getIslands()))
@@ -17,9 +17,15 @@ islandf.printislandsmap()
 # print(type(tile))
 # print(type(tile) is set)
 
-iterator = islandf.nextIsland()
+# iterator = islandf.nextIsland()
 
-print(next(iterator))
+# print(next(iterator, None))
+# print(next(iterator, None))
+# print(next(iterator, None))
+# print(next(iterator, None))
+# print(next(iterator, None))
+# print(next(iterator, None))
+
 
 
 
@@ -59,13 +65,14 @@ print(next(iterator))
 # robot.map.printmap()
 
 """code to check explorer.py"""
-# robot = Robot(fakeRun=True, fakeMap = map)
-# robot.explore()
+robot = Robot(fakeRun=True, fakeMap = map)
+robot.coordinator.stepsPerSec = 20
+robot.explore()
 
-# robot.map.printmap()
-# print(robot.pos)
-# print(robot.orientation)
-# print(robot.images)
+robot.map.printmap()
+print(robot.pos)
+print(robot.orientation)
+print(robot.images)
 
 """code to check explorer + timer"""
 # robot = Robot(fakeRun=True, fakeMap = map)

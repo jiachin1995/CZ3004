@@ -155,10 +155,16 @@ class Robot:
         pos = baseline_vert[location]
         
         if self.map.getTile(pos) != 1:
-            print("WARNING. image found but position is not an obstacle")
-        else:
-            print("images found")
-            self.images.append([id, pos])
+            print("WARNING. Image found but position is not an obstacle")
+            return
+        
+        for img in self.images:
+            if pos == img[1]:
+                print("WARNING. Found image but position already has an image")
+                return
+        
+        print("images found")
+        self.images.append([id, pos])
            
         
     def isDetectImageCancelled(self):

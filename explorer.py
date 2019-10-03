@@ -1,3 +1,5 @@
+from islandsfinder import Islandsfinder
+
 import time
 
 import settings
@@ -64,6 +66,26 @@ class Explorer:
                 break
             self.spelunk()
         
+        if settings.findallimages == 2:
+            finder = Islandsfinder(self.robot.map)
+            iterator = finder.nextIsland()
+                
+            while len(self.robot.images) < settings.images_threshold:
+                if self.noTimeLeft():
+                    break
+                
+                results = next(iterator, None)
+                if results is None:
+                    print("All islands searched. Stopping exploration")
+                    break
+                
+                pos, orient = results
+                self.robot.findpath(goal=pos)
+                self.robot.faceDirection(orient)
+                
+                endCondition = "len(self.robot.images) >= settings.images_threshold" 
+                self.hugleftwall(endCondition=endCondition, checkexplore=False)
+                
         
         if self.noTimeLeft():
             self.state = "Out of time"
@@ -80,7 +102,7 @@ class Explorer:
         self.robot.findpath(goal=[1,1])
         self.robot.faceDirection(0)
         
-    def hugleftwall(self, turns = 0, startpos = None, endCondition=None):
+    def hugleftwall(self, turns = 0, startpos = None, endCondition=None, checkexplore=True):
         """
         Recursive function. Ends when robot is back to initial starting position and orientation.
         Also accepts a different end condition as argument.
@@ -95,7 +117,7 @@ class Explorer:
             return
             
         #return if explore limit reached:
-        if self.exploreDone():
+        if checkexplore and self.exploreDone():
             return
     
         #run once when first called
