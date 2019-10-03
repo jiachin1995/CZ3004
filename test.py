@@ -1,14 +1,25 @@
 from map import Map
 from pathfinder import Pathfinder
 from robot import Robot
+from islandsfinder import Islandsfinder
+
+map = Map('testmaze5.txt')
 
 
-map = Map('sample_maze.txt')
+"""code to test image finder"""
+islandf = Islandsfinder(map)
+islandf.printislandsmap()
+#map.printmap()
+#print(islandf.getIslands())
+#print(len(islandf.getIslands()))
 
+# tile = islandf.islands_map[18][5]
+# print(type(tile))
+# print(type(tile) is set)
 
-robot = Robot(fakeRun=True, fakeMap = map)
-print(robot.getBaseLineRange(length=0))
+iterator = islandf.nextIsland()
 
+print(next(iterator))
 
 
 
@@ -48,13 +59,13 @@ print(robot.getBaseLineRange(length=0))
 # robot.map.printmap()
 
 """code to check explorer.py"""
-robot = Robot(fakeRun=True, fakeMap = map)
-robot.explore()
+# robot = Robot(fakeRun=True, fakeMap = map)
+# robot.explore()
 
-robot.map.printmap()
-print(robot.pos)
-print(robot.orientation)
-
+# robot.map.printmap()
+# print(robot.pos)
+# print(robot.orientation)
+# print(robot.images)
 
 """code to check explorer + timer"""
 # robot = Robot(fakeRun=True, fakeMap = map)

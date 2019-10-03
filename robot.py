@@ -1,6 +1,6 @@
 from coordinator import Coordinator
 from explorer import Explorer
-#from imagefinder import Imagefinder
+from imagefinder import Imagefinder
 from map import Map
 from pathfinder import Pathfinder
 from sensors import Sensors
@@ -32,11 +32,16 @@ class Robot:
     pos = [1,1]
     orientation = 0
     explore = True
+    
     map = Map()
     sensors = None
     coordinator = Coordinator()
     pathfinder = None
     explorer = None
+    imagefinder = Imagefinder()
+    
+    images = []
+    camera_counter = 0
 
     
     def __init__(self, arduino = None, fakeRun= False, fakeMap=None, stepsPerSec=1, **kwargs):  
@@ -132,14 +137,63 @@ class Robot:
             self.turnRight()
             self.turnRight()
   
-    def detectImage(self):
-        #results = self.imagefinder.find()
-        #if results is not None:
-        #    image, location = results
-        #
-        # pos = findpos(location)
-        # self.images.append([image, pos])
-        pass
+    def detectImage(self, reset_counter = False):
+        if reset_counter:
+            self.camera_counter = 0
+        
+        if self.isDetectImageCancelled():
+            return
+            
+        
+        results = self.imagefinder.find()
+        if results is None:
+            return
+        
+        id, location = results
+        
+        baseline_vert = self.getBaseLineVert()
+        pos = baseline_vert[location]
+        
+        if self.map.getTile(pos) != 1:
+            print("WARNING. image found but position is not an obstacle")
+        else:
+            print("images found")
+            self.images.append([id, pos])
+           
+        
+    def isDetectImageCancelled(self):
+        """method to minimise image recognition calls"""
+        #cancelled because settings is find no image
+        if settings.findallimages == 0:
+            return True
+        
+        #cancelled because all images found
+        if len(self.images) == settings.images_threshold:
+            return True
+            
+        #reduce camera usage by only taking once every 3 steps
+        if self.camera_counter != 0:
+            self.camera_counter = (self.camera_counter + 1) % 3
+            return True
+        else:
+            self.camera_counter = (self.camera_counter + 1) % 3
+        
+        #if next to arena walls, cancel image recognition
+        #format is [x,y,orientation]
+        conditions = [          
+            [1,-1, 0],
+            [-1,18,1],
+            [13,-1,2],
+            [-1,1,3]
+        ]
+        
+        for cond in conditions:
+            x,y,orient = cond
+            if (self.pos[0] == x or self.pos[1] == y) and self.orientation == orient:
+                return True
+        
+        
+        return False
   
     def findpath(self, start=None, goal=[13,18], waypoint=None, move=True, rowgoal=None):
         """
@@ -410,12 +464,14 @@ class Robot:
         """
         Turns the robot right.
         """
+        if findImage: self.detectImage(reset_counter = True)         #called before and after movement
+        
         self.coordinator.turnRight()
         self.orientation = (self.orientation + 1) % 4
 
         if self.explore: self.updatemap()
  
-        if findImage: self.detectImage()
+        if findImage: self.detectImage(reset_counter = True)            
  
         if settings.logging:
             print("Movement: Robot Turns Right")

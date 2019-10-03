@@ -107,12 +107,12 @@ class Explorer:
         #if left is free, turn left, move forward once
         if not self.robot.sensors.isLeftBlocked() and not self.robot.isLeftBlocked():
             self.robot.turnLeft()                #no need to update map cause next step will update instead.
-            self.robot.forward()   #in theory, there should be at least one row of free space. 
+            self.robot.forward(findImage=True)   #in theory, there should be at least one row of free space. 
             turns = (turns + 3) % 4
             
         #elif if front is free, move forward (up to 3)
         elif not self.robot.sensors.isFrontBlocked():
-            self.robot.forward()
+            self.robot.forward(findImage=True)
         
             """Unused as it causes exploration to occasionally skip detection of certain walls on left."""
             # front,back = self.robot.sensors.getLeft()
@@ -133,7 +133,7 @@ class Explorer:
 
         #if both failed, turn right
         else:
-            self.robot.turnRight()
+            self.robot.turnRight(findImage=True)
             turns = (turns + 1) % 4
  
         #check terminate or continue. if turns == 0, it means robot is facing starting orientation.
