@@ -1,7 +1,7 @@
 from camera import Camera
 
 import numpy as np
-import tensorflow as tf
+import keras
 
 import settings
 
@@ -14,7 +14,7 @@ class Imagefinder:
     def __init__(self):
         self.camera = Camera()
         
-        self.model = tf.keras.models.load_model('mymodel.h5')
+        self.model = keras.models.load_model('mymodel.h5')
         self.model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
@@ -25,7 +25,7 @@ class Imagefinder:
         
 
     def predict(self, img):
-        results = model.predict(img)
+        results = self.model.predict(img)
         id = self.labels[np.argmax(results)]
         
         return id
