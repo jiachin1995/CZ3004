@@ -52,7 +52,7 @@ class Imagefinder:
             if results == 'default':
                 continue
             else:
-                return [results, i]
+                return [int(results), i]
                 
         return None
 

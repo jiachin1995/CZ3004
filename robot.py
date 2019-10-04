@@ -42,6 +42,7 @@ class Robot:
     
     images = []
     camera_counter = 0
+    sendimages = False
 
     
     def __init__(self, arduino = None, fakeRun= False, fakeMap=None, stepsPerSec=1, **kwargs):  
@@ -165,7 +166,7 @@ class Robot:
         
         print("images found")
         self.images.append([id, pos])
-           
+        self.sendimages = True
         
     def isDetectImageCancelled(self):
         """method to minimise image recognition calls"""

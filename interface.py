@@ -289,7 +289,21 @@ class Interface:
         
     def turnRight(self):
         return self.startprocess(target = self.robot.turnRight)
+       
+    def writeImages(self):
+        img_list = []
+    
+        for img in self.robot.images:
+            x,y = img[1]
+            id = img[0]
+            
+            img_list.append([x,y,id])
+            
+        output = {"imageDisplay":img_list}
         
+        output = json.dumps(output)
+        self.android.write(output)
+       
     def writeReport(self):
         report_thread = Thread(target=self._writeReport, args=())
         report_thread.start()
@@ -301,6 +315,11 @@ class Interface:
         while movement_thread.isAlive:
             report = self.getreport()
             self.android.write(report)
+            
+            if self.robot.sendimages:
+                self.robot.sendimages = False
+                self.writeImages()
+                
             
             time.sleep(self.check_rate)
 
