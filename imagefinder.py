@@ -25,7 +25,11 @@ class Imagefinder:
         
 
     def predict(self, img):
-        results = self.model.predict(img)
+        np_image = np.array(img).astype('float32')/255
+        np_image = transform.resize(np_image, (24, 32, 3))
+        np_image = np.expand_dims(np_image, axis=0)
+
+        results = self.model.predict(np_image)
         id = self.labels[np.argmax(results)]
         
         return id
