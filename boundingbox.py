@@ -46,9 +46,9 @@ class Imagefinder:
         image = self.camera.imageCapture()
         im = cv2.imread(image)
         
-        left = im[649:1296, :int(im.shape[1]/3)]
-        middle = im[649:1296, int(im.shape[1]/3):int(im.shape[1]/3*2)]
-        right = im[649:1296, int(im.shape[1]/3*2):]
+        left = im[449:1096, :int(im.shape[1]/3)]
+        middle = im[449:1096, int(im.shape[1]/3):int(im.shape[1]/3*2)]
+        right = im[449:1096, int(im.shape[1]/3*2):]
         
         
         images_list = [left,middle,right]
@@ -57,7 +57,16 @@ class Imagefinder:
             if results == 'default':
                 continue
             else:
-                return [int(results), i]
+                location = i
+                break
                 
-        return None
-
+        left_bounding_box = [(550,100),(996, im.shape[1]/3-100)]
+        middle_bounding_box = [(550,im.shape[1]/3+100)),(996, im.shape[1]/3*2-100))]
+        right_bounding_box = [(550, im.shape[1]/3*2+100)),(99,6 im.shape[1]-100))]
+        
+        boxes = [left_bounding_box,middle_bounding_box,right_bounding_box]
+        cv2.rectangle(im, boxes[location][0], boxes[location][1], (0, 20, 200), 10)
+        
+        cv2.imshow('Window', im)
+        
+        
