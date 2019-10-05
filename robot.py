@@ -145,23 +145,23 @@ class Robot:
         if self.isDetectImageCancelled():
             return
             
+        #only check tiles that have obstacles
+        checktiles = []
+        baseline_vert = self.getBaseLineVert()
+        for i in range(3):
+            if self.map.getTile(baseline_vert[i]) == 1:
+                checktiles.append(i)
         
-        results = self.imagefinder.find()
+        results = self.imagefinder.find(checktiles=checktiles)
         if results is None:
             return
         
         id, location = results
         
-        baseline_vert = self.getBaseLineVert()
         pos = baseline_vert[location]
-        
-        if self.map.getTile(pos) != 1:
-            print("WARNING. Image found but position is not an obstacle")
-            return
-        
         for img in self.images:
             if pos == img[1]:
-                print("WARNING. Found image but position already has an image")
+                print("WARNING. Found image {} at {} but position already has an image".format(id, pos))
                 return
         
         print("images found")
