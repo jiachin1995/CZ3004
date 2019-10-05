@@ -1,12 +1,12 @@
-from map import Map
-from pathfinder import Pathfinder
-from robot import Robot
-from interface import Interface
-import time
+# from map import Map
+# from pathfinder import Pathfinder
+# from robot import Robot
+# from interface import Interface
+# import time
 
-interface = Interface(fakeRun=True)
-
-print(interface.getreport())
+from testimagefinder import Imagefinder
+imf = Imagefinder()
+imf.find()
 
 
 # interface.robot.coordinator.stepsPerSec =20

@@ -1,8 +1,9 @@
-from camera import Camera
+# from camera import Camera
 
 import cv2
 import numpy as np
 import keras
+from skimage import transform
 
 import settings
 
@@ -14,8 +15,9 @@ class Imagefinder:
     
     probability_threshold = 0.85         #only accept an image recognition result if its probability above this threshold
     
+     
     def __init__(self):
-        self.camera = Camera()
+        # self.camera = Camera()
         
         self.model = keras.models.load_model('mymodel.h5')
         self.model.compile(loss='categorical_crossentropy',
@@ -42,6 +44,7 @@ class Imagefinder:
             return id
         else:
             return 'default'
+        
 
     def find(self):
         """
@@ -51,9 +54,15 @@ class Imagefinder:
         1 - middle
         2 - right
         """
-        image = self.camera.imageCapture()
-        im = cv2.imread(image)
+        # image = self.camera.imageCapture()
+        # im = cv2.imread(image)
+        im = cv2.imread('2.jpg')
         im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+        
+        # left = im[449:1096, :int(im.shape[1]/3)]
+        # middle = im[449:1096, int(im.shape[1]/3):int(im.shape[1]/3*2)]
+        # right = im[449:1096, int(im.shape[1]/3*2):]
+
         
         left = im[649:1296, :int(im.shape[1]/3)]
         middle = im[649:1296, int(im.shape[1]/3):int(im.shape[1]/3*2)]
@@ -65,14 +74,20 @@ class Imagefinder:
             if results == 'default':
                 continue
             else:
-                output = [int(results), i]
-                if settings.save_images:
-                    import os
-                    filepath = os.path.join("detected images", "{}.jpg".format(output))
-                    
-                    im = cv2.cvtColor(im, cv2.COLOR_RGB2BGR)
-                    cv2.imwrite(filepath, im)
-                
-                return output
-                
-        return None
+                location = i
+                break
+              
+        print(results)
+        print(location)
+              
+        left_bounding_box = [(100,550),(int(im.shape[1]/3-100), 996)]
+        middle_bounding_box = [(int(im.shape[1]/3+100), 550),(int(im.shape[1]/3*2-100), 996)]
+        right_bounding_box = [(int(im.shape[1]/3*2+100), 550),(int(im.shape[1]-100), 996)]
+        
+        boxes = [left_bounding_box,middle_bounding_box,right_bounding_box]
+        cv2.rectangle(im,  boxes[location][0],  boxes[location][1],  (0, 20, 200),  10)
+        
+        im = cv2.cvtColor(im, cv2.COLOR_RGB2BGR)
+        cv2.imwrite('output.jpg', im)
+        #cv2.imshow('Window', im)
+        
