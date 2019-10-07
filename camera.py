@@ -1,4 +1,8 @@
 from picamera import PiCamera
+from picamera.array import PiRGBArray
+import cv2
+import numpy as np
+
 
 class Camera:
     def __init__(self):
@@ -10,8 +14,9 @@ class Camera:
         self.camera = PiCamera()
         self.font = cv2.FONT_HERSHEY_SIMPLEX
         self.rawCapture = None
+        self.camera.resolution= (640,480)
         self.camera.framerate = 32
-        self.rawCapture = PiRGBArray(self.camera, size=(rs, rs))
+        self.rawCapture = PiRGBArray(self.camera, size=(640, 480))
 
     def imageCapture(self):
 
