@@ -6,6 +6,7 @@ from pathfinder import Pathfinder
 from sensors import Sensors
 
 
+
 import settings
 
 class Robot:
@@ -38,7 +39,7 @@ class Robot:
     coordinator = Coordinator()
     pathfinder = None
     explorer = None
-    imagefinder = Imagefinder()
+    imagefinder = None
     
     images = []
     camera_counter = 0
@@ -69,17 +70,19 @@ class Robot:
             self.sensors = Sensors(self, fakeMap)    #fake sensors for simulation
             self.coordinator.fakeRun = True
             self.coordinator.stepsPerSec = stepsPerSec
+            self.imagefinder = Imagefinder(fakeRun=True)
         elif arduino is None:
             raise Exception("Real run requires arduino to be present")
         else:
             from sensors import Sensors
             self.sensors = Sensors(self, arduino)
             self.coordinator.arduino = arduino
+            self.imagefinder = Imagefinder()
 
-        
         self.android = android
         #update map
         self.updatemap()
+        
         
         #initialise pathfinder
         self.pathfinder = Pathfinder(self.map)
@@ -308,27 +311,36 @@ class Robot:
                 
             
   
-    def getBaseLineVert(self):
+    def getBaseLineVert(self, right=False):
         """
         baseline_vert refers to baseline, but vertical. Refer to getBaseLine() above.
         """
-        x,y =self.pos    
-        baseline_vert_dict = {
-            0: "[[x-2,y+1], [x-2,y], [x-2,y-1]]",
-            1: "[[x+1,y+2], [x,y+2], [x-1,y+2]]",
-            2: "[[x+2,y-1], [x+2,y], [x+2,y+1]]",
-            3: "[[x-1,y-2], [x,y-2], [x+1,y-2]]"
-        }
+        x,y =self.pos  
+        if right:
+            baseline_vert_dict = {
+                0: "[[x+2,y+1], [x+2,y], [x+2,y-1]]",
+                1: "[[x+1,y-2], [x,y-2], [x-1,y-2]]",
+                2: "[[x-2,y-1], [x-2,y], [x-2,y+1]]",
+                3: "[[x-1,y+2], [x,y+2], [x+1,y+2]]"
+            }
+
+        else:
+            baseline_vert_dict = {
+                0: "[[x-2,y+1], [x-2,y], [x-2,y-1]]",
+                1: "[[x+1,y+2], [x,y+2], [x-1,y+2]]",
+                2: "[[x+2,y-1], [x+2,y], [x+2,y+1]]",
+                3: "[[x-1,y-2], [x,y-2], [x+1,y-2]]"
+            }
         baseline_vert = eval(
                 baseline_vert_dict[self.orientation]
             )
     
         return baseline_vert
         
-    def getBaseLineVertRange(self, length=1, exclude_mid = True):
-        baseline_vert = self.getBaseLineVert()
+    def getBaseLineVertRange(self, length=1, exclude_mid = True, toRight=False):
+        baseline_vert = self.getBaseLineVert(right=toRight)
         if exclude_mid: baseline_vert.pop(1)
-        tileRange_vert = self.getTileRangeVert()
+        tileRange_vert = self.getTileRangeVert(toRight=toRight)
         results = []
         
         for tile in baseline_vert:
@@ -368,16 +380,24 @@ class Robot:
     
         return tileRange
         
-    def getTileRangeVert(self):
+    def getTileRangeVert(self, toRight=False):
         """
         Search range of tiles to left of robot. Refer to getTileRange() above.
         """
-        tileRange_vert_dict = {
-            0: "[x-1,y]",
-            1: "[x,y+1]",
-            2: "[x+1,y]",
-            3: "[x,y-1]",
-        }
+        if toRight:
+            tileRange_vert_dict = {
+                0: "[x+1,y]",
+                1: "[x,y-1]",
+                2: "[x-1,y]",
+                3: "[x,y+1]",
+            }
+        else:
+            tileRange_vert_dict = {
+                0: "[x-1,y]",
+                1: "[x,y+1]",
+                2: "[x+1,y]",
+                3: "[x,y-1]",
+            }
         tileRange_vert = tileRange_vert_dict[self.orientation]    
     
         return tileRange_vert
@@ -530,8 +550,26 @@ class Robot:
         
 
         
-        #TODO-update map with right sensors
-        
+        #update map with right sensors
+        right_terrain = self.sensors.getRight()
+        tiles_array = self.getBaseLineVertRange(
+                length = self.sensors.right_sensors_range,
+                exclude_mid=False,
+                toRight=True
+            )
+        row = tiles_array.pop(self.sensors.right_sensors_position)
+           
+        terr = right_terrain.pop(0)
+        if terr != -1:
+            for i in range(0, terr):            
+                freeTiles.append(
+                row[i]
+                )
+                valuelist += [0]
+                
+            if terr < self.sensors.right_sensors_range:
+                freeTiles.append(row[terr])
+                valuelist += [1]                   #obstacle detected. Add to map
         
         self.map.setTiles(freeTiles, valuelist)
      

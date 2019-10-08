@@ -73,8 +73,8 @@ class Islandsfinder:
         return [pos, orientation]
     
     def getposbyId(self, id):
-        for y in reversed(range(0, 20)):        
-            for x in reversed(range(0,15)):
+        for y in range(0, 20):              #search adjacent free space from bottom to top.
+            for x in range(0,15):           #search ^^ from left to right
                 if type(self.islands_map[y][x]) is set and id in self.islands_map[y][x]:
                     pos = [x,y]
                     return pos

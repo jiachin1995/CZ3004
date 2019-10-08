@@ -1,8 +1,12 @@
-from camera import Camera
+try:
+    from camera import Camera
+    import keras
+except ImportError:
+    pass
 
 import cv2
 import numpy as np
-import keras
+
 
 import settings
 
@@ -12,9 +16,15 @@ class Imagefinder:
     model = None
     labels = None
     
+    fakeRun = False
+    
     probability_threshold = 0.85         #only accept an image recognition result if its probability above this threshold
     
-    def __init__(self):
+    def __init__(self, fakeRun=False):
+        if fakeRun:
+            self.fakeRun = True
+            return
+
         self.camera = Camera()
         
         self.model = keras.models.load_model('mymodel.h5')
@@ -25,6 +35,7 @@ class Imagefinder:
         self.labels = ['11', '12', '3', '1', '14', '13', '10', '2', '15', '4', '5', '6',
        '9', '7', '8', 'default']
        
+        
         
 
     def predict(self, img):
@@ -42,6 +53,7 @@ class Imagefinder:
             return id
         else:
             return 'default'
+
 
     def processimage(self):
         image = self.camera.imageCapture()
@@ -62,6 +74,10 @@ class Imagefinder:
         1 - middle
         2 - right
         """
+        if self.fakeRun:
+            return
+        
+        
         if not checktiles:
             return None
         

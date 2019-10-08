@@ -75,7 +75,7 @@ class Explorer:
                 if self.noTimeLeft():
                     break
                 
-                results = next(iterator, None)
+                results = next(iterator, None)      #results contain pos & orient. Or None
                 if results is None:
                     print("All islands searched. Stopping exploration")
                     break

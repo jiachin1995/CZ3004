@@ -326,7 +326,7 @@ class Interface:
 
         report = self.getreport()
         self.android.write(report)
-        
+        self.android.write('{"action": "exploreCompleted"}')
         
 if __name__ == "__main__":
     map = Map("sample_maze.txt")

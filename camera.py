@@ -5,6 +5,7 @@ import cv2
 import time
 import numpy as np
 
+
 class Camera:
     def __init__(self, image_d = 1):
         """
@@ -23,7 +24,6 @@ class Camera:
 
         print("Picamera loaded")
         time.sleep(1)
-                                                     
 
     def imageCapture(self):
 
@@ -32,13 +32,10 @@ class Camera:
         image = self.camera.capture(self.rawCapture,format='rgb', use_video_port=True)
         frame = self.rawCapture.array
 
+        
         if frame is None:
-            raise Exception('no image taken here')
+            print("no image here")
 
-        print(frame)
-        frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-        print("after conversion")
-        print(frame)
        
         self.rawCapture.truncate(0)
         
