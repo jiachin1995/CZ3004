@@ -24,8 +24,8 @@ class Imagefinder:
               optimizer='adam',
               metrics=['accuracy'])
         
-        self.labels = ['11', '12', '3', '1', '14', '13', '10', '2', '15', '4', '5', '6',
-       '9', '7', '8', 'default']
+        self.labels = ['6', '9', 'deafault', '8', '7', '5', '4', '3', '2', '15', '14', '13',
+       '12', '11', '10', '1']
        
         
 
@@ -54,12 +54,12 @@ class Imagefinder:
         1 - middle
         2 - right
         """
-        image = self.camera.imageCapture()
-        print(image)
+        im = self.camera.imageCapture()
+        
         #im = cv2.imread(image)
         #im = cv2.imread('2.jpg')
         #im = cv2.cvtColor(image , cv2.COLOR_BGR2RGB)
-        print(image)
+        print(im)
         # left = im[449:1096, :int(im.shape[1]/3)]
         # middle = im[449:1096, int(im.shape[1]/3):int(im.shape[1]/3*2)]
         # right = im[449:1096, int(im.shape[1]/3*2):]

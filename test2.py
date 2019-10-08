@@ -4,7 +4,7 @@
 # from interface import Interface
 # import time
 
-from testimagefinder import Imagefinder
+from boundingbox import Imagefinder
 imf = Imagefinder()
 imf.find()
 

@@ -32,8 +32,8 @@ class Imagefinder:
               optimizer='adam',
               metrics=['accuracy'])
         
-        self.labels = ['11', '12', '3', '1', '14', '13', '10', '2', '15', '4', '5', '6',
-       '9', '7', '8', 'default']
+        self.labels = ['6', '9', 'deafault', '8', '7', '5', '4', '3', '2', '15', '14', '13',
+       '12', '11', '10', '1']
        
         
         
