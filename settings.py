@@ -6,7 +6,7 @@ optimise_diagonals = False                  #If True, optimise shortest path suc
 
 front_sensors_range = 3                     #biggest integer that sensors will return to algo
 left_sensors_range = 3
-right_sensors_range = 6
+right_sensors_range = 5
 
 right_sensors_position = 0                  #position of right sensor, front, mid or back
 
