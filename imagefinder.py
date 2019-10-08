@@ -1,8 +1,12 @@
-from camera import Camera
+try:
+    from camera import Camera
+    import keras
+except ImportError:
+    pass
 
 import cv2
 import numpy as np
-import keras
+
 
 import settings
 
@@ -12,7 +16,13 @@ class Imagefinder:
     model = None
     labels = None
     
-    def __init__(self):
+    fakeRun = False
+    
+    def __init__(self, fakeRun=False):
+        if fakeRun:
+            self.fakeRun = True
+            return
+    
         self.camera = Camera()
         
         self.model = keras.models.load_model('mymodel.h5')
@@ -23,6 +33,7 @@ class Imagefinder:
         self.labels = ['4', '9', '8', '11', '10', '13', '12', '6', '7', '5', '14', '15',
         'default', '2', '1', '3']
        
+        
         
 
     def predict(self, img):
@@ -43,6 +54,9 @@ class Imagefinder:
         1 - middle
         2 - right
         """
+        if self.fakeRun:
+            return
+        
         image = self.camera.imageCapture()
         im = cv2.imread(image)
         

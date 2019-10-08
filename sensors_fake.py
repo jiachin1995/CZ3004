@@ -15,6 +15,10 @@ class Sensors:
 
     front_sensors_range = settings.front_sensors_range     #biggest integer that sensors will return to algo
     left_sensors_range = settings.left_sensors_range
+    right_sensors_range = settings.right_sensors_range
+    
+    right_sensors_position = settings.right_sensors_position
+
     map = None
     robot = None
 
@@ -83,7 +87,35 @@ class Sensors:
             
         return results
 
+    def getRight(self):
+        """
+        Returns left terrain in the form of a list, containing [front, back].
+        front,back are integers.
         
+        Similar to getFront(). Refer to getFront() above.
+        
+        Fake sensors does this by reading robot's position and orientation and compares it with fake map.
+
+        """
+        tiles_array = self.robot.getBaseLineVertRange(
+                    length = self.right_sensors_range,
+                    exclude_mid=False,
+                    toRight=True
+                )
+        row = tiles_array.pop(self.right_sensors_position)
+        results = []
+    
+        count = 0
+        for tile in row:
+            if self.map.getTile(tile) == 1 or self.map.getTile(tile) == -1:
+                break
+            else:
+                count += 1
+        results.append(count)
+            
+        return results
+
+
     def isFrontBlocked(self):
         """
         Returns True if any tiles immediately in front of robot is occupied.

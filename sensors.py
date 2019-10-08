@@ -12,12 +12,16 @@ class Sensors:
     instructions = {
         "getFront": "get front sensors",
         "getLeft": "get left sensors",
-        "getAll": "z"
+        "getAllexceptRight": "z",
+        "getRight": "y"
     }
     check_rate = 0.01
     
     front_sensors_range = settings.front_sensors_range     #biggest integer that sensors will return to algo
     left_sensors_range = settings.left_sensors_range
+    right_sensors_range = settings.right_sensors_range
+    
+    right_sensors_position = settings.right_sensors_position
     
     
     
@@ -52,7 +56,7 @@ class Sensors:
         
         
         #if not explored, use sensors        
-        instr = self.instructions["getAll"]
+        instr = self.instructions["getAllexceptRight"]
         
         self.arduino.write(instr)
         print("[@] Sent to Serial: {}".format(instr))
@@ -95,7 +99,7 @@ class Sensors:
             
         
         #if not explored, use sensors  
-        instr = self.instructions["getAll"]
+        instr = self.instructions["getAllexceptRight"]
         
         self.arduino.write(instr)
         
@@ -111,6 +115,52 @@ class Sensors:
             time.sleep(self.check_rate)
         
         return [int(left_front), int(left_back)]
+    
+    def getRight(self):
+        """
+        Returns right terrain in the form of a list, containing [right].
+        Our robot uses long range sensors for right
+        
+        Similar to getFront(). Refer to getFront() above
+        """
+        #check if map explored, return obstacles
+        if self.isRightExplored():
+            results = []
+            tiles_array = self.robot.getBaseLineVertRange(
+                    length = self.sensors.right_sensors_range,
+                    exclude_mid=False,
+                    toRight=True
+                )
+            row = tiles_array.pop(self.right_sensors_position)
+            
+            count = 0
+            for tile in row:
+                if self.robot.map.getTile(tile) == 1 or self.robot.map.getTile(tile) == -1:
+                    break
+                else:
+                    count += 1
+            results.append(count)
+                
+            return results
+            
+        
+        #if not explored, use sensors  
+        instr = self.instructions["getRight"]
+        
+        self.arduino.write(instr)
+        
+        while True:
+            msg = self.arduino.read()
+            if msg == None:
+                print("[#] nothing to read [read_from_serial]")
+                
+            else:
+                right = msg
+                break
+                
+            time.sleep(self.check_rate)
+        
+        return [int(right)]
     
     def isFrontExplored(self):
         tiles_array = self.robot.getBaseLineRange(length = self.front_sensors_range)
@@ -129,6 +179,19 @@ class Sensors:
             for tile in row:
                 if self.robot.map.getTile(tile) == None:
                     return False
+        return True
+        
+    def isRightExplored(self):
+        tiles_array = self.robot.getBaseLineVertRange(
+                length = self.sensors.right_sensors_range,
+                exclude_mid=False,
+                toRight=True
+            )
+        row = tiles_array.pop(self.right_sensors_position)
+        
+        for tile in row:
+            if self.robot.map.getTile(tile) == None:
+                return False
         return True
     
     
