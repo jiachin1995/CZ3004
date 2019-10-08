@@ -3,6 +3,7 @@ from camera import Camera
 import cv2
 import numpy as np
 import keras
+from skimage import transform
 
 import settings
 
@@ -12,6 +13,9 @@ class Imagefinder:
     model = None
     labels = None
     
+    probability_threshold = 0.85         #only accept an image recognition result if its probability above this threshold
+    
+    
     def __init__(self):
         self.camera = Camera()
         
@@ -20,8 +24,8 @@ class Imagefinder:
               optimizer='adam',
               metrics=['accuracy'])
         
-        self.labels = ['4', '9', '8', '11', '10', '13', '12', '6', '7', '5', '14', '15',
-        'default', '2', '1', '3']
+        self.labels = ['11', '12', '3', '1', '14', '13', '10', '2', '15', '4', '5', '6',
+       '9', '7', '8', 'default']
        
         
 
@@ -31,9 +35,16 @@ class Imagefinder:
         np_image = np.expand_dims(np_image, axis=0)
 
         results = self.model.predict(np_image)
-        id = self.labels[np.argmax(results)]
+        index = np.argmax(results)
+        id = self.labels[index]
         
-        return id
+        probability = results[0][index]
+        if probability>self.probability_threshold:
+            print("Image {} found. Probability is {}".format(id, probability))
+            return id
+        else:
+            return 'default'
+        
 
     def find(self):
         """
@@ -45,7 +56,8 @@ class Imagefinder:
         """
         image = self.camera.imageCapture()
         im = cv2.imread(image)
-        
+        im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+
         left = im[449:1096, :int(im.shape[1]/3)]
         middle = im[449:1096, int(im.shape[1]/3):int(im.shape[1]/3*2)]
         right = im[449:1096, int(im.shape[1]/3*2):]
@@ -59,14 +71,18 @@ class Imagefinder:
             else:
                 location = i
                 break
-                
-        left_bounding_box = [(550,100),(996, im.shape[1]/3-100)]
-        middle_bounding_box = [(550,im.shape[1]/3+100)),(996, im.shape[1]/3*2-100))]
-        right_bounding_box = [(550, im.shape[1]/3*2+100)),(99,6 im.shape[1]-100))]
+              
+        print(results)
+        print(location)
+              
+        left_bounding_box = [(100,550),(int(im.shape[1]/3-100), 996)]
+        middle_bounding_box = [(int(im.shape[1]/3+100), 550),(int(im.shape[1]/3*2-100), 996)]
+        right_bounding_box = [(int(im.shape[1]/3*2+100), 550),(int(im.shape[1]-100), 996)]
         
         boxes = [left_bounding_box,middle_bounding_box,right_bounding_box]
-        cv2.rectangle(im, boxes[location][0], boxes[location][1], (0, 20, 200), 10)
+        cv2.rectangle(im,  boxes[location][0],  boxes[location][1],  (0, 20, 200),  10)
         
-        cv2.imshow('Window', im)
-        
+        im = cv2.cvtColor(im, cv2.COLOR_RGB2BGR)
+        cv2.imwrite('output.jpg', im)
+        #cv2.imshow('Window', im)
         
