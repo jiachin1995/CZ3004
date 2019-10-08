@@ -58,12 +58,7 @@ class Robot:
             map: Map object. Refer to Map.py
             sensors: Sensors object. Refer to sensors.py
             coordinator: Coordinator object. Refer to coordinator.py
-        """    
-        # kwargs is a dict of the keyword args passed to the function. Expected to contain robot attributes
-        for key, value in kwargs:
-            concat = "self."+key+" = " + value
-            eval(concat)                    #Initialise attributes. Evaluate self.key = value
-            
+        """      
         if fakeRun:
             from sensors_fake import Sensors
             self.sensors = Sensors(self, fakeMap)    #fake sensors for simulation
