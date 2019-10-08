@@ -44,10 +44,9 @@ class Robot:
     images = []
     camera_counter = 0
     sendimages = False
-    android = None
 
     
-    def __init__(self, arduino = None, fakeRun= False, fakeMap=None, android=None, stepsPerSec=1, **kwargs):  
+    def __init__(self, arduino = None, fakeRun= False, fakeMap=None, stepsPerSec=1, **kwargs):  
         """ 
         Constructor. Accepts attributes as kwargs.
             
@@ -79,7 +78,6 @@ class Robot:
             self.coordinator.arduino = arduino
             self.imagefinder = Imagefinder()
 
-        self.android = android
         #update map
         self.updatemap()
         
