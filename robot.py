@@ -513,7 +513,9 @@ class Robot:
         valuelist = [0]*len(freeTiles)
            
         #update map with front sensors
-        front_terrain = self.sensors.getFront()
+        terrain = self.sensors.getAll()
+        
+        front_terrain = terrain[:3]
         tiles_array = self.getBaseLineRange(length = self.sensors.front_sensors_range)
         
         for row in tiles_array:                     #for each row - left, middle, right
@@ -528,7 +530,7 @@ class Robot:
             
         
         #update map with left sensors
-        left_terrain = self.sensors.getLeft()
+        left_terrain = terrain[3:]
         tiles_array = self.getBaseLineVertRange(length = self.sensors.left_sensors_range)
         
         for row in tiles_array:                     #for each row - front, back
