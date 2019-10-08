@@ -1,4 +1,4 @@
-# from camera import Camera
+from camera import Camera
 
 import cv2
 import numpy as np
@@ -17,7 +17,7 @@ class Imagefinder:
     
      
     def __init__(self):
-        # self.camera = Camera()
+        self.camera = Camera()
         
         self.model = keras.models.load_model('mymodel.h5')
         self.model.compile(loss='categorical_crossentropy',
@@ -54,19 +54,20 @@ class Imagefinder:
         1 - middle
         2 - right
         """
-        # image = self.camera.imageCapture()
-        # im = cv2.imread(image)
-        im = cv2.imread('2.jpg')
-        im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
-        
+        image = self.camera.imageCapture()
+        print(image)
+        #im = cv2.imread(image)
+        #im = cv2.imread('2.jpg')
+        #im = cv2.cvtColor(image , cv2.COLOR_BGR2RGB)
+        print(image)
         # left = im[449:1096, :int(im.shape[1]/3)]
         # middle = im[449:1096, int(im.shape[1]/3):int(im.shape[1]/3*2)]
         # right = im[449:1096, int(im.shape[1]/3*2):]
 
         
-        left = im[649:1296, :int(im.shape[1]/3)]
-        middle = im[649:1296, int(im.shape[1]/3):int(im.shape[1]/3*2)]
-        right = im[649:1296, int(im.shape[1]/3*2):]
+        left = im[160:320, :int(im.shape[1]/3)]
+        middle = im[160:320, int(im.shape[1]/3):int(im.shape[1]/3*2)]
+        right = im[160:320, int(im.shape[1]/3*2):]
         
         images_list = [left,middle,right]
         for i in reversed(range(3)):        #process images right to left because new images are likely to be at right

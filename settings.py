@@ -8,7 +8,7 @@ front_sensors_range = 3                     #biggest integer that sensors will r
 left_sensors_range = 3
 
 """2 may not be debugged. Use after confirming that it works."""
-findallimages = 1                           #whether to find all images. 0 = no images, 1 = some images, 2 = all images
+findallimages = 0                           #whether to find all images. 0 = no images, 1 = some images, 2 = all images
 images_threshold = 5                        #if findallimages>0, how many images to find before stopping image finding
 save_images = False                         #save image for every identification
 

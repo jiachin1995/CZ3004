@@ -45,8 +45,8 @@ class Imagefinder:
 
     def processimage(self):
         image = self.camera.imageCapture()
-        im = cv2.imread(image)
-        im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
+        #im = cv2.imread(image)
+        #im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
         
         left = im[649:1296, :int(im.shape[1]/3)]
         middle = im[649:1296, int(im.shape[1]/3):int(im.shape[1]/3*2)]

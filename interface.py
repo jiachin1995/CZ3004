@@ -33,10 +33,11 @@ class Interface:
             'loadfakeMap': self.loadmap,
         }
         
-        self.reset(arduino=arduino, fakeRun=fakeRun, fakeMap=fakeMap)
         
         if android:
             self.android = android
+            
+        self.reset(android=android, arduino=arduino, fakeRun=fakeRun, fakeMap=fakeMap)
     
     def stopexplore(self):
         raise Exception("stop command issued")
@@ -215,8 +216,8 @@ class Interface:
                 time.sleep(self.check_rate)
         
 
-    def reset(self, arduino = None, fakeRun=False, fakeMap=None):
-        self.robot = Robot(arduino=arduino, fakeRun=fakeRun, fakeMap = fakeMap)
+    def reset(self, arduino = None, fakeRun=False, fakeMap=None, android=None):
+        self.robot = Robot(arduino=arduino, fakeRun=fakeRun, fakeMap = fakeMap, android=android)
     
            
     def startprocess(self, target, **kwargs):
