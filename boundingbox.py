@@ -19,13 +19,13 @@ class Imagefinder:
     def __init__(self):
         self.camera = Camera()
         
-        self.model = keras.models.load_model('mymodel.h5')
+        self.model = keras.models.load_model('mymodel3.h5')
         self.model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
         
-        self.labels = ['11', '12', '3', '1', '14', '13', '10', '2', '15', '4', '5', '6',
-       '9', '7', '8', 'default']
+        self.labels = ['6', '9', 'deafault', '8', '7', '5', '4', '3', '2', '15', '14', '13',
+       '12', '11', '10', '1']
        
         
 
@@ -54,13 +54,11 @@ class Imagefinder:
         1 - middle
         2 - right
         """
-        image = self.camera.imageCapture()
-        im = cv2.imread(image)
-        im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
-
-        left = im[449:1096, :int(im.shape[1]/3)]
-        middle = im[449:1096, int(im.shape[1]/3):int(im.shape[1]/3*2)]
-        right = im[449:1096, int(im.shape[1]/3*2):]
+        im = self.camera.imageCapture()
+        
+        left = im[160:320, :int(im.shape[1]/3)]
+        middle = im[160:320, int(im.shape[1]/3):int(im.shape[1]/3*2)]
+        right = im[160:320, int(im.shape[1]/3*2):]
         
         
         images_list = [left,middle,right]
@@ -75,9 +73,9 @@ class Imagefinder:
         print(results)
         print(location)
               
-        left_bounding_box = [(100,550),(int(im.shape[1]/3-100), 996)]
-        middle_bounding_box = [(int(im.shape[1]/3+100), 550),(int(im.shape[1]/3*2-100), 996)]
-        right_bounding_box = [(int(im.shape[1]/3*2+100), 550),(int(im.shape[1]-100), 996)]
+        left_bounding_box = [(50,200),(int(im.shape[1]/3-50), 280)]
+        middle_bounding_box = [(int(im.shape[1]/3+50), 200),(int(im.shape[1]/3*2-50), 280)]
+        right_bounding_box = [(int(im.shape[1]/3*2+50), 200),(int(im.shape[1]-50), 280)]
         
         boxes = [left_bounding_box,middle_bounding_box,right_bounding_box]
         cv2.rectangle(im,  boxes[location][0],  boxes[location][1],  (0, 20, 200),  10)

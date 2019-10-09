@@ -29,6 +29,31 @@ class Sensors:
         self.robot = robot
         self.arduino = arduino
     
+    def getAll(self):
+        if self.isFrontExplored() and self.isLeftExplored():
+            front = self.getFront()
+            left = self.getLeftv()
+            #Excluding right
+            
+            return front + left
+    
+        instr = self.instructions["getAllexceptRight"]
+        
+        self.arduino.write(instr)
+        
+        while True:
+            msg = self.arduino.read()
+            if msg == None:
+                print("[#] nothing to read [read_from_serial]")
+                
+            else:
+                front_mid,front_left, front_right,left_front, left_back = msg.split(',')
+                break
+                
+            time.sleep(self.check_rate)
+        
+        return [int(front_left), int(front_mid), int(front_right), int(left_front), int(left_back)]
+    
     def getFront(self):
         """
         Returns front terrain in the form of a list, containing [left,middle,right].
@@ -55,24 +80,10 @@ class Sensors:
             return results
         
         
-        #if not explored, use sensors        
-        instr = self.instructions["getAllexceptRight"]
+        #if not explored, use sensors   
+        all = self.getAll()
+        return all[:3]
         
-        self.arduino.write(instr)
-        print("[@] Sent to Serial: {}".format(instr))
-        
-        while True:
-            msg = self.arduino.read()
-            if msg == None:
-                print("[#] nothing to read [read_from_serial]")
-                
-            else:
-                front_mid,front_left, front_right,left_front, left_back = msg.split(',')
-                break
-                
-            time.sleep(self.check_rate)
-        
-        return [int(front_left), int(front_mid), int(front_right)]
     
     def getLeft(self):
         """
@@ -99,22 +110,8 @@ class Sensors:
             
         
         #if not explored, use sensors  
-        instr = self.instructions["getAllexceptRight"]
-        
-        self.arduino.write(instr)
-        
-        while True:
-            msg = self.arduino.read()
-            if msg == None:
-                print("[#] nothing to read [read_from_serial]")
-                
-            else:
-                front_mid,front_left, front_right,left_front, left_back = msg.split(',')
-                break
-                
-            time.sleep(self.check_rate)
-        
-        return [int(left_front), int(left_back)]
+        all = self.getAll()
+        return all[:3]
     
     def getRight(self):
         """
@@ -127,7 +124,7 @@ class Sensors:
         if self.isRightExplored():
             results = []
             tiles_array = self.robot.getBaseLineVertRange(
-                    length = self.sensors.right_sensors_range,
+                    length = self.right_sensors_range,
                     exclude_mid=False,
                     toRight=True
                 )
@@ -183,7 +180,7 @@ class Sensors:
         
     def isRightExplored(self):
         tiles_array = self.robot.getBaseLineVertRange(
-                length = self.sensors.right_sensors_range,
+                length = self.right_sensors_range,
                 exclude_mid=False,
                 toRight=True
             )

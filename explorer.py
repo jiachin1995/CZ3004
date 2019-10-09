@@ -102,6 +102,9 @@ class Explorer:
         self.robot.findpath(goal=[1,1])
         self.robot.faceDirection(0)
         
+        #update android exploration done
+        self.robot.android.write('{"action": "exploreCompleted"}')
+        
     def hugleftwall(self, turns = 0, startpos = None, endCondition=None, checkexplore=True):
         """
         Recursive function. Ends when robot is back to initial starting position and orientation.

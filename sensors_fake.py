@@ -37,6 +37,13 @@ class Sensors:
             self.map = Map(map)
         else: self.map = fakemap
         
+    def getAll(self):
+        front = self.getFront()
+        left = self.getLeft()
+        #Excluding right
+        
+        return front + left
+        
     def getFront(self):
         """
         Returns front terrain in the form of a list, containing [left,middle,right].
