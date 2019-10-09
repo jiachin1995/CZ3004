@@ -33,7 +33,7 @@ class Interface:
             'loadfakeMap': self.loadmap,
         }
         
-        self.reset(arduino=arduino, fakeRun=fakeRun, fakeMap=fakeMap)
+        self.reset(arduino=arduino, fakeRun=fakeRun, fakeMap=fakeMap, android=android)
         
         if android:
             self.android = android
@@ -109,35 +109,7 @@ class Interface:
         return self.startprocess(target = self.robot.forward, **{'steps':steps})
 
 
-    def getreport(self):
-        results = "" 
-        for item in self.robot.map.convert():
-            results += item[2:].upper() + ','
-            
-        for coords in self.robot.pos:
-            results += str(coords) + ','
-        
-        orientation = 90 * self.robot.orientation
-        results += str(orientation)
-        
-        dict = {
-            "robot" : results
-        }
-        output = json.dumps(dict)
-        
-        return output
 
-    def getimages(self):
-        results = [] 
-
-        #{"numberDisplay": [x,y, "some_letter"]}
-
-        dict = {
-            "numberDisplay" : results
-        }
-        output = json.dumps(dict)
-        
-        return output
 
 
     def loadmap_test(self):
@@ -215,8 +187,8 @@ class Interface:
                 time.sleep(self.check_rate)
         
 
-    def reset(self, arduino = None, fakeRun=False, fakeMap=None):
-        self.robot = Robot(arduino=arduino, fakeRun=fakeRun, fakeMap = fakeMap)
+    def reset(self, arduino = None, fakeRun=False, fakeMap=None, android=None):
+        self.robot = Robot(arduino=arduino, fakeRun=fakeRun, fakeMap = fakeMap, android=android)
     
            
     def startprocess(self, target, **kwargs):
@@ -290,41 +262,7 @@ class Interface:
     def turnRight(self):
         return self.startprocess(target = self.robot.turnRight)
        
-    def writeImages(self):
-        img_list = []
-    
-        for img in self.robot.images:
-            x,y = img[1]
-            id = img[0]
-            
-            img_list.append([x,y,id])
-            
-        output = {"imageDisplay":img_list}
-        
-        output = json.dumps(output)
-        self.android.write(output)
-       
-    def writeReport(self):
-        report_thread = Thread(target=self._writeReport, args=())
-        report_thread.start()
 
-        
-    def _writeReport(self):
-        movement_thread = self.thread
-    
-        while movement_thread.isAlive:
-            report = self.getreport()
-            self.android.write(report)
-            
-            if self.robot.sendimages:
-                self.robot.sendimages = False
-                self.writeImages()
-                
-            
-            time.sleep(self.check_rate)
-
-        report = self.getreport()
-        self.android.write(report)
         
         
 if __name__ == "__main__":

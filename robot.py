@@ -35,6 +35,7 @@ class Robot:
     explore = True
     
     map = Map()
+    android = None
     sensors = None
     coordinator = Coordinator()
     pathfinder = None
@@ -46,7 +47,7 @@ class Robot:
     sendimages = False
 
     
-    def __init__(self, arduino = None, fakeRun= False, fakeMap=None, stepsPerSec=1, **kwargs):  
+    def __init__(self, arduino = None, android = None, fakeRun= False, fakeMap=None, stepsPerSec=1, **kwargs):  
         """ 
         Constructor. Accepts attributes as kwargs.
             
@@ -72,8 +73,11 @@ class Robot:
             self.imagefinder = Imagefinder(fakeRun=True)
         elif arduino is None:
             raise Exception("Real run requires arduino to be present")
+        elif android is None:
+            raise Exception("Real run requires arduino to be present")
         else:
             from sensors import Sensors
+            self.android = android
             self.sensors = Sensors(self, arduino)
             self.coordinator.arduino = arduino
             self.imagefinder = Imagefinder()
@@ -170,6 +174,9 @@ class Robot:
         print("images found")
         self.images.append([id, pos])
         self.sendimages = True
+        
+        #write to android
+        self.writeImages()
         
     def isDetectImageCancelled(self):
         """method to minimise image recognition calls"""
@@ -571,4 +578,43 @@ class Robot:
         self.map.setTiles(freeTiles, valuelist)
      
         if self.map.is_explored(): self.explore = False
+           
+        #send update to android
+        self.writeReport()        
+         
+
+
+
+           
+    def writeImages(self):
+        img_list = []
+    
+        for img in self.robot.images:
+            x,y = img[1]
+            id = img[0]
             
+            img_list.append([x,y,id])
+            
+        output = {"imageDisplay":img_list}
+        
+        output = json.dumps(output)
+        self.android.write(output)
+        
+    def writeReport(self):
+        results = "" 
+        for item in self.robot.map.convert():
+            results += item[2:].upper() + ','
+            
+        for coords in self.robot.pos:
+            results += str(coords) + ','
+        
+        orientation = 90 * self.robot.orientation
+        results += str(orientation)
+        
+        dict = {
+            "robot" : results
+        }
+        
+        report = json.dumps(dict)
+        self.android.write(report)
+
