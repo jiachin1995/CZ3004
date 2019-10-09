@@ -33,15 +33,12 @@ class Interface:
             'loadfakeMap': self.loadmap,
         }
         
-<<<<<<< HEAD
         self.reset(arduino=arduino, fakeRun=fakeRun, fakeMap=fakeMap, android=android)
-=======
->>>>>>> 2c30a985ee5e09230be2150ea8edc69311c9644f
-        
+
         if android:
             self.android = android
             
-        self.reset( arduino=arduino, fakeRun=fakeRun, fakeMap=fakeMap)
+        
     
     def stopexplore(self):
         raise Exception("stop command issued")
