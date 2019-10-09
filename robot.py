@@ -44,10 +44,9 @@ class Robot:
     images = []
     camera_counter = 0
     sendimages = False
-    android = None
 
     
-    def __init__(self, arduino = None, fakeRun= False, fakeMap=None, android=None, stepsPerSec=1, **kwargs):  
+    def __init__(self, arduino = None, fakeRun= False, fakeMap=None, stepsPerSec=1, **kwargs):  
         """ 
         Constructor. Accepts attributes as kwargs.
             
@@ -59,12 +58,7 @@ class Robot:
             map: Map object. Refer to Map.py
             sensors: Sensors object. Refer to sensors.py
             coordinator: Coordinator object. Refer to coordinator.py
-        """    
-        # kwargs is a dict of the keyword args passed to the function. Expected to contain robot attributes
-        for key, value in kwargs:
-            concat = "self."+key+" = " + value
-            eval(concat)                    #Initialise attributes. Evaluate self.key = value
-            
+        """      
         if fakeRun:
             from sensors_fake import Sensors
             self.sensors = Sensors(self, fakeMap)    #fake sensors for simulation
@@ -79,7 +73,6 @@ class Robot:
             self.coordinator.arduino = arduino
             self.imagefinder = Imagefinder()
 
-        self.android = android
         #update map
         self.updatemap()
         
@@ -520,7 +513,9 @@ class Robot:
         valuelist = [0]*len(freeTiles)
            
         #update map with front sensors
-        front_terrain = self.sensors.getFront()
+        terrain = self.sensors.getAll()
+        
+        front_terrain = terrain[:3]
         tiles_array = self.getBaseLineRange(length = self.sensors.front_sensors_range)
         
         for row in tiles_array:                     #for each row - left, middle, right
@@ -535,7 +530,7 @@ class Robot:
             
         
         #update map with left sensors
-        left_terrain = self.sensors.getLeft()
+        left_terrain = terrain[3:]
         tiles_array = self.getBaseLineVertRange(length = self.sensors.left_sensors_range)
         
         for row in tiles_array:                     #for each row - front, back

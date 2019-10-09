@@ -32,7 +32,6 @@ class Explorer:
     exploreLimit = 1.0
 
     prevUnexploredTile = None
-    hasSendAndroid = False
 
     def __init__(self, robot):
         """
@@ -261,9 +260,6 @@ class Explorer:
         Return True if exploration done or exploration > exploreLimit.
         """
         if self.robot.map.explored_percent() >= self.exploreLimit:
-            if not self.hasSendAndroid:
-                self.hasSendAndroid = True
-                self.robot.android.write('{"action": "exploreCompleted"}')
             return True
         else:
             return False
