@@ -201,8 +201,6 @@ class Interface:
             self.thread = Thread(target=target, kwargs=kwargs)
             self.thread.start()
     
-            self.writeReport()
-    
             return "done"
         else:
             return "Cancelled Instruction. Other processes already running."
