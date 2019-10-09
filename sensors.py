@@ -127,7 +127,7 @@ class Sensors:
         if self.isRightExplored():
             results = []
             tiles_array = self.robot.getBaseLineVertRange(
-                    length = self.sensors.right_sensors_range,
+                    length = self.right_sensors_range,
                     exclude_mid=False,
                     toRight=True
                 )
@@ -183,7 +183,7 @@ class Sensors:
         
     def isRightExplored(self):
         tiles_array = self.robot.getBaseLineVertRange(
-                length = self.sensors.right_sensors_range,
+                length = self.right_sensors_range,
                 exclude_mid=False,
                 toRight=True
             )
