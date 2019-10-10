@@ -155,13 +155,13 @@ class Interface:
             kwargs = {}
         
             if "waypointCoord" in instr:
-                instr, waypoint = instr.split(str=" ", maxsplit = 1)
+                instr, waypoint = instr.split(maxsplit = 1)
                 func = self.instructions["waypoint"]
                 kwargs = {'waypoint' : eval(waypoint)}
                 
                 #return setwaypoint(waypoint = eval(waypoint))
             elif "robotCoord" in instr:
-                instr, pos = instr.split(str=" ", maxsplit = 1)
+                instr, pos = instr.split(maxsplit = 1)
                 func = self.instructions["setrobotpos"]
                 kwargs = {'pos' : eval(pos)}
                 
