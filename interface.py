@@ -22,7 +22,7 @@ class Interface:
             'a2': self.turnLeft,
             'd2': self.turnRight,
             's1': self.backward,
-            'getreport': self.getreport,
+            #'getreport': self.getreport,
             "getimages": self.getimages,
             'explore': self.explore,
             'stopexplore': self.stopexplore,
