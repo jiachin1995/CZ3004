@@ -23,7 +23,7 @@ class Interface:
             'd2': self.turnRight,
             's1': self.backward,
             #'getreport': self.getreport,
-            "getimages": self.getimages,
+            #"getimages": self.getimages,
             'explore': self.explore,
             'stopexplore': self.stopexplore,
             'fastestpath': self.fastestpath,
