@@ -52,7 +52,7 @@ class Main:
                 results = self.interface.readinstructions(msg)
                 
                 if results is None:
-                    self.android.write("done")
+                    print("Instruction Done")
                 else:
                     self.android.write(results)
                 

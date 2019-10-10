@@ -132,7 +132,7 @@ class Interface:
             map = Map(load)
             self.robot = Robot(fakeRun=True, fakeMap = map)
             
-            return "Done"
+            return 
    
         except Exception as e:
             print("Unable to load map")
@@ -197,7 +197,7 @@ class Interface:
             self.thread = Thread(target=target, kwargs=kwargs)
             self.thread.start()
     
-            return "done"
+            return 
         else:
             return "Cancelled Instruction. Other processes already running."
         
