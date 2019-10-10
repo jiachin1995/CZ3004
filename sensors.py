@@ -32,7 +32,7 @@ class Sensors:
     def getAll(self):
         if self.isFrontExplored() and self.isLeftExplored():
             front = self.getFront()
-            left = self.getLeftv()
+            left = self.getLeft()
             #Excluding right
             
             return front + left
