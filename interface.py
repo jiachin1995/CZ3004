@@ -5,7 +5,6 @@ from map import Map
 from pathfinder import Pathfinder
 from robot import Robot
 
-import json
 import time
 
 class Interface:

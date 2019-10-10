@@ -6,7 +6,7 @@ from pathfinder import Pathfinder
 from sensors import Sensors
 
 
-
+import json
 import settings
 
 class Robot:
