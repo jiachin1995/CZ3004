@@ -148,7 +148,7 @@ class Interface:
         # print("Explored map string is:")
         # for item in self.robot.map.convert():
             # print(item)
-        print(self.getreport())
+        pass
 
     
     def readinstructions(self, instr):

@@ -585,7 +585,7 @@ class Robot:
     def writeImages(self):
         img_list = []
     
-        for img in self.robot.images:
+        for img in self.images:
             x,y = img[1]
             id = img[0]
             
@@ -598,13 +598,13 @@ class Robot:
         
     def writeReport(self):
         results = "" 
-        for item in self.robot.map.convert():
+        for item in self.map.convert():
             results += item[2:].upper() + ','
             
-        for coords in self.robot.pos:
+        for coords in self.pos:
             results += str(coords) + ','
         
-        orientation = 90 * self.robot.orientation
+        orientation = 90 * self.orientation
         results += str(orientation)
         
         dict = {
