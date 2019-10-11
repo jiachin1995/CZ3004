@@ -31,7 +31,8 @@ class Explorer:
     timeToReturn = 60       #buffer time to return to start, in seconds
     exploreLimit = 1.0
 
-    prevUnexploredTile = None
+    prevUnexploredTile = None           #used to escape from spelunking to same unexplored tile recursion
+    prevMoveLeftTurn = False            #used to escape from left turn recursion
 
     def __init__(self, robot):
         """
@@ -101,18 +102,16 @@ class Explorer:
 
         self.robot.findpath(goal=[1,1])
         self.robot.faceDirection(0)
+       
         
-        #update android exploration done
-        self.robot.android.write('{"action": "exploreCompleted"}')
-        
-    def hugleftwall(self, turns = 0, startpos = None, endCondition=None, checkexplore=True):
+    def hugleftwall(self, startorient = None, startpos = None, endCondition=None, checkexplore=True):
         """
         Recursive function. Ends when robot is back to initial starting position and orientation.
         Also accepts a different end condition as argument.
         
         Args:
-            turns: Integer. Defaults to 0. Do not provide an argument. Used by function to count number of turns made since function was first called.
-            startpos: [x,y] coordinates. Do not provide an argument. Starting pos of robot when function was called. 
+            startorient: Integer. Do not provide an argument. Starting orientation of robot when function was first called. 
+            startpos: [x,y] coordinates. Do not provide an argument. Starting pos of robot when function was first called. 
             endCondition: String. Expects a boolean string. Calls eval() on string to determine True/False. If True, end function.
         """
         #return if out of time
@@ -126,18 +125,29 @@ class Explorer:
         #run once when first called
         if startpos == None:
             if self.hugleftprep():
+                startorient = self.robot.orientation
                 startpos = self.robot.pos
             else: return             #prep failed. Cancel left wall hugging
         
         #if left is free, turn left, move forward once
         if not self.robot.sensors.isLeftBlocked() and not self.robot.isLeftBlocked():
-            self.robot.turnLeft()                #no need to update map cause next step will update instead.
-            self.robot.forward(findImage=True)   #in theory, there should be at least one row of free space. 
-            turns = (turns + 3) % 4
+            if self.prevMoveLeftTurn:
+                print("Warning: Infinite Loop detected. Attempting to recover.")
+                self.robot.turnRight()
+                
+                self.prevMoveLeftTurn = False
+              
+            else:
+                self.robot.turnLeft()                #no need to update map cause next step will update instead.
+                self.robot.forward(findImage=True)   #in theory, there should be at least one row of free space. 
+                
+                self.prevMoveLeftTurn = True
             
         #elif if front is free, move forward (up to 3)
         elif not self.robot.sensors.isFrontBlocked():
             self.robot.forward(findImage=True)
+        
+            self.prevMoveLeftTurn = False
         
             """Unused as it causes exploration to occasionally skip detection of certain walls on left."""
             # front,back = self.robot.sensors.getLeft()
@@ -159,16 +169,17 @@ class Explorer:
         #if both failed, turn right
         else:
             self.robot.turnRight(findImage=True)
-            turns = (turns + 1) % 4
+            
+            self.prevMoveLeftTurn = False
  
-        #check terminate or continue. if turns == 0, it means robot is facing starting orientation.
+        #check terminate or continue. 
         x,y = self.robot.pos
         if endCondition and eval(endCondition):
             return
-        elif turns == 0 and [x,y] == startpos: 
+        elif startorient == self.robot.orientation and [x,y] == startpos: 
             return
         else: 
-            self.hugleftwall(turns = turns, startpos = startpos, endCondition=endCondition)
+            self.hugleftwall(startorient = startorient, startpos = startpos, endCondition=endCondition)
         
     def hugleftprep(self):
         """ 
@@ -178,6 +189,8 @@ class Explorer:
         Raises:
             Warning: Left Wall Hugging Cancelled. No adjacent walls found.
         """
+        self.prevMoveLeftTurn = False
+    
     
         self.state = "LeftWallHugging"
         if settings.logging:  
@@ -201,14 +214,14 @@ class Explorer:
                 print("Warning: Left Wall Hugging Cancelled. No adjacent walls found.")
             return False
 
-    def _hugleftcheckstepstoterminate(self, turns, startpos, endCondition=None):
+    def _hugleftcheckstepstoterminate(self, startorient, startpos, endCondition=None):
         """
         Before moving forward multiple tiles in hugleftwall(), check next few tiles are not in end condition.
         If in end condition, return distance of tile to move.
         
         Args:
-            turns: Integer. Defaults to 0. Do not provide an argument. Used by function to count number of turns made since hugleftwall() was first called.
-            startpos: [x,y] coordinates. Do not provide an argument. Starting pos of robot when hugleftwall() was called. 
+            startorient: Integer. Do not provide an argument. Starting orientation of robot when hugleftwall() was first called. 
+            startpos: [x,y] coordinates. Do not provide an argument. Starting pos of robot when hugleftwall() was first called. 
             endCondition: String. Expects a boolean string. Calls eval() on string to determine True/False. 
         """
         x,y = self.robot.pos
@@ -221,7 +234,7 @@ class Explorer:
 
             if endCondition and eval(endCondition):
                 return i
-            if turns == 0 and [x,y] == startpos: 
+            if startorient == self.robot.orientation and [x,y] == startpos: 
                 return i
             
         return None

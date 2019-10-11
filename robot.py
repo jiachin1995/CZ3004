@@ -3,8 +3,8 @@ from explorer import Explorer
 from imagefinder import Imagefinder
 from map import Map
 from pathfinder import Pathfinder
-from sensors import Sensors
-
+"""from sensors import Sensors"""
+from sensors_old import Sensors
 
 import json
 import settings
@@ -61,6 +61,8 @@ class Robot:
             coordinator: Coordinator object. Refer to coordinator.py
         """      
         if fakeRun:
+            self.fakeRun = True
+        
             from sensors_fake import Sensors
             self.sensors = Sensors(self, fakeMap)    #fake sensors for simulation
             self.coordinator.fakeRun = True
@@ -123,6 +125,10 @@ class Robot:
         self.explorer.setExploreLimit(exploreLimit)
         
         self.explorer.start()
+        
+        #update android exploration done
+        if not self.fakeRun:
+            self.android.write('{"action": "exploreCompleted"}')
 
     def faceDirection(self, orient):
         """
@@ -552,7 +558,7 @@ class Robot:
             
         
         #update map with left sensors
-        left_terrain = terrain[3:]
+        left_terrain = terrain[3:5]
         tiles_array = self.getBaseLineVertRange(length = self.sensors.left_sensors_range)
         
         for row in tiles_array:                     #for each row - front, back
@@ -569,6 +575,8 @@ class Robot:
         
         #update map with right sensors
         right_terrain = self.sensors.getRight()
+        """right_terrain= terrain[-1]      #to be used with new sensors.py"""
+        
         tiles_array = self.getBaseLineVertRange(
                 length = self.sensors.right_sensors_range,
                 exclude_mid=False,
@@ -609,6 +617,9 @@ class Robot:
         self.android.write(output)
         
     def writeReport(self):
+        if self.fakeRun:
+            return
+    
         results = "" 
         for item in self.map.convert():
             results += item[2:].upper() + ','

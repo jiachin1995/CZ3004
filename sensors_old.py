@@ -10,11 +10,10 @@ class Sensors:
     arduino = None
     robot=None
     instructions = {
-        "get": "z",
-        "getFront": "z111000",
-        "getLeft": "z000110",
-        "getAll": "z111111",
-        "getRight": "z000001"
+        "getFront": "get front sensors",
+        "getLeft": "get left sensors",
+        "getAllexceptRight": "z",
+        "getRight": "y"
     }
     check_rate = 0.01
     
@@ -31,14 +30,29 @@ class Sensors:
         self.arduino = arduino
     
     def getAll(self):
-        if self.isFrontExplored() and self.isLeftExplored() and self.isRightExplored():
+        if self.isFrontExplored() and self.isLeftExplored():
             front = self.getFront()
             left = self.getLeft()
-            right = self.getRight()
+            #Excluding right
             
-            return front + left + right
+            return front + left
     
-        return self.getLeastSensors()
+        instr = self.instructions["getAllexceptRight"]
+        
+        self.arduino.write(instr)
+        
+        while True:
+            msg = self.arduino.read()
+            if msg == None:
+                print("[#] nothing to read [read_from_serial]")
+                
+            else:
+                front_mid,front_left, front_right,left_front, left_back = msg.split(',')
+                break
+                
+            time.sleep(self.check_rate)
+        
+        return [int(front_left), int(front_mid), int(front_right), int(left_front), int(left_back)]
     
     def getFront(self):
         """
@@ -67,10 +81,8 @@ class Sensors:
         
         
         #if not explored, use sensors   
-        instr = self.instructions["getFront"]
-        response = self.getSensors(instr)
-
-        return response[:3]
+        all = self.getAll()
+        return all[:3]
         
     
     def getLeft(self):
@@ -97,11 +109,9 @@ class Sensors:
             return results
             
         
-        #if not explored, use sensors   
-        instr = self.instructions["getLeft"]
-        response = self.getSensors(instr)
-
-        return response[3:5]
+        #if not explored, use sensors  
+        all = self.getAll()
+        return all[:3]
     
     def getRight(self):
         """
@@ -131,11 +141,23 @@ class Sensors:
             return results
             
         
-        #if not explored, use sensors   
+        #if not explored, use sensors  
         instr = self.instructions["getRight"]
-        response = self.getSensors(instr)
-
-        return response[-1]
+        
+        self.arduino.write(instr)
+        
+        while True:
+            msg = self.arduino.read()
+            if msg == None:
+                print("[#] nothing to read [read_from_serial]")
+                
+            else:
+                right = msg
+                break
+                
+            time.sleep(self.check_rate)
+        
+        return [int(right)]
     
     def isFrontExplored(self):
         tiles_array = self.robot.getBaseLineRange(length = self.front_sensors_range)
@@ -191,45 +213,5 @@ class Sensors:
             if val == 0:
                 return True
         return False
-       
-    def getLeastSensors():
-        instr = self.instructions["get"]
         
-        tiles_array = self.robot.getBaseLineRange(length = self.front_sensors_range)
-        for i in [1,0,2]:           #following arduino's order
-            for tile in tiles_array[i]:
-                if self.robot.map.getTile(tile) == None:
-                    instr + "1"
-                    continue
-                instr + "0"
-        
-        for row in tiles_array:
-            for tile in row:
-                if self.robot.map.getTile(tile) == None:
-                    instr + "1"
-                    continue
-                instr + "0"
-        
-        if self.isRightExplored():
-            instr + "0"
-        else:
-            instr + "1"
-            
-        return self.getSensors(instr)
-        
-       
-    def getSensors(instr)
-        self.arduino.write(instr)
-        
-        while True:
-            msg = self.arduino.read()
-            if msg == None:
-                print("[#] nothing to read [read_from_serial]")
-                
-            else:
-                front_mid,front_left, front_right,left_front, left_back, right = msg.split(',')
-                break
-                
-            time.sleep(self.check_rate)
-        
-        return [int(front_left), int(front_mid), int(front_right), int(left_front), int(left_back), int(right)]
+ 
