@@ -263,6 +263,11 @@ class Robot:
         
         if settings.logging:
             print("Movement: Robot goes forward " +str(steps)+ " steps")
+            
+        #send update to android
+        self.writeReport()        
+         
+
         
     def getBaseLine(self):
         """
@@ -490,6 +495,11 @@ class Robot:
         if settings.logging:
             print("Movement: Robot Turns Left")
     
+        #send update to android
+        self.writeReport()        
+         
+
+    
     def turnRight(self, findImage=False):
         """
         Turns the robot right.
@@ -505,6 +515,11 @@ class Robot:
  
         if settings.logging:
             print("Movement: Robot Turns Right")
+ 
+        #send update to android
+        self.writeReport()        
+         
+
  
     def updatemap(self):
         """
@@ -577,9 +592,6 @@ class Robot:
      
         if self.map.is_explored(): self.explore = False
            
-        #send update to android
-        self.writeReport()        
-         
 
            
     def writeImages(self):
