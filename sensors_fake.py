@@ -122,6 +122,8 @@ class Sensors:
             
         return results
 
+    def getLeastSensors(self):
+        return self.getFront() + self.getLeft() + self.getRight()
 
     def isFrontBlocked(self):
         """

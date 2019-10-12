@@ -542,6 +542,7 @@ class Robot:
            
         #update map with front sensors
         terrain = self.sensors.getAll()
+        """terrain = self.sensors.getLeastSensors()"""
         
         front_terrain = terrain[:3]
         tiles_array = self.getBaseLineRange(length = self.sensors.front_sensors_range)

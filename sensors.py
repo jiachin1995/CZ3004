@@ -38,6 +38,7 @@ class Sensors:
             
             return front + left + right
     
+        """Todo: mix raw and map readings and return"""
         return self.getLeastSensors()
     
     def getFront(self):
