@@ -206,6 +206,7 @@ class Sensors:
                     break
             if addzero: instr += "0"
         
+        tiles_array = self.robot.getBaseLineVertRange(length = self.left_sensors_range)
         for row in tiles_array:
             addzero = True
             for tile in row:
