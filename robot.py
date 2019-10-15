@@ -45,6 +45,8 @@ class Robot:
     images = []
     camera_counter = 0
     sendimages = False
+    
+    fakeRun= False
 
     
     def __init__(self, arduino = None, android = None, fakeRun= False, fakeMap=None, stepsPerSec=1, **kwargs):  
