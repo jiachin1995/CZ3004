@@ -198,18 +198,22 @@ class Sensors:
         
         tiles_array = self.robot.getBaseLineRange(length = self.front_sensors_range)
         for i in [1,0,2]:           #following arduino's order
+            addzero = True
             for tile in tiles_array[i]:
                 if self.robot.map.getTile(tile) == None:
                     instr += "1"
-                    continue
-                instr += "0"
+                    addzero = False
+                    break
+            if addzero: instr += "0"
         
         for row in tiles_array:
+            addzero = True
             for tile in row:
                 if self.robot.map.getTile(tile) == None:
                     instr += "1"
-                    continue
-                instr += "0"
+                    addzero = False
+                    break
+            if addzero: instr += "0"
         
         if self.isRightExplored():
             instr += "0"
