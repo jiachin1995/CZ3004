@@ -3,8 +3,8 @@ from explorer import Explorer
 from imagefinder import Imagefinder
 from map import Map
 from pathfinder import Pathfinder
-from sensors import Sensors
-#from sensors_old import Sensors
+#from sensors import Sensors
+from sensors_old import Sensors
 
 import json
 import settings
@@ -571,7 +571,7 @@ class Robot:
                 
             if terr < self.sensors.left_sensors_range:
                 freeTiles.append(row[terr])
-                valuelist += [1]                   #obstacle detected. Add to map
+                valuelist += [1]                    #obstacle detected. Add to map
         
 
         
