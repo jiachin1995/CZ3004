@@ -144,6 +144,7 @@ class Map:
         if self.is_freespace(centre):
             return [centre, 2]
             
+        #if cant find, will return None
         
         
     def findSpaceInRow(self, y, toRight=True):

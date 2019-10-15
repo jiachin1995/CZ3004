@@ -335,7 +335,14 @@ class Explorer:
             
         #escape function
         if [x,y] == self.prevUnexploredTile:
-            goal, dir = self.robot.map.findAdjacentFreeSpace([x,y])
+            results = self.robot.map.findAdjacentFreeSpace([x,y])
+            
+            #cant explore tile. Giving up on exploration
+            if results is None:
+                self.exploreLimit = 0.0         #if exploreLimit is 0, exploreDone will always return True.
+                return
+                
+            goal, dir = results
             
             self.robot.findpath(goal=goal)
             self.robot.faceDirection(dir)
