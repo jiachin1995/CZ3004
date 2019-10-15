@@ -219,7 +219,7 @@ class Sensors:
         return self.getSensors(instr)
         
        
-    def getSensors(instr)
+    def getSensors(instr):
         self.arduino.write(instr)
         
         while True:

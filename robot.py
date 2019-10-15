@@ -3,8 +3,8 @@ from explorer import Explorer
 from imagefinder import Imagefinder
 from map import Map
 from pathfinder import Pathfinder
-"""from sensors import Sensors"""
-from sensors_old import Sensors
+from sensors import Sensors
+#from sensors_old import Sensors
 
 import json
 import settings
@@ -541,8 +541,7 @@ class Robot:
         valuelist = [0]*len(freeTiles)
            
         #update map with front sensors
-        terrain = self.sensors.getAll()
-        """terrain = self.sensors.getLeastSensors()"""
+        terrain = self.sensors.getLeastSensors()
         
         front_terrain = terrain[:3]
         tiles_array = self.getBaseLineRange(length = self.sensors.front_sensors_range)
@@ -575,8 +574,7 @@ class Robot:
 
         
         #update map with right sensors
-        right_terrain = self.sensors.getRight()
-        """right_terrain= terrain[-1]      #to be used with new sensors.py"""
+        right_terrain= terrain[-1]      
         
         tiles_array = self.getBaseLineVertRange(
                 length = self.sensors.right_sensors_range,
@@ -585,7 +583,7 @@ class Robot:
             )
         row = tiles_array.pop(self.sensors.right_sensors_position)
            
-        terr = right_terrain.pop(0)
+        terr = right_terrain
         if terr != -1:
             for i in range(0, terr):            
                 freeTiles.append(
