@@ -193,7 +193,7 @@ class Sensors:
                 return True
         return False
        
-    def getLeastSensors():
+    def getLeastSensors(self):
         instr = self.instructions["get"]
         
         tiles_array = self.robot.getBaseLineRange(length = self.front_sensors_range)
@@ -219,7 +219,7 @@ class Sensors:
         return self.getSensors(instr)
         
        
-    def getSensors(instr):
+    def getSensors(self,instr):
         self.arduino.write(instr)
         
         while True:
