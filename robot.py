@@ -3,8 +3,8 @@ from explorer import Explorer
 from imagefinder import Imagefinder
 from map import Map
 from pathfinder import Pathfinder
-#from sensors import Sensors
-from sensors_old import Sensors
+from sensors import Sensors
+#from sensors_old import Sensors
 
 import json
 import settings
@@ -550,6 +550,8 @@ class Robot:
         
         for row in tiles_array:                     #for each row - left, middle, right
             terr = front_terrain.pop(0)
+            if terr == -1: continue
+            
             for i in range(0, terr):            
                 freeTiles.append(row[i])
                 valuelist += [0]
@@ -565,6 +567,8 @@ class Robot:
         
         for row in tiles_array:                     #for each row - front, back
             terr = left_terrain.pop(0)
+            if terr == -1: continue
+            
             for i in range(0, terr):            
                 freeTiles.append(row[i])
                 valuelist += [0]
