@@ -200,21 +200,21 @@ class Sensors:
         for i in [1,0,2]:           #following arduino's order
             for tile in tiles_array[i]:
                 if self.robot.map.getTile(tile) == None:
-                    instr + "1"
+                    instr += "1"
                     continue
-                instr + "0"
+                instr += "0"
         
         for row in tiles_array:
             for tile in row:
                 if self.robot.map.getTile(tile) == None:
-                    instr + "1"
+                    instr += "1"
                     continue
-                instr + "0"
+                instr += "0"
         
         if self.isRightExplored():
-            instr + "0"
+            instr += "0"
         else:
-            instr + "1"
+            instr += "1"
             
         return self.getSensors(instr)
         
