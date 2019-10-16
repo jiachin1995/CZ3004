@@ -17,6 +17,8 @@ class Imagefinder:
     model = None
     labels = None
     
+    graph = None
+    
     fakeRun = False
     
     probability_threshold = 0.85         #only accept an image recognition result if its probability above this threshold
@@ -36,9 +38,7 @@ class Imagefinder:
         self.labels = ['6', '9', 'default', '8', '7', '5', '4', '3', '2', '15', '14', '13',
        '12', '11', '10', '1']
        
-        #to fix multithreading, load graph as global
-        global graph
-        graph = tf.get_default_graph() 
+        self.graph = tf.get_default_graph() 
         
 
     def predict(self, img):
@@ -46,7 +46,7 @@ class Imagefinder:
         np_image = transform.resize(np_image, (24, 32, 3))
         np_image = np.expand_dims(np_image, axis=0)
 
-        with graph.as_default():
+        with self.graph.as_default():
             results = self.model.predict(np_image)
 
         index = np.argmax(results)
