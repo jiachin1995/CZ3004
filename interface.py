@@ -82,7 +82,7 @@ class Interface:
      
     def fastestpath(self, **kwargs):
         self.robot.findpath(waypoint=self.waypoint)
-        #return self.startprocess(target = self.robot.findpath)
+        #return self.startprocess(target = self.robot.findpath, kwargs - {waypoint=self.waypoint})
     
 
     def fastestpath_test(self):
@@ -236,7 +236,7 @@ class Interface:
         self.robot.pos = list(pos)
     
     def setwaypoint(self, waypoint):
-        self.robot.pathfinder.waypoint = list(waypoint)
+        self.waypoint = list(waypoint)
     
     def timer_test(self):
         userinput = input("Enter timer in seconds (Integer):  \n")  
