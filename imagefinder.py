@@ -18,6 +18,7 @@ class Imagefinder:
     labels = None
     
     graph = None
+    session = None
     
     fakeRun = False
     
@@ -30,16 +31,20 @@ class Imagefinder:
 
         self.camera = Camera()
         
-        self.model = keras.models.load_model('mymodel3.h5')
-        self.model.compile(loss='categorical_crossentropy',
-              optimizer='adam',
-              metrics=['accuracy'])
+        self.graph = tf.get_default_graph() 
+        self.session = tf.Session()
+        
+        with self.graph.as_default():
+            with self.session.as_default():
+                self.model = keras.models.load_model('mymodel3.h5')
+                self.model.compile(loss='categorical_crossentropy',
+                      optimizer='adam',
+                      metrics=['accuracy'])
         
         self.labels = ['6', '9', 'default', '8', '7', '5', '4', '3', '2', '15', '14', '13',
        '12', '11', '10', '1']
        
-        self.graph = tf.get_default_graph() 
-        
+
 
     def predict(self, img):
         np_image = np.array(img).astype('float32')/255
@@ -47,7 +52,8 @@ class Imagefinder:
         np_image = np.expand_dims(np_image, axis=0)
 
         with self.graph.as_default():
-            results = self.model.predict(np_image)
+            with self.session.as_default():
+                results = self.model.predict(np_image)
 
         index = np.argmax(results)
         id = self.labels[index]
