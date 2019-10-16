@@ -6,6 +6,7 @@ except ImportError:
 
 import cv2
 import numpy as np
+from skimage import transform
 
 
 import settings
@@ -27,7 +28,7 @@ class Imagefinder:
 
         self.camera = Camera()
         
-        self.model = keras.models.load_model(mymodel3.h5'')
+        self.model = keras.models.load_model('mymodel3.h5')
         self.model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
@@ -56,13 +57,13 @@ class Imagefinder:
 
 
     def processimage(self):
-        image = self.camera.imageCapture()
+        im = self.camera.imageCapture()
         #im = cv2.imread(image)
         #im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
         
-        left = im[649:1296, :int(im.shape[1]/3)]
-        middle = im[649:1296, int(im.shape[1]/3):int(im.shape[1]/3*2)]
-        right = im[649:1296, int(im.shape[1]/3*2):]
+        left = im[160:320, :int(im.shape[1]/3)]
+        middle = im[160:320, int(im.shape[1]/3):int(im.shape[1]/3*2)]
+        right = im[160:320, int(im.shape[1]/3*2):]
 
         return [left,middle,right]
 
