@@ -15,6 +15,7 @@ findallimages = 0                           #whether to find all images. 0 = no 
 images_threshold = 5                        #if findallimages>0, how many images to find before stopping image finding
 save_images = False                         #save image for every identification
 
+giveupspelunk = False                       #whether to give up on spelunk cause hardware cmi
 
 """
     considering
