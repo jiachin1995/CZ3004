@@ -17,6 +17,7 @@ class Imagefinder:
     model = None
     labels = None
     
+    counter = 0
     
     fakeRun = False
     
@@ -99,7 +100,9 @@ class Imagefinder:
                 output = [int(results), i]
                 if settings.save_images:
                     import os
-                    filepath = os.path.join("detected images", "{}.jpg".format(str(output)))
+                    
+                    self.counter += 1
+                    filepath = os.path.join("detected images", "{}.jpg".format(str(self.counter)))
                     
                     cv2.imwrite(filepath, images_list[0])
                     cv2.imwrite(filepath, images_list[1])
