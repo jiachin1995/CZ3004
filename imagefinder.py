@@ -95,8 +95,9 @@ class Imagefinder:
                     import os
                     filepath = os.path.join("detected images", "{}.jpg".format(output))
                     
-                    im = cv2.cvtColor(im, cv2.COLOR_RGB2BGR)
-                    cv2.imwrite(filepath, im)
+                    cv2.imwrite(filepath, images_list[0])
+                    cv2.imwrite(filepath, images_list[1])
+                    cv2.imwrite(filepath, images_list[2])
                 
                 return output
                 
