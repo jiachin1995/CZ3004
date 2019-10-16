@@ -99,7 +99,7 @@ class Imagefinder:
                 output = [int(results), i]
                 if settings.save_images:
                     import os
-                    filepath = os.path.join("detected images", "{}.jpg".format(output))
+                    filepath = os.path.join("detected images", "{}.jpg".format(str(output)))
                     
                     cv2.imwrite(filepath, images_list[0])
                     cv2.imwrite(filepath, images_list[1])
