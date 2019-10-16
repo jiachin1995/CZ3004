@@ -11,6 +11,8 @@ class Interface:
     robot = None
     android=None
     
+    waypoint = None
+    
     thread = Thread()
     
     check_rate = 0.4
@@ -79,7 +81,8 @@ class Interface:
         t2.join()
      
     def fastestpath(self, **kwargs):
-        return self.startprocess(target = self.robot.findpath)
+        self.robot.findpath(waypoint=self.waypoint)
+        #return self.startprocess(target = self.robot.findpath)
     
 
     def fastestpath_test(self):

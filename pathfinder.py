@@ -87,16 +87,14 @@ class Pathfinder:
             orientation: Integer. Defaults to 0. Direction where the robot is currently facing.
         
         """
-        #set waypoint
-        if waypoint:
-            self.waypoint = waypoint
+
         
         #ensure that weightmap is clean
         self.resetweights()
     
         #update weightmap, the goal will have weight 0
-        if self.waypoint:
-            self.bfs(self.waypoint, start)    #search from start to waypoint
+        if waypoint:
+            self.bfs(waypoint, start)    #search from start to waypoint
         else:
             self.bfs(goal, start)        #search from start to goal
 
@@ -109,11 +107,11 @@ class Pathfinder:
         
         
         #If there is waypoint, we must now search from waypoint to goal
-        if self.waypoint:
+        if waypoint:
             #reset weights before doing bfs again
             self.resetweights()
             
-            self.bfs(goal, self.waypoint)
+            self.bfs(goal, waypoint)
             if settings.logging:
                 print("====== Waypoint Weights ======= \n")
                 self.printweightmap()     
