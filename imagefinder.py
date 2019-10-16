@@ -7,7 +7,7 @@ except ImportError:
 import cv2
 import numpy as np
 from skimage import transform
-
+import tensorflow as tf
 
 import settings
 
@@ -36,7 +36,9 @@ class Imagefinder:
         self.labels = ['6', '9', 'default', '8', '7', '5', '4', '3', '2', '15', '14', '13',
        '12', '11', '10', '1']
        
-        
+        #to fix multithreading, load graph as global
+        global graph
+        graph = tf.get_default_graph() 
         
 
     def predict(self, img):
@@ -44,7 +46,9 @@ class Imagefinder:
         np_image = transform.resize(np_image, (24, 32, 3))
         np_image = np.expand_dims(np_image, axis=0)
 
-        results = self.model.predict(np_image)
+        with graph.as_default():
+            results = self.model.predict(np_image)
+
         index = np.argmax(results)
         id = self.labels[index]
         
