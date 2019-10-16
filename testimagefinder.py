@@ -19,7 +19,7 @@ class Imagefinder:
     def __init__(self):
         self.camera = Camera()
         
-        self.model = keras.models.load_model(mymodel3.h5'')
+        self.model = keras.models.load_model('mymodel3.h5')
         self.model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
