@@ -62,7 +62,9 @@ class Explorer:
             self.robot.map.printmap()
             print(self.robot.map.convert())
     
-        while not self.exploreDone():  
+        while not self.exploreDone():
+            if settings.giveupspelunk:
+                break
             if self.noTimeLeft():
                 break
             self.spelunk()
