@@ -17,8 +17,6 @@ class Imagefinder:
     model = None
     labels = None
     
-    graph = None
-    # session = None
     
     fakeRun = False
     
@@ -31,11 +29,7 @@ class Imagefinder:
 
         self.camera = Camera()
         
-        self.graph = tf.get_default_graph() 
-        # self.session = tf.Session()
-        
-        # with self.graph.as_default():
-            # with self.session.as_default():
+
         self.model = keras.models.load_model('mymodel3.h5')
         self.model.compile(loss='categorical_crossentropy',
               optimizer='adam',
@@ -43,8 +37,6 @@ class Imagefinder:
               
         self.model._make_predict_function()
             
-        #freeze graph for thread sharing
-        # self.graph.finalize()
         
         
         self.labels = ['6', '9', 'default', '8', '7', '5', '4', '3', '2', '15', '14', '13',
@@ -57,8 +49,6 @@ class Imagefinder:
         np_image = transform.resize(np_image, (24, 32, 3))
         np_image = np.expand_dims(np_image, axis=0)
 
-        # with self.graph.as_default():
-            # with self.session.as_default():
         results = self.model.predict(np_image)
 
         index = np.argmax(results)

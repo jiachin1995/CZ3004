@@ -51,7 +51,9 @@ class Interface:
             self.robot.map.printmap(self.robot)
 
     def explore(self, **kwargs):
-        return self.startprocess(target = self.robot.explore)
+        self.robot.explore()
+        #removed multithreading
+        #return self.startprocess(target = self.robot.explore)
         
 
     def explorelimit_test(self):
