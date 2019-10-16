@@ -19,12 +19,12 @@ class Imagefinder:
     def __init__(self):
         self.camera = Camera()
         
-        self.model = keras.models.load_model('mymodel.h5')
+        self.model = keras.models.load_model('mymodel3.h5')
         self.model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
         
-        self.labels = ['6', '9', 'deafault', '8', '7', '5', '4', '3', '2', '15', '14', '13',
+        self.labels = ['6', '9', 'default', '8', '7', '5', '4', '3', '2', '15', '14', '13',
        '12', '11', '10', '1']
        
         
