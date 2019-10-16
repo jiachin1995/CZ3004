@@ -60,6 +60,7 @@ class Imagefinder:
         middle = im[160:320, int(im.shape[1]/3):int(im.shape[1]/3*2)]
         right = im[160:320, int(im.shape[1]/3*2):]
         
+        location = None
         
         images_list = [left,middle,right]
         for i in reversed(range(3)):        #process images right to left because new images are likely to be at right
@@ -69,7 +70,11 @@ class Imagefinder:
             else:
                 location = i
                 break
-              
+         
+        if location is None:
+            print("no images found")
+            return
+         
         print(results)
         print(location)
               

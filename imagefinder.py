@@ -85,9 +85,12 @@ class Imagefinder:
         if self.fakeRun:
             return
         
+        print(checktiles)
         
         if not checktiles:
             return None
+        
+        
         
         images_list = self.processimage()
         for i in reversed(range(3)):        #process images right to left because new images are likely to be at right

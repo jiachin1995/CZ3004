@@ -215,7 +215,7 @@ class Sensors:
         return False
         
     def getLeastSensors(self):
-        results = self.getgetAll()
+        results = self.getAll()
         results += self.getRight()
 
         return results
