@@ -131,6 +131,7 @@ class Robot:
         #update android exploration done
         if not self.fakeRun:
             self.android.write('{"action": "exploreCompleted"}')
+            self.sensors.arduino.write("g")
 
     def faceDirection(self, orient):
         """
