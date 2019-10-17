@@ -72,7 +72,7 @@ class Imagefinder:
         middle = im[160:320, int(im.shape[1]/3):int(im.shape[1]/3*2)]
         right = im[160:320, int(im.shape[1]/3*2):]
 
-        return [left,middle,right]
+        return [right,middle,left]
 
     def find(self,checktiles=[0,1,2]):
         """
