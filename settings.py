@@ -16,6 +16,7 @@ images_threshold = 5                        #if findallimages>0, how many images
 save_images = False                         #save image for every identification
 
 giveupspelunk = False                       #whether to give up on spelunk cause hardware cmi
+skipwhiteimages = True                      #whether to give up on white images cause image rec cmi
 
 """
     considering

@@ -99,6 +99,9 @@ class Imagefinder:
             results = self.predict(images_list[i])
             if results == 'default':
                 continue
+            if settings.skipwhiteimages and (results in ["1","9","13"]):
+                print("Warning: White images found but setting to skip white images is true.")
+                continue
             else:
                 output = [int(results), i]
                 if settings.save_images:
