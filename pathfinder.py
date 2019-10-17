@@ -12,7 +12,6 @@ class Pathfinder:
     """
     start = [1, 1]
     goal = [13, 18]
-    waypoint=None
     
     map = None
     weightmap = []

@@ -101,17 +101,29 @@ class Imagefinder:
             results = self.predict(images_list[i])
             if results == 'default':
                 continue
+            if settings.skipwhiteimages and (results in ["1","9","13"]):
+                print("Warning: White images found but setting to skip white images is true.")
+                continue
             else:
                 output = [int(results), i]
                 if settings.save_images:
                     import os
                     
-                    self.counter += 1
                     filepath = os.path.join("detected images", "{}.jpg".format(str(self.counter)))
+
                     print('saving')
+
                     cv2.imwrite(filepath, images_list[0])
+                    self.counter += 1
+                    
+                    filepath = os.path.join("detected images", "{}.jpg".format(str(self.counter)))
                     cv2.imwrite(filepath, images_list[1])
+                    self.counter += 1
+                    
+                    filepath = os.path.join("detected images", "{}.jpg".format(str(self.counter)))
                     cv2.imwrite(filepath, images_list[2])
+                    self.counter += 1
+                    
                 
                 return output
                 
