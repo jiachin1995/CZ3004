@@ -306,7 +306,7 @@ class Explorer:
               print("New State: " + self.state) 
 
         self.spelunkprep()        
-        self._spelunking()
+        #self._spelunking()         #removed because greedy algo not needed.
     
     def _spelunking(self):
         """
