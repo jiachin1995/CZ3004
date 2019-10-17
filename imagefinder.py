@@ -17,7 +17,6 @@ class Imagefinder:
     model = None
     labels = None
     
-    counter = 0
     
     fakeRun = False
     
@@ -64,10 +63,12 @@ class Imagefinder:
 
 
     def processimage(self):
+        print('taking image')
         im = self.camera.imageCapture()
         #im = cv2.imread(image)
         #im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
-        
+
+        print('processing')
         left = im[160:320, :int(im.shape[1]/3)]
         middle = im[160:320, int(im.shape[1]/3):int(im.shape[1]/3*2)]
         right = im[160:320, int(im.shape[1]/3*2):]
@@ -99,23 +100,18 @@ class Imagefinder:
             results = self.predict(images_list[i])
             if results == 'default':
                 continue
+            if settings.skipwhiteimages and (results in ["1","9","13"]):
+                print("Warning: White images found but setting to skip white images is true.")
+                continue
             else:
                 output = [int(results), i]
                 if settings.save_images:
                     import os
-                    
-                    filepath = os.path.join("detected images", "{}.jpg".format(str(self.counter)))
-                    cv2.imwrite(filepath, images_list[0])
-                    self.counter += 1
-                    
-                    filepath = os.path.join("detected images", "{}.jpg".format(str(self.counter)))
-                    cv2.imwrite(filepath, images_list[1])
-                    self.counter += 1
-                    
-                    filepath = os.path.join("detected images", "{}.jpg".format(str(self.counter)))
-                    cv2.imwrite(filepath, images_list[2])
-                    self.counter += 1
-                    
+              
+                    filepath = os.path.join("detected images", "{}.jpg".format(str(output)))
+                    cv2.imwrite(filepath, images_list[i])
+
+                    print("saving {}".format(filepath))
                 
                 return output
                 
