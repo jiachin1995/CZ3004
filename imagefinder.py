@@ -64,10 +64,12 @@ class Imagefinder:
 
 
     def processimage(self):
+        print('taking image')
         im = self.camera.imageCapture()
         #im = cv2.imread(image)
         #im = cv2.cvtColor(im, cv2.COLOR_BGR2RGB)
-        
+
+        print('processing')
         left = im[160:320, :int(im.shape[1]/3)]
         middle = im[160:320, int(im.shape[1]/3):int(im.shape[1]/3*2)]
         right = im[160:320, int(im.shape[1]/3*2):]
@@ -106,7 +108,7 @@ class Imagefinder:
                     
                     self.counter += 1
                     filepath = os.path.join("detected images", "{}.jpg".format(str(self.counter)))
-                    
+                    print('saving')
                     cv2.imwrite(filepath, images_list[0])
                     cv2.imwrite(filepath, images_list[1])
                     cv2.imwrite(filepath, images_list[2])
