@@ -334,25 +334,31 @@ class Explorer:
         if settings.logging:
             print("UNEXPLORED TILE")
             print([x,y])
-            
+           
+        """
+        #REMOVED. look below for explanation
         #escape function
-        if [x,y] == self.prevUnexploredTile:
-            results = self.robot.map.findAdjacentFreeSpace([x,y])
-            
-            #cant explore tile. Giving up on exploration
-            if results is None:
-                print("Warning: Unable to reach unexplored tile. Ending Exploration early.")
-                self.exploreLimit = 0.0         #if exploreLimit is 0, exploreDone will always return True.
-                return
-                
-            goal, dir = results
-            
-            self.robot.findpath(goal=goal)
-            self.robot.faceDirection(dir)
+        #if [x,y] == self.prevUnexploredTile:
+        """
+        
+        results = self.robot.map.findAdjacentFreeSpace([x,y])
+        
+        #cant explore tile. Giving up on exploration
+        if results is None:
+            print("Warning: Unable to reach unexplored tile. Ending Exploration early.")
+            self.exploreLimit = 0.0         #if exploreLimit is 0, exploreDone will always return True.
             return
             
-        self.prevUnexploredTile = [x,y]
+        goal, dir = results
+        
+        self.robot.findpath(goal=goal)
+        self.robot.faceDirection(dir)
+        return
+        
+        #self.prevUnexploredTile = [x,y]
             
+        """
+        #REMOVED BECAUSE RIGHT SENSOR TOO USEFUL. NO NEED GREEDY SPELUNK ALGO
         if self.robot.pos[1] != y:
             #move to unexplored Tile's y-axis
             if self.robot.pos[0]  <8:
@@ -367,4 +373,4 @@ class Explorer:
             self.robot.faceDirection(1)
         else:
             self.robot.faceDirection(3)
-            
+        """  
