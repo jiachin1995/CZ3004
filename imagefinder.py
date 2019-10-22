@@ -79,9 +79,9 @@ class Imagefinder:
         """
         outputs results
         
-        0 - left
+        0 - right
         1 - middle
-        2 - right
+        2 - left
         """
         if self.fakeRun:
             return
