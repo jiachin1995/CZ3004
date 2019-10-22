@@ -200,7 +200,10 @@ class Sensors:
         for i in [1,0,2]:           #following arduino's order
             addzero = True
             for tile in tiles_array[i]:
-                if self.robot.map.getTile(tile) == None or self.robot.map.getTile(tile) == 1:
+                if self.robot.map.getTile(tile) == 1:   #break because sensors cant see past obstacle
+                    break
+                
+                if self.robot.map.getTile(tile) == None:
                     instr += "1"
                     addzero = False
                     break
@@ -210,7 +213,10 @@ class Sensors:
         for row in tiles_array:
             addzero = True
             for tile in row:
-                if self.robot.map.getTile(tile) == None or self.robot.map.getTile(tile) == 1:
+                if self.robot.map.getTile(tile) == 1:   #break because sensors cant see past obstacle
+                    break
+                
+                if self.robot.map.getTile(tile) == None:
                     instr += "1"
                     addzero = False
                     break
