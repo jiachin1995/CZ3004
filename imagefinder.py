@@ -103,7 +103,8 @@ class Imagefinder:
                 output = [int(results), i]
                 if settings.save_images:
                     import os
-              
+
+                    #output = cv2.cvtColor(converted_output , cv2.COLORBGR2RGB)
                     filepath = os.path.join("detected images", "{}.jpg".format(str(output)))
                     cv2.imwrite(filepath, images_list[i])
 
