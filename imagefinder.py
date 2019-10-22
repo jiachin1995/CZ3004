@@ -91,12 +91,8 @@ class Imagefinder:
         if not checktiles:
             return None
         
-        
-        
         images_list = self.processimage()
-        for i in range(3):        #process images right to left because new images are likely to be at right
-            if i not in checktiles:
-                continue
+        for i in checktiles:        #process images right to left because new images are likely to be at right
             results = self.predict(images_list[i])
             if results == 'default':
                 continue
