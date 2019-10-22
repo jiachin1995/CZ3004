@@ -94,7 +94,7 @@ class Imagefinder:
         
         
         images_list = self.processimage()
-        for i in reversed(range(3)):        #process images right to left because new images are likely to be at right
+        for i in range(3):        #process images right to left because new images are likely to be at right
             if i not in checktiles:
                 continue
             results = self.predict(images_list[i])
