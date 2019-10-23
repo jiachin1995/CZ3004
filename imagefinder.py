@@ -79,9 +79,9 @@ class Imagefinder:
         """
         outputs results
         
-        0 - left
+        0 - right
         1 - middle
-        2 - right
+        2 - left
         """
         if self.fakeRun:
             return
@@ -91,12 +91,8 @@ class Imagefinder:
         if not checktiles:
             return None
         
-        
-        
         images_list = self.processimage()
-        for i in reversed(range(3)):        #process images right to left because new images are likely to be at right
-            if i not in checktiles:
-                continue
+        for i in checktiles:        #process images right to left because new images are likely to be at right
             results = self.predict(images_list[i])
             if results == 'default':
                 continue
@@ -107,7 +103,8 @@ class Imagefinder:
                 output = [int(results), i]
                 if settings.save_images:
                     import os
-              
+
+                    #output = cv2.cvtColor(converted_output , cv2.COLORBGR2RGB)
                     filepath = os.path.join("detected images", "{}.jpg".format(str(output)))
                     
                     bgrimage = cv2.cvtColor(images_list[i], cv2.COLOR_RGB2BGR)

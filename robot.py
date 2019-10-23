@@ -8,6 +8,7 @@ from sensors import Sensors
 
 import json
 import settings
+import time
 
 class Robot:
     """
@@ -45,6 +46,8 @@ class Robot:
     images = []
     camera_counter = 0
     sendimages = False
+    sendreport_counter = 0
+
     
     fakeRun= False
 
@@ -130,8 +133,10 @@ class Robot:
         
         #update android exploration done
         if not self.fakeRun:
+            self.writeImages()
+            time.sleep(0.5)
+            #self.sensors.arduino.write("g")
             self.android.write('{"action": "exploreCompleted"}')
-            self.sensors.arduino.write("g")
 
     def faceDirection(self, orient):
         """
@@ -626,20 +631,25 @@ class Robot:
         if self.fakeRun:
             return
     
-        results = "" 
-        for item in self.map.convert():
-            results += item[2:].upper() + ','
+        self.sendreport_counter = (self.sendreport_counter + 1 ) % 10
+        if self.sendreport_counter == 0:
+            self.writeImages()
             
-        for coords in self.pos:
-            results += str(coords) + ','
-        
-        orientation = 90 * self.orientation
-        results += str(orientation)
-        
-        dict = {
-            "robot" : results
-        }
-        
-        report = json.dumps(dict)
-        self.android.write(report)
+        else: 
+            results = "" 
+            for item in self.map.convert():
+                results += item[2:].upper() + ','
+                
+            for coords in self.pos:
+                results += str(coords) + ','
+            
+            orientation = 90 * self.orientation
+            results += str(orientation)
+            
+            dict = {
+                "robot" : results
+            }
+            
+            report = json.dumps(dict)
+            self.android.write(report)
 
