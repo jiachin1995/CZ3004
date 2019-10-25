@@ -314,7 +314,7 @@ class Robot:
         if not self.coordinator.forward(steps):
             #phantom block detected. Check sensors again
             wipeTiles = self.getBaseLine()       
-            valuelist = [0]*len(wipeTiles)
+            valuelist = [None]*len(wipeTiles)
             
             self.map.setTiles(wipeTiles, valuelist)    #remove tiles
             
