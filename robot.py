@@ -117,6 +117,59 @@ class Robot:
             print("Movement: Robot goes backward")
 
 
+    def checkPhantomBlock(self, checkpos):
+        print("Checking {} for phantom block".format(checkpos))
+        
+        x,y = checkpos
+        neighbours = [
+            "[x+1,y]",
+            "[x,y-1]",
+            "[x-1,y]",
+            "[x,y+1]",
+        ]
+        
+        for n in neighbours:
+            tile = eval(n)
+            if self.map.getTile(tile) is None:
+                print("Unexplored terrain detected, changing {} to unexplored".format(checkpos))
+                self.map.setTile(checkpos, None)
+                return
+        
+        #no unexplored neighbours
+        print("No unexplored terrain detected. Keeping {} as is.".format(checkpos))
+        
+    def decodeSensors(self, terrain, tiles_array, sensors_range):
+        newTiles = []
+        valuelist = []
+    
+        for row in tiles_array:                     
+            terr = terrain.pop(0)
+            if terr == -1: continue
+            
+            for i in range(0, terr):  
+                pos = row[i]
+                newTiles.append(pos)
+                valuelist += [0]
+                
+                #check phantom block
+                if self.map.getTile(pos) == 1:
+                    print("Warning: Phantom block detected and removed. Tile is {}".format(pos))
+                
+                
+                
+            if terr < sensors_range:
+                pos = row[terr]
+                newTiles.append(pos)
+                valuelist += [1]                   #obstacle detected. Add to map
+                
+                #check phantom block
+                if self.map.getTile(pos) == 0:
+                    print("Warning: Phantom block appeared on explored tile, {}.".format(pos))
+                    if terr < sensors_range - 1:
+                        checkpos = row[terr + 1]
+                        self.checkPhantomBlock(checkpos)
+            
+        self.map.setTiles(newTiles, valuelist)
         
     def explore(self, timer = None, exploreLimit = None): 
         """ 
@@ -544,6 +597,9 @@ class Robot:
             [x-1,y-1],[x,y-1],[x+1,y-1],
         ]
         valuelist = [0]*len(freeTiles)
+                   
+        self.map.setTiles(freeTiles, valuelist)
+           
            
         #update map with front sensors
         terrain = self.sensors.getLeastSensors()
@@ -551,36 +607,22 @@ class Robot:
         front_terrain = terrain[:3]
         tiles_array = self.getBaseLineRange(length = self.sensors.front_sensors_range)
         
-        for row in tiles_array:                     #for each row - left, middle, right
-            terr = front_terrain.pop(0)
-            if terr == -1: continue
-            
-            for i in range(0, terr):            
-                freeTiles.append(row[i])
-                valuelist += [0]
-                
-            if terr < self.sensors.front_sensors_range:
-                freeTiles.append(row[terr])
-                valuelist += [1]                   #obstacle detected. Add to map
-            
+        self.decodeSensors(
+            terrain = front_terrain, 
+            tiles_array = tiles_array, 
+            sensors_range = self.sensors.front_sensors_range
+            )
         
         #update map with left sensors
         left_terrain = terrain[3:5]
         tiles_array = self.getBaseLineVertRange(length = self.sensors.left_sensors_range)
         
-        for row in tiles_array:                     #for each row - front, back
-            terr = left_terrain.pop(0)
-            if terr == -1: continue
-            
-            for i in range(0, terr):            
-                freeTiles.append(row[i])
-                valuelist += [0]
-                
-            if terr < self.sensors.left_sensors_range:
-                freeTiles.append(row[terr])
-                valuelist += [1]                    #obstacle detected. Add to map
+        self.decodeSensors(
+            terrain = left_terrain, 
+            tiles_array = tiles_array, 
+            sensors_range = self.sensors.left_sensors_range
+            )
         
-
         
         #update map with right sensors
         right_terrain= terrain[-1]      
@@ -591,20 +633,13 @@ class Robot:
                 toRight=True
             )
         row = tiles_array.pop(self.sensors.right_sensors_position)
-           
-        terr = right_terrain
-        if terr != -1:
-            for i in range(0, terr):            
-                freeTiles.append(
-                row[i]
-                )
-                valuelist += [0]
-                
-            if terr < self.sensors.right_sensors_range:
-                freeTiles.append(row[terr])
-                valuelist += [1]                   #obstacle detected. Add to map
-        
-        self.map.setTiles(freeTiles, valuelist)
+          
+        self.decodeSensors(
+            terrain = [right_terrain], 
+            tiles_array = [row], 
+            sensors_range = self.sensors.right_sensors_range
+            )
+
      
         if self.map.is_explored(): self.explore = False
            

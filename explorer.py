@@ -181,7 +181,7 @@ class Explorer:
         elif startorient == self.robot.orientation and [x,y] == startpos: 
             return
         else: 
-            self.hugleftwall(startorient = startorient, startpos = startpos, endCondition=endCondition)
+            self.hugleftwall(startorient = startorient, startpos = startpos, endCondition=endCondition, checkexplore=checkexplore)
         
     def hugleftprep(self):
         """ 
