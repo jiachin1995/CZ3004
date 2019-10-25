@@ -16,7 +16,8 @@ class Coordinator:
         "backward": "s1",
         "left": "a2",
         "right": "d2",
-        "movement done" : "done"
+        "movement done" : "done",
+        "phantom block" : "pb"
     }
     fakeRun = False
     stepsPerSec = 2
@@ -58,7 +59,7 @@ class Coordinator:
         if self.fakeRun:
             for i in range(0,steps):
                 self.fakeRunWait()
-            return
+            return True
         else:
             instr = self.instructions["forward"]
             instr += str(steps)
@@ -71,7 +72,11 @@ class Coordinator:
                     print("[#] nothing to read [read_from_serial]")
                     
                 elif self.instructions["movement done"] in msg:
-                    return
+                    return True
+                    
+                elif self.instructions["phantom block"] in msg:
+                    print("Warning: Bulldoze detected. No movement done")
+                    return False
                     
                 time.sleep(self.check_rate)
     

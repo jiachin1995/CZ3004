@@ -311,7 +311,23 @@ class Robot:
         Args:
             steps: Integer. Defaults to 1. Number of steps forward to take
         """  
-        self.coordinator.forward(steps)
+        if not self.coordinator.forward(steps):
+            #phantom block detected. Check sensors again
+            wipeTiles = self.getBaseLine()       
+            valuelist = [0]*len(wipeTiles)
+            
+            self.map.setTiles(wipeTiles, valuelist)    #remove tiles
+            
+            front_terrain = self.sensors.getFront()
+            tiles_array = self.getBaseLineRange(length = self.sensors.front_sensors_range)
+            
+            self.decodeSensors(
+                terrain = front_terrain, 
+                tiles_array = tiles_array, 
+                sensors_range = self.sensors.front_sensors_range
+                )
+        
+            return
         
         x,y = self.pos
         newpos_dict = {
