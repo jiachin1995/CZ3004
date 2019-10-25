@@ -455,25 +455,22 @@ class Robot:
                 if steps >0:
                     instructions.append("self.forward("+ str(steps) +")")
                 instructions.append("self.turnRight()")
-                instructions.append("self.forward()")
                 
-                steps=0
+                steps=1
                 
             elif d == (prev+2) % 4:     #U-turn
                 if steps >0:
                     instructions.append("self.forward("+ str(steps) +")")
                 instructions.append("self.turnRight()")
                 instructions.append("self.turnRight()")
-                instructions.append("self.forward()")
                 
-                steps=0
+                steps=1
             else:                       #turn right
                 if steps >0:
                     instructions.append("self.forward("+ str(steps) +")")
                 instructions.append("self.turnLeft()")
-                instructions.append("self.forward()")
                 
-                steps=0
+                steps=1
             prev = d
             
                 
