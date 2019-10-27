@@ -133,6 +133,7 @@ class Robot:
             if self.map.getTile(tile) is None:
                 print("Unexplored terrain detected, changing {} to unexplored".format(checkpos))
                 self.map.setTile(checkpos, None)
+                self.removeImage(pos)          #check whether removed block has image
                 return
         
         #no unexplored neighbours
@@ -154,6 +155,7 @@ class Robot:
                 #check phantom block
                 if self.map.getTile(pos) == 1:
                     print("Warning: Phantom block detected and removed. Tile is {}".format(pos))
+                    self.removeImage(pos)       #check whether removed block has image
                 
                 
                 
@@ -552,6 +554,12 @@ class Robot:
                      
         return instructions
         
+    def removeImage(self, tile):
+        for im in self.images:
+            id, pos = im
+            if pos == tile:
+                print("WARNING: Image detected at removed phantom block. Removing image as well. Consider block may not be phantom?")
+                self.images.remove(im)
   
     def setAttributes(self, **kwargs):
         """
