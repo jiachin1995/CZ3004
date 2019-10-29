@@ -330,24 +330,16 @@ class Robot:
             wipeTiles = self.getBaseLine()       
             valuelist = [None]*len(wipeTiles)
             
-            print(wipeTiles)
-            print(valuelist)
-            
             self.map.setTiles(wipeTiles, valuelist)    #remove tiles
             
             front_terrain = self.sensors.getFront()
             tiles_array = self.getBaseLineRange(length = self.sensors.front_sensors_range)
-            
-            print(front_terrain)
-            print(tiles_array)
             
             self.decodeSensors(
                 terrain = front_terrain, 
                 tiles_array = tiles_array, 
                 sensors_range = self.sensors.front_sensors_range
                 )
-        
-            print("here")
         
             return
         
