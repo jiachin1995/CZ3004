@@ -149,7 +149,9 @@ class Robot:
             terr = terrain.pop(0)
             if terr == -1: continue
             
-            for i in range(0, terr):  
+            for i in range(0, terr): 
+                pos = row[i]
+                
                 #check phantom block
                 if self.map.getTile(pos) == 1:
                     if terr>1:
@@ -160,10 +162,7 @@ class Robot:
                 
                     print("Warning: Phantom block detected and removed. Tile is {}".format(pos))
                     self.removeImage(pos)       #check whether removed block has image
-            
-            
-            
-                pos = row[i]
+
                 newTiles.append(pos)
                 valuelist += [0]
                 
@@ -172,7 +171,7 @@ class Robot:
                 skipUpdate = False
                 continue
                    
-            if terr < sensors_range:
+            if terr <  :
                 pos = row[terr]
                 newTiles.append(pos)
                 valuelist += [1]                   #obstacle detected. Add to map
