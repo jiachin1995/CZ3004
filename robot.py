@@ -142,23 +142,36 @@ class Robot:
     def decodeSensors(self, terrain, tiles_array, sensors_range):
         newTiles = []
         valuelist = []
+        skipUpdate = False
+    
     
         for row in tiles_array:                     
             terr = terrain.pop(0)
             if terr == -1: continue
             
             for i in range(0, terr):  
+                #check phantom block
+                if self.map.getTile(pos) == 1:
+                    if terr>1:
+                        """Not tested"""
+                        print("Warning: Sensor attemped to wipe previous obstacle. But we are skipping reading.")
+                        skipUpdate = True
+                        break
+                
+                    print("Warning: Phantom block detected and removed. Tile is {}".format(pos))
+                    self.removeImage(pos)       #check whether removed block has image
+            
+            
+            
                 pos = row[i]
                 newTiles.append(pos)
                 valuelist += [0]
                 
-                #check phantom block
-                if self.map.getTile(pos) == 1:
-                    print("Warning: Phantom block detected and removed. Tile is {}".format(pos))
-                    self.removeImage(pos)       #check whether removed block has image
-                
-                
-                
+            """Not tested"""
+            if skipUpdate:
+                skipUpdate = False
+                continue
+                   
             if terr < sensors_range:
                 pos = row[terr]
                 newTiles.append(pos)

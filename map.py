@@ -242,8 +242,6 @@ class Map:
             Exception: invalid loadobject argument
         """
         
-        """matched Code === loadingFromDisk()"""
-    
         #if loadobject is string, assume it is filepath
         if isinstance(loadobject, str):
             import os
