@@ -171,7 +171,7 @@ class Robot:
                 skipUpdate = False
                 continue
                    
-            if terr < sensors_range:
+            if terr <  :
                 pos = row[terr]
                 newTiles.append(pos)
                 valuelist += [1]                   #obstacle detected. Add to map
