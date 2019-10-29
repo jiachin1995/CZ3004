@@ -47,7 +47,7 @@ class Map:
         """
         Converts map object to bytes. Follows the MDF as specified by NTU MDP.
         """
-    
+        
         expl = ''
         expl_contents = ''
     
