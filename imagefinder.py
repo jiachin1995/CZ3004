@@ -98,6 +98,10 @@ class Imagefinder:
             if settings.skipwhiteimages and (results in ["1","9","13"]):
                 print("Warning: White images found but setting to skip white images is true.")
                 continue
+            if results not in settings.imageslabels:
+                print("Warning: Result is an image but not in images labels list")
+                continue
+                
             else:
                 output = [int(results), i]
                 if settings.save_images:
