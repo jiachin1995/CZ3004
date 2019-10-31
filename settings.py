@@ -9,6 +9,11 @@ right_sensors_range = 5
 
 right_sensors_position = 1                  #position of right sensor, front, mid or back
 
+
+giveupspelunk = False                       #whether to give up on spelunk cause hardware cmi
+skipwhiteimages = False                      #whether to give up on white images cause image rec cmi
+
+
 """2 may not be debugged. Use after confirming that it works."""
 findallimages = 1                           #whether to find all images. 0 = no images, 1 = some images, 2 = all images
 images_threshold = 5                        #if findallimages>0, how many images to find before stopping image finding
@@ -38,9 +43,6 @@ imageslabels = [                            #images labels
        
 
 
-
-giveupspelunk = False                       #whether to give up on spelunk cause hardware cmi
-skipwhiteimages = True                      #whether to give up on white images cause image rec cmi
 
 """
     considering
