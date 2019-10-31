@@ -679,6 +679,8 @@ class Robot:
         
             isRightExplored = True
             for tile in row:
+                if self.map.getTile(tile) == 1:         #explored and found obstacle
+                    break
                 if self.map.getTile(tile) is None:
                     isRightExplored = False
         
