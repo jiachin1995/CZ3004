@@ -28,7 +28,7 @@ class Explorer:
 
     startTime = None
     timer = 360
-    timeToReturn = 60       #buffer time to return to start, in seconds
+    timeToReturn = 45       #buffer time to return to start, in seconds
     exploreLimit = 1.0
 
     prevUnexploredTile = None           #used to escape from spelunking to same unexplored tile recursion

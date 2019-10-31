@@ -86,7 +86,13 @@ class Robot:
 
         #update map
         self.updatemap()
-        
+        goalTiles = [       #set goal as explored
+            [12,19],[13,19],[14,19],
+            [12,18],[13,18],[14,18],
+            [12,17],[13,17],[14,17],
+        ]
+        valuelist = [0]*len(goalTiles)   
+        self.map.setTiles(goalTiles, valuelist)
         
         #initialise pathfinder
         self.pathfinder = Pathfinder(self.map)
