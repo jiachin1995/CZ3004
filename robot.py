@@ -670,7 +670,20 @@ class Robot:
         right_terrain= terrain[-1]      
         
         if right_terrain == -1:
-            if not self.sensors.isRightExplored():
+            tiles_array = self.getBaseLineVertRange(
+                    length = self.sensors.front_sensors_range,  #use front sensors
+                    exclude_mid=False,
+                    toRight=True
+                )
+            row = tiles_array.pop(self.sensors.right_sensors_position)
+        
+            isRightExplored = True
+            for tile in row:
+                if tile is None:
+                    isRightExplored = False
+        
+        
+            if not isRightExplored:
                 #update map by turning right and using front sensors
                 self.turnRight()
                 front_terrain = self.sensors.getFront()
