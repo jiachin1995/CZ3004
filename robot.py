@@ -669,18 +669,33 @@ class Robot:
         #update map with right sensors
         right_terrain= terrain[-1]      
         
-        tiles_array = self.getBaseLineVertRange(
-                length = self.sensors.right_sensors_range,
-                exclude_mid=False,
-                toRight=True
-            )
-        row = tiles_array.pop(self.sensors.right_sensors_position)
-          
-        self.decodeSensors(
-            terrain = [right_terrain], 
-            tiles_array = [row], 
-            sensors_range = self.sensors.right_sensors_range
-            )
+        if right_terrain == -1:
+            if not self.sensors.isRightExplored():
+                #update map by turning right and using front sensors
+                self.turnRight()
+                front_terrain = self.sensors.getFront()
+                tiles_array = self.getBaseLineRange(length = self.sensors.front_sensors_range)
+
+                self.decodeSensors(
+                    terrain = front_terrain, 
+                    tiles_array = tiles_array, 
+                    sensors_range = self.sensors.front_sensors_range
+                    )
+                self.turnLeft()
+        else:
+            #update using right sensors.
+            tiles_array = self.getBaseLineVertRange(
+                    length = self.sensors.right_sensors_range,
+                    exclude_mid=False,
+                    toRight=True
+                )
+            row = tiles_array.pop(self.sensors.right_sensors_position)
+              
+            self.decodeSensors(
+                terrain = [right_terrain], 
+                tiles_array = [row], 
+                sensors_range = self.sensors.right_sensors_range
+                )
 
      
         if self.map.is_explored(): self.explore = False
