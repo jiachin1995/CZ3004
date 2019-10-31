@@ -679,7 +679,7 @@ class Robot:
         
             isRightExplored = True
             for tile in row:
-                if tile is None:
+                if self.map.getTile(tile) is None:
                     isRightExplored = False
         
         
