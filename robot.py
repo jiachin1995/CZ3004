@@ -202,7 +202,7 @@ class Robot:
         if not self.fakeRun:
             self.writeImages()
             time.sleep(0.5)
-            #self.sensors.arduino.write("g")
+            
             self.android.write('{"action": "exploreCompleted"}')
 
     def faceDirection(self, orient):

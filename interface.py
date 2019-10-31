@@ -82,6 +82,8 @@ class Interface:
      
     def fastestpath(self, **kwargs):
         self.robot.findpath(waypoint=self.waypoint)
+        self.robot.sensors.arduino.write("g")
+        
         #return self.startprocess(target = self.robot.findpath, kwargs - {waypoint=self.waypoint})
     
 
