@@ -139,7 +139,7 @@ class Robot:
             if self.map.getTile(tile) is None:
                 print("Unexplored terrain detected, changing {} to unexplored".format(checkpos))
                 self.map.setTile(checkpos, None)
-                self.removeImage(pos)          #check whether removed block has image
+                self.removeImage(checkpos)          #check whether removed block has image
                 return
         
         #no unexplored neighbours
