@@ -30,7 +30,7 @@ class Imagefinder:
         self.camera = Camera()
         
 
-        self.model = keras.models.load_model('JiaChin_Martyn_MDP22_19S1_')
+        self.model = keras.models.load_model('JCM_mdp22.h5')
         self.model.compile(loss='categorical_crossentropy',
               optimizer='adam',
               metrics=['accuracy'])
